@@ -12,6 +12,7 @@ public enum ErrorCode {
     NOT_NULL_TOKEN(400, "토큰 값이 NULL일 수 없습니다"),
     MISMATCH_USER_OAUTH_ID(400, "유저의  OAuth ID값이 토큰 ID 값과 일치하지 않습니다"),
     WEBSOCKET_NOT_CONNECTED(400, "WebSocket이 연결되어 있지 않습니다"),
+    USER_VOICE_ALREADY_EXISTS(400, "이미 녹음된 파일이 존재합니다"),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     INVALID_TOKEN(401, "토큰이 유효하지 않습니다."),
@@ -29,6 +30,8 @@ public enum ErrorCode {
     BOOK_NOT_FOUND(404, "존재하지 않는 책입니다"),
     USER_VOICE_NOT_FOUND(404, "해당 목소리에 권한이 없거나 찾을 수 없습니다."),
 
+    /* 415 */
+    UNSUPPORTED_AUDIO_FORMAT(415, "허용되지 않는 오디오 형식입니다."),
 
     /* 500 */
     INTERNAL_SERVER_ERROR(500, "서버 에러"),

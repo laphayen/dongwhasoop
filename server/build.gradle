@@ -63,6 +63,9 @@ dependencies {
 
     //JSON 직렬화
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    //s2
+    implementation 'software.amazon.awssdk:s3:2.25.13'
 }
 
 dependencyManagement {
