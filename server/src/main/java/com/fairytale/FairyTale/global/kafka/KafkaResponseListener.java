@@ -4,10 +4,10 @@ import com.fairytale.FairyTale.domain.book.presentation.dto.response.BookContent
 import com.fairytale.FairyTale.domain.book.presentation.dto.response.StoryPageWithAudioResponse;
 import com.fairytale.FairyTale.domain.storypage.domain.repository.StoryPageRepository;
 import com.fairytale.FairyTale.global.config.handler.TtsWebSocketHandler;
+import com.fairytale.FairyTale.global.error.ErrorResponse;
 import com.fairytale.FairyTale.global.kafka.dto.response.KafkaTtsResponse;
 import com.fairytale.FairyTale.global.success.SuccessResponse;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -48,15 +48,20 @@ public class KafkaResponseListener {
                         .pages(pages)
                         .build();
                     SuccessResponse response = new SuccessResponse(200, contentResponse);
-                    
+
                     // websocket으로 데이터 보내기
                     webSocketHandler.sendJson(userId, response);
                 }
                 case "TTS_FAILED" -> {
-                    Map<String, Object> response = Map.of(
-                        "status", "failed",
-                        "error", message.getPayload().getError()
+                    String errorMsg = message.getPayload().getError();
+                    log.error(errorMsg);
+
+                    ErrorResponse response = new ErrorResponse(
+                        500,
+                        "서버에 오류가 발생했습니다. 조금있다가 다시 시도해주세요",
+                        "/api/v1/books/{bookId}/{voiceId}/content"
                     );
+
                     // websocket으로 데이터 보내기
                     webSocketHandler.sendJson(userId, response);
                 }
