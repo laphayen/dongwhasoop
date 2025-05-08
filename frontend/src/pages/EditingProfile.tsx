@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useChildrenStore } from "../stores/useChildrenStore";
 import { useDeleteChildProfile } from "../hooks/useDeleteChildProfile";
+import { useUpdateChildProfile } from "../hooks/useUpdateChildProfile";
 import mainpage from "../assets/images/mainpage/mainpage.webp";
 import treeBox from "../assets/images/settingpage/treebox.webp";
 import DeleteBtn from "../assets/images/settingpage/deletebtn.webp";
@@ -44,6 +45,7 @@ function EditingProfile() {
   const childFromState = location.state as ChildProfile | undefined;
   const [editingChild, setEditingChild] = useState<ChildProfile | undefined>(childFromState);
   const deleteChild = useDeleteChildProfile();
+  const updateChild = useUpdateChildProfile();
 
   useEffect(() => {
     if (!editingChild && children.length > 0) {
@@ -58,8 +60,21 @@ function EditingProfile() {
       alert("이름을 입력해주세요");
       return;
     }
-    // Save logic here
-    navigate("/editprofile");
+
+    updateChild.mutate(
+      {
+        childId: editingChild.childId,
+        updateData: {
+          name: editingChild.childName,
+          mascotId: editingChild.mascotId,
+        },
+      },
+      {
+        onSuccess: () => {
+          navigate("/editprofile");
+        },
+      }
+    );
   };
 
   const handleDelete = () => {
