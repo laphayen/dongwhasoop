@@ -7,7 +7,7 @@ function TestApiPage() {
   const handleTest = async () => {
     try {
       // 밑에 주소를 실제 백엔드 api 주소로 바꿔주세용
-      const response = await api.get("/children");
+      const response = await api.get("/books?page=1&size=6");
 
       // const response = await api.post("/children", {
       //   name: "정효원",

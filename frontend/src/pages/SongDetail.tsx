@@ -1,16 +1,72 @@
 import { useNavigate, useParams } from "react-router-dom";
-
+import { useEffect, useRef } from "react";
 import BackButton from "../components/commons/BackButton";
+import { useGetSong } from "../hooks/useGetSong";
+import { useBookStore } from "../stores/bookStoreR";
+import { useGetBookList } from "../hooks/useGetBookList";
 
 function SongDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const audioRef = useRef<HTMLAudioElement>(null);
+  
+  // 책 목록 데이터 직접 가져오기
+  const { data: bookData } = useGetBookList();
+  const { setBookList } = useBookStore();
+  
+  // 책 목록이 로드되면 store 업데이트
+  useEffect(() => {
+    if (bookData?.content) {
+      setBookList(bookData.content);
+    }
+  }, [bookData, setBookList]);
+
+  const selectedBook = bookData?.content?.find((book) => book.bookId === Number(id));
+  const { data: songUrl, isLoading, isError } = useGetSong(Number(id));
+
+  useEffect(() => {
+    if (songUrl && audioRef.current) {
+      audioRef.current.play().catch(error => {
+        console.error("Failed to autoplay:", error);
+      });
+    }
+  }, [songUrl]);
+
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center">
+        <div className="text-2xl font-bazzi">노래를 불러오는 중입니다...</div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center">
+        <div className="text-2xl font-bazzi text-red-500">노래를 불러오는데 실패했습니다.</div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <BackButton to={`/introsong/${id}`}></BackButton>
-      <h1>이 곳은 동요 상세페이지입니다.</h1>
-      <button onClick={() => navigate("/songend")}>넘어가기</button>
+    <div className="fixed inset-0 w-screen h-screen flex flex-col items-center justify-center">
+      <BackButton to={`/intro/${id}`} />
+      
+      <div className="text-4xl font-bazzi mb-8">{selectedBook?.title} 동요</div>
+
+      {songUrl && (
+        <div className="w-full max-w-md px-4">
+          <audio 
+            ref={audioRef} 
+            controls 
+            className="w-full"
+            onEnded={() => navigate("/songend")}
+          >
+            <source src={songUrl} type="audio/mp3" />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+      )}
     </div>
   );
 }

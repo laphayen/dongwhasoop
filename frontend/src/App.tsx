@@ -5,7 +5,6 @@ import Login from "./pages/Login";
 import BookEnd from "./pages/BookEnd";
 import Intro from "./pages/Intro";
 import IntroBook from "./pages/IntroBook";
-import IntroSong from "./pages/IntroSong";
 import BookList from "./pages/BookList";
 import BookLoading from "./pages/BookLoading";
 import Home from "./pages/Home";
@@ -53,7 +52,6 @@ function App() {
       <Route path="/bookend" element={<BookEnd></BookEnd>}></Route>
       <Route path="/intro/:id" element={<Intro></Intro>}></Route>
       <Route path="/introbook/:id" element={<IntroBook></IntroBook>}></Route>
-      <Route path="/introsong/:id" element={<IntroSong></IntroSong>}></Route>
       <Route path="/booklist" element={<BookList></BookList>}></Route>
       <Route path="/bookloading" element={<BookLoading></BookLoading>}></Route>
       <Route path="/home" element={<Home></Home>}></Route>

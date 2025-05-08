@@ -7,29 +7,32 @@ import BackButton from "../components/commons/BackButton";
 import GoBack from "../assets/images/BookList/goback.webp";
 import GoFront from "../assets/images/BookList/gofront.webp";
 
-import useBookStore from "../hooks/useBooks";
-import bookDummy from "../data/bookDummy";
+import { useBookStore } from "../stores/bookStoreR";
+import { useGetBookList } from "../hooks/useGetBookList";
 
 function BookList() {
-  const booksPerPage = 6;
   const [page, setPage] = useState(0);
-  const totalPages = Math.ceil(bookDummy.length / booksPerPage);
   const navigate = useNavigate();
-  const setBooks = useBookStore((state) => state.setBooks);
+  
+  const { data, isLoading } = useGetBookList(page);
+  const { setBookList } = useBookStore();
 
+  // Update bookstore whenever data changes
   useEffect(() => {
-    setBooks(bookDummy);
-  }, [setBooks]);
+    if (data?.content) {
+      setBookList(data.content);
+    }
+  }, [data, setBookList]);
 
   const handlePrev = () => {
     if (page > 0) setPage(page - 1);
   };
 
   const handleNext = () => {
-    if (page < totalPages - 1) setPage(page + 1);
+    if (!data?.last) setPage(page + 1);
   };
 
-  const visibleBooks = bookDummy.slice(page * booksPerPage, (page + 1) * booksPerPage);
+  const books = data?.content || [];
 
   return (
     <div
@@ -41,28 +44,17 @@ function BookList() {
       {/* 책 리스트 */}
       <div className="relative flex flex-col justify-center items-center min-h-[70vh] z-10">
         <div className="grid grid-cols-3 gap-y-[2vh] gap-x-[5vw] talblet2560:gap-x-[5vw] mt-[4vh] tablet2560:mt-[11vh]">
-          {visibleBooks.map((book, index) => (
+          {books.map((book) => (
             <div
-              key={index}
+              key={book.bookId}
               className="flex flex-col items-center cursor-pointer"
-              onClick={() => navigate(`/intro/${book.id}`)}
+              onClick={() => navigate(`/intro/${book.bookId}`)}
             >
               <img
-                src={book.cover}
+                src={book.imageUrl || '/default-book-cover.png'} // Add a default image
                 alt={book.title}
                 className="w-[14vw] talblet2560:w[25vw] max-w-[343px] rounded-xl border-4 border-white shadow-md"
               />
-
-              {/* <div className="relative">
-                <img
-                  src={book.cover}
-                  alt={book.title}
-                  className="w-[14vw] talblet2560:w[25vw] max-w-[343px] rounded-xl border-4 border-white shadow-md filter blur"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <ScaleLoader color="#FFFFFF" radius={5} width={10} height={80} margin={5}/>
-                </div>
-              </div> */}
 
               <h3 className="mt-2 text-[4.5vh] font-bazzi text-[#384EA6] text-outline-xs text-center">{book.title}</h3>
             </div>
@@ -78,7 +70,7 @@ function BookList() {
       )}
 
       {/* 다음 버튼 */}
-      {page < totalPages - 1 && (
+      {!data?.last && (
         <button onClick={handleNext} className="absolute top-1/2 right-[5vw] -translate-y-1/2 z-20">
           <img src={GoFront} alt="다음" className="w-[10vw] max-w-[300px]" />
         </button>
