@@ -3,13 +3,12 @@ from db.db import database
 from db.models import characters, letters, children
 from services.openai_client import ask_chatgpt
 from db.queries.letters import insert_letter
+import asyncio
 
 async def generate_letter(letter_id: int) -> str:
   # 1. 기존 편지에서 character_id, child_id 조회
-  letter_query = letters.select().where(letters.c.letter_id == letter_id)
-  original_letter = await database.fetch_one(letter_query)
+  original_letter = await wait_for_letter(letter_id)
 
-  ##### TODO 예외 처리가 필요함
   if not original_letter:
     raise ValueError("기존 편지를 찾을 수 없습니다.")
 
@@ -22,7 +21,6 @@ async def generate_letter(letter_id: int) -> str:
   char_query = characters.select().where(characters.c.character_id == character_id)
   character = await database.fetch_one(char_query)
 
-  ##### TODO 예외 처리가 필요함
   if not character:
     raise ValueError("캐릭터를 찾을 수 없습니다.")
 
@@ -31,8 +29,7 @@ async def generate_letter(letter_id: int) -> str:
   # 3. 아이 이름 조회
   child_query = children.select().where(children.c.child_id == child_id)
   child = await database.fetch_one(child_query)
-  
-  ##### TODO 예외 처리가 필요함
+
   if not child:
     raise ValueError("아이를 찾을 수 없습니다.")
 
@@ -58,3 +55,13 @@ async def generate_letter(letter_id: int) -> str:
   await insert_letter(character_id, child_id, book_id, ai_letter, message_type=False)
 
   return ai_letter
+
+async def wait_for_letter(letter_id: int, max_attempts=5, delay=0.3):
+  for attempt in range(max_attempts):
+    letter_query = letters.select().where(letters.c.letter_id == letter_id)
+    original_letter = await database.fetch_one(letter_query)
+    if original_letter:
+      return original_letter
+    await asyncio.sleep(delay)
+
+  raise ValueError("기존 편지를 찾을 수 없습니다.")

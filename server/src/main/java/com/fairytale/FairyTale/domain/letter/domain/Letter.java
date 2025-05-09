@@ -36,7 +36,7 @@ public class Letter extends BaseEntity {
     })
     private LetterBox letterBox;
 
-    @Column(name = "letter_content")
+    @Column(name = "letter_content", length = 10000)
     private String letterContent;
 
     @Column(name = "is_read")
