@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface Child {
   childId: number;
@@ -11,7 +12,15 @@ interface SelectedChildStore {
   setSelectedChild: (child: Child) => void;
 }
 
-export const useSelectedChild = create<SelectedChildStore>((set) => ({
-  selectedChild: null,
-  setSelectedChild: (child) => set({ selectedChild: child }),
-}));
+export const useSelectedChild = create<SelectedChildStore>()(
+  persist(
+    (set) => ({
+      selectedChild: null,
+      setSelectedChild: (child) => set({ selectedChild: child }),
+    }),
+    {
+      name: "selected-child",
+      partialize: (state) => ({ selectedChild: state.selectedChild }),
+    }
+  )
+);
