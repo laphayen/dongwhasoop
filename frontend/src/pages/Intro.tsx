@@ -1,28 +1,16 @@
-import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import bookintrobackground from "../assets/images/bookintro/bookintrobackground.webp";
 import BackButton from "../components/commons/BackButton";
 import Fairytale from "../assets/images/bookintro/bear.webp";
 import Song from "../assets/images/bookintro/fairytale.webp";
-import { useBookStore } from "../stores/bookStoreR";
-import { useGetBookList } from "../hooks/useGetBookList";
+import { useBookStore } from "../stores/bookStore";
 
 function Intro() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { data } = useGetBookList(); // API에서 책 목록 직접 가져오기
-  const { setBookList } = useBookStore();
-  
-  // 데이터가 로드되면 store 업데이트
-  useEffect(() => {
-    if (data?.content) {
-      setBookList(data.content);
-    }
-  }, [data, setBookList]);
+  const { selectedBook } = useBookStore();  // 저장된 책 정보 사용
 
-  const selectedBook = data?.content?.find((book) => book.bookId === Number(id));
-
-  if (!selectedBook) {
+  if (!selectedBook || selectedBook.bookId !== Number(id)) {
     return <div className="text-white">책 정보를 찾을 수 없습니다.</div>;
   }
 
@@ -45,7 +33,6 @@ function Intro() {
             alt="책 표지"
             className="w-[40vw] sm:w-[30vw] lg:w-[20vw] max-w-[700px] rounded-xl border-4 border-white shadow-lg"
           />
-
           <h2 className="mt-4 text-[4vh] sm:text-[5vh] font-bazzi text-center text-[#4e4e4e] text-outline-sm">
             {selectedBook.title}
           </h2>

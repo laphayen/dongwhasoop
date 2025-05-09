@@ -7,29 +7,32 @@ import BackButton from "../components/commons/BackButton";
 import GoBack from "../assets/images/BookList/goback.webp";
 import GoFront from "../assets/images/BookList/gofront.webp";
 
-import { useBookStore } from "../stores/bookStoreR";
+import { useBookStore } from "../stores/bookStore";
 import { useGetBookList } from "../hooks/useGetBookList";
 
 function BookList() {
-  const [page, setPage] = useState(0);
   const navigate = useNavigate();
-  
-  const { data, isLoading } = useGetBookList(page);
-  const { setBookList } = useBookStore();
+  const { currentPage, setCurrentPage, setSelectedBook, setTotalBooks } = useBookStore();
+  const { data, isLoading } = useGetBookList();
 
-  // Update bookstore whenever data changes
+  // 컴포넌트 마운트 시 currentPage 초기화
+  useEffect(() => {
+    setCurrentPage(0);
+  }, []);
+
+  // 데이터가 로드되면 store 업데이트
   useEffect(() => {
     if (data?.content) {
-      setBookList(data.content);
+      setTotalBooks(data.content);
     }
-  }, [data, setBookList]);
+  }, [data, setTotalBooks]);
 
   const handlePrev = () => {
-    if (page > 0) setPage(page - 1);
+    if (currentPage > 0) setCurrentPage(currentPage - 1);  // page -> currentPage
   };
 
   const handleNext = () => {
-    if (!data?.last) setPage(page + 1);
+    if (!data?.last) setCurrentPage(currentPage + 1);  // page -> currentPage
   };
 
   const books = data?.content || [];
@@ -48,7 +51,10 @@ function BookList() {
             <div
               key={book.bookId}
               className="flex flex-col items-center cursor-pointer"
-              onClick={() => navigate(`/intro/${book.bookId}`)}
+              onClick={() => {
+                setSelectedBook(book);  // 선택한 책 정보 저장
+                navigate(`/intro/${book.bookId}`);
+              }}
             >
               <img
                 src={book.imageUrl || '/default-book-cover.png'} // Add a default image
@@ -63,7 +69,7 @@ function BookList() {
       </div>
 
       {/* 이전 버튼 */}
-      {page > 0 && (
+      {currentPage > 0 && (  // page -> currentPage
         <button onClick={handlePrev} className="absolute top-1/2 left-[5vw] -translate-y-1/2 z-20">
           <img src={GoBack} alt="이전" className="w-[10vw] max-w-[300px]" />
         </button>

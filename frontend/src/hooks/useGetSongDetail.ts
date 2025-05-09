@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { getSong } from '../api/book';
-import { GetSongApiResponse } from '../types/book';
 
 export const useGetSong = (bookId: number) => {
   return useQuery<string>({

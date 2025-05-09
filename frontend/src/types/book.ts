@@ -36,3 +36,22 @@ export interface GetSongApiResponse {
   success: boolean;
   timeStamp: string;
 }
+
+//동화 상세
+export interface GetBookContentResponse {
+  success: boolean;
+  status: number;
+  timeStamp: string;
+  data?: {
+    message: string;
+    completed: boolean;
+    pages: {
+      pageNumber: number;
+      textContent: string;
+      imageUrl: string | null;
+      audioUrl: string;
+    }[] | null;
+  };
+  reason?: string;
+  path?: string;
+}

@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import BackButton from "../components/commons/BackButton";
-import { useGetSong } from "../hooks/useGetSong";
-import { useBookStore } from "../stores/bookStoreR";
+import { useGetSong } from "../hooks/useGetSongDetail";
+import { useBookStore } from "../stores/bookStore";
 import { useGetBookList } from "../hooks/useGetBookList";
 
 function SongDetail() {
@@ -10,18 +10,8 @@ function SongDetail() {
   const { id } = useParams();
   const audioRef = useRef<HTMLAudioElement>(null);
   
-  // 책 목록 데이터 직접 가져오기
-  const { data: bookData } = useGetBookList();
-  const { setBookList } = useBookStore();
-  
-  // 책 목록이 로드되면 store 업데이트
-  useEffect(() => {
-    if (bookData?.content) {
-      setBookList(bookData.content);
-    }
-  }, [bookData, setBookList]);
+  const { selectedBook } = useBookStore();  // Changed from setSelectedBook to selectedBook
 
-  const selectedBook = bookData?.content?.find((book) => book.bookId === Number(id));
   const { data: songUrl, isLoading, isError } = useGetSong(Number(id));
 
   useEffect(() => {
@@ -52,7 +42,7 @@ function SongDetail() {
     <div className="fixed inset-0 w-screen h-screen flex flex-col items-center justify-center">
       <BackButton to={`/intro/${id}`} />
       
-      <div className="text-4xl font-bazzi mb-8">{selectedBook?.title} 동요</div>
+      <div className="text-4xl font-bazzi mb-8">{selectedBook?.title} 동요</div> 
 
       {songUrl && (
         <div className="w-full max-w-md px-4">
