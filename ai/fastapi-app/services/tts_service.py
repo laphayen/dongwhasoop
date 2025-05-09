@@ -139,3 +139,42 @@ async def _generate_and_save_audio(book_id, voice_id, speaker_path, text,
   finally:
     if os.path.exists(output_path):
       os.remove(output_path)
+
+async def generate_tts(text: str, speaker_url: str) -> str:
+  os.makedirs("/tmp", exist_ok=True)
+
+  # 1. S3에서 speaker 파일 다운로드
+  with tempfile.NamedTemporaryFile(delete=False, suffix=".wav",
+                                     dir="/tmp") as temp_speaker:
+    temp_speaker.write(load_file_from_s3(speaker_url))
+    speaker_path = temp_speaker.name
+
+  # 2. 출력 파일 임시경로 생성
+  output_path = f"/tmp/{uuid.uuid4()}.wav"
+
+  try:
+    # 3. 음성 생성
+    tts_model.tts_to_file(
+        text=text,
+        speaker_wav=speaker_path,
+        language="ko",
+        file_path=output_path
+    )
+
+    # 4. S3 업로드
+    with open(output_path, "rb") as f:
+      s3_key = f"tts_outputs/{uuid.uuid4()}.wav"
+      s3_url = upload_file_to_s3(f, s3_key, "audio/wav")
+
+    return s3_url
+
+  except Exception as e:
+    print(f"❌ generate_tts 실패: {e}")
+    raise
+
+  finally:
+    # 5. 임시파일 정리
+    if os.path.exists(speaker_path):
+      os.remove(speaker_path)
+    if os.path.exists(output_path):
+      os.remove(output_path)

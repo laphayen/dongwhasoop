@@ -3,6 +3,8 @@ from db.db import database
 from db.models import characters, letters, children
 from services.openai_client import ask_chatgpt
 from db.queries.letters import insert_letter
+from config import VOICE_TYPE_URLS
+from services.tts_service import generate_tts
 import asyncio
 
 async def generate_letter(letter_id: int) -> str:
@@ -51,11 +53,22 @@ async def generate_letter(letter_id: int) -> str:
   # 5. GPT 호출
   ai_letter = await ask_chatgpt(prompt)
 
+  # TTS 생성
+  voice_type_id = character["voice_type_id"]
+  voice_url = VOICE_TYPE_URLS.get(voice_type_id)
+
+  if not voice_url:
+    voice_url = VOICE_TYPE_URLS.get(1)
+
+  tts_url = await generate_tts(ai_letter, speaker_url=voice_url)
+
   # 6. DB 저장
-  await insert_letter(character_id, child_id, book_id, ai_letter, message_type=False)
+  await insert_letter(character_id, child_id, book_id, ai_letter, message_type=False, audio_url=tts_url)
 
   return ai_letter
 
+
+# Mysql로 부터 편지 불러오는 함수
 async def wait_for_letter(letter_id: int, max_attempts=5, delay=0.3):
   for attempt in range(max_attempts):
     letter_query = letters.select().where(letters.c.letter_id == letter_id)

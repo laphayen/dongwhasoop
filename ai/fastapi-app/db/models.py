@@ -47,12 +47,13 @@ letters = Table(
     Column("letter_id", BigInteger, primary_key=True),
     Column("book_id", BigInteger),
     Column("child_id", BigInteger),
-    Column("letter_content", String(255)),
+    Column("letter_content", String(10000)),
     Column("is_read", Boolean),
     Column("message_type", Boolean),
     Column("character_id", BigInteger, ForeignKey("fairytale.characters.character_id")),
     Column("created_at", DateTime),
     Column("updated_at", DateTime),
+    Column("audio_url",String(255)),
     ForeignKeyConstraint(
         ["book_id", "child_id"],
         ["fairytale.letter_boxes.book_id", "fairytale.letter_boxes.child_id"]
@@ -70,6 +71,7 @@ characters = Table(
     Column("ai_prompt", String(255)),
     Column("image_url", String(255)),
     Column("name", String(255)),
+    Column("voice_type_id",Integer),
     schema="fairytale"
 )
 

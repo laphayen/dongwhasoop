@@ -45,6 +45,9 @@ public class Letter extends BaseEntity {
     @Column(name = "message_type", nullable = false, columnDefinition = "TINYINT(1) COMMENT '0 = receive(답장), 1 = send(보낸편지)'")
     private Boolean messageType;
 
+    @Column(name = "audio_url")
+    private String audioUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "character_id")
     private Character character;

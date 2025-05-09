@@ -26,7 +26,7 @@ public class LetterDetailResponse {
             .character_name(letter.getCharacter().getName())
             .character_image_url(letter.getCharacter().getImageUrl())
             .letter_content(letter.getLetterContent())
-            .audio_url(null) // 오디오 URL은 나중에 구현
+            .audio_url(letter.getAudioUrl())
             .is_read(letter.getIsRead())
             .created_at(letter.getCreatedAt())
             .messageType(letter.getMessageType())
