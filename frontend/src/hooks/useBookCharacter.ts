@@ -3,7 +3,8 @@ import { getBookCharacter } from "../api/bookcharacter";
 import { BookCharacterRead } from "../types/bookcharacter";
 
 export const useBookCharacter = (characterId: number) => {
-  return useQuery<BookCharacterRead, Error, BookCharacterRead, [string, number]>(["book-character", characterId], () =>
-    getBookCharacter(characterId)
-  );
+  return useQuery<BookCharacterRead>({
+    queryKey: ["book-character", characterId],
+    queryFn: () => getBookCharacter(characterId),
+  });
 };
