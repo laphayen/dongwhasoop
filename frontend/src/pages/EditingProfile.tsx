@@ -116,7 +116,7 @@ function EditingProfile() {
           <div className="absolute flex flex-col items-center mt-[14vh]">
             <button onClick={() => setShowCharacterSelect(true)} className="hover:scale-105">
               <img
-                src={getCharacterImage(editingChild.mascotId)}
+                src={editingChild ? getCharacterImage(editingChild.mascotId) : ""}
                 alt="캐릭터"
                 className="w-[17vw] max-w-[600px] h-auto tablet2560:w-[22vw] xl:max-w-[900px] tablet2560:w-[26vw] tablet2560:max-w-[900px] rounded-full"
               />
@@ -127,8 +127,8 @@ function EditingProfile() {
           <div className="absolute xl:mt-[57vh] tablet2560:mt-[35vw] mt-[26vw]">
             <input
               type="text"
-              value={editingChild.childName}
-              onChange={(e) => setEditingChild((prev) => ({ ...prev, childName: e.target.value }))}
+              value={editingChild?.childName ?? ""}
+              onChange={(e) => setEditingChild((prev) => (prev ? { ...prev, childName: e.target.value } : prev))}
               placeholder="이름을 입력해주세요"
               className="w-[23vw] placeholder-black max-w-[600px] h-[5vw] rounded-full px-[3vh] py-4 text-center text-3xl bg-[#fff4d3b8] font-maplestory tablet2560:w-[90vw] tablet2560:max-w-[550px] tablet2560:text-5xl"
             />
@@ -162,7 +162,7 @@ function EditingProfile() {
                 <button
                   key={id}
                   onClick={() => {
-                    setEditingChild((prev) => ({ ...prev, mascotId: mascotId }));
+                    setEditingChild((prev) => (prev ? { ...prev, mascotId: mascotId } : prev));
                     setShowCharacterSelect(false);
                   }}
                   className="hover:scale-110"
