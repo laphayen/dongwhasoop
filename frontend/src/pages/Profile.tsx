@@ -94,7 +94,7 @@ function Profile() {
         </div>
       </div>
 
-      {/* Settings Modal */}
+      {/* 설정 모달 */}
       {showSettings && (
         <div
           className="fixed inset-0 bg-gray-950/50 flex items-center justify-center z-[999]"
@@ -110,28 +110,28 @@ function Profile() {
                 <p className="text-[3vh] text-black font-bazzi hidden sm:block">정답을 입력해주세요</p>
               </div>
 
-              <div className="flex flex-col items-center gap-[3.8vh]">
-                <p className="bg-[#FBE4B9] rounded-3xl p-[2vh] text-[5vh] font-maplestory">
+              <div className="flex flex-col font-maplestory items-center gap-[3.8vh]">
+                <p className="bg-[#FBE4B9] rounded-3xl p-[2vh] text-[5vh]">
                   {num1} × {num2}
                 </p>
                 <div className="flex items-center">
                   <div className="flex gap-[2vh]">
-                    <div className="relative w-[6vh]">
-                      <div className="font-maplestory text-[3vh] text-center absolute bottom-0 w-full">
+                    <div className="relative w-[5vh] tablet2560:w-[5vh]">
+                      <div className="text-[3vh] text-center absolute bottom-0 w-full">
                         {answer[0] || "\u00A0"}
                       </div>
-                      <div className="border-b-4 border-[#FBE4B9] h-[2vh]" />
+                      <div className="border-b-2 tablet2560:border-b-4 border-[#FBE4B9] h-[2vh]" />
                     </div>
-                    <div className="relative w-[6vh]">
-                      <div className="font-maplestory text-[3vh] text-center absolute bottom-0 w-full">
+                    <div className="relative w-[5vh] tablet2560:w-[5vh]">
+                      <div className="text-[3vh] text-center absolute bottom-0 w-full">
                         {answer[1] || "\u00A0"}
                       </div>
-                      <div className="border-b-4 border-[#FBE4B9] h-[2vh]" />
+                      <div className="border-b-2 tablet2560:border-b-4 border-[#FBE4B9] h-[2vh]" />
                     </div>
                   </div>
                   <button
                     onClick={handleDelete}
-                    className="w-[6vh] h-[6vh] bg-[#FBE4B9] rounded-full text-[2.5vh] hover:bg-[#e6dbb0] transition-colors ml-4"
+                    className="w-[5vh] h-[5vh] bg-[#FBE4B9] rounded-full text-[2.5vh] hover:bg-[#e6dbb0] transition-colors ml-4"
                   >
                     ←
                   </button>

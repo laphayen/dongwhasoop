@@ -10,6 +10,7 @@ import home from "../assets/images/letterbox/home.webp";
 import BackButton from "../components/commons/BackButton";
 import { useGetLetterDetail } from "../hooks/useGetLetterDetail";
 import { useLetterStore } from "../stores/letterStore";
+import backSound from "../assets/music/back_sound.mp3";
 
 function LetterDetail() {
   const { id } = useParams();
@@ -31,12 +32,14 @@ function LetterDetail() {
 
   const handleBackButton = () => {
     navigate(-1);
+    const audio = new Audio(backSound);
+    audio.play();
   };
 
 
   return (
     <div className="fixed inset-0 w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${mainpage})` }}>
-      <BackButton onClick={() => navigate(-1)} />
+      <BackButton onClick={() => handleBackButton()} />
 
       <div className="flex justify-between items-center h-full px-[15vh] tablet2560:px-24 pt-10 ">
         {/* 편지 내용 */}

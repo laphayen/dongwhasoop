@@ -13,10 +13,12 @@ import dog from "../assets/images/settingpage/dog.webp";
 import chik from "../assets/images/settingpage/chik.webp";
 import panda from "../assets/images/settingpage/panda.webp";
 import { useSelectedChild } from "../stores/useSelectedChild";
+import { useMusicStore } from "../stores/musicStore";
+import btnSound from "../assets/music/btn_sound.mp3";
 
 function Home() {
   const navigate = useNavigate();
-  const [isMusicOn, setIsMusicOn] = useState(false); // 음악 상태 관리
+  const { isPlaying, togglePlay } = useMusicStore();
   const { selectedChild } = useSelectedChild();
 
   return (
@@ -26,7 +28,10 @@ function Home() {
     >
       {selectedChild && (
         <div className="absolute top-[5vh] left-[5vh] flex flex-col items-center">
-          <button onClick={() => navigate("/profile")}>
+          <button onClick={() => {
+            new Audio(btnSound).play();
+            navigate("/profile");
+          }}>
             <img
               src={
                 selectedChild.mascotId === 2
@@ -55,7 +60,10 @@ function Home() {
           <h1 className="text-[17vh] font-bazzi text-red-600 text-outline text-center">동화</h1>
 
           {/* 동화 이미지 */}
-          <button onClick={() => navigate("/booklist")}>
+          <button onClick={() => {
+            new Audio(btnSound).play();
+            navigate("/booklist");
+          }}>
             <img src={Book} alt="동화" className="w-[30vw] max-w-[1200px] min-w-[100px]" />
           </button>
         </div>
@@ -66,14 +74,21 @@ function Home() {
           <h1 className="text-[17vh] font-bazzi text-yellow-500 text-outline text-center">우편함</h1>
 
           {/* 우편함 이미지 */}
-          <button onClick={() => navigate("/letterlist")}>
+          <button onClick={() => {
+            new Audio(btnSound).play();
+            navigate("/letterlist");
+          }}>
             <img src={MailBox} alt="우편함" className="w-[28vw] max-w-[1200px] min-w-[100px]" />
           </button>
         </div>
 
         {/* 음악 토글 버튼 */}
-        <button onClick={() => setIsMusicOn(!isMusicOn)} className="fixed bottom-[5vh] right-[5vh]">
-          <img src={isMusicOn ? MusicOn : MusicOff} alt="음악 설정" className="w-[16vw] max-w-[1000px] min-w-[70px]" />
+        <button onClick={togglePlay} className="fixed bottom-[5vh] right-[5vh]">
+          <img 
+            src={isPlaying ? MusicOff : MusicOn} 
+            alt="음악 설정" 
+            className="w-[16vw] max-w-[1000px] min-w-[70px]" 
+          />
         </button>
       </div>
     </div>

@@ -10,6 +10,7 @@ import send from "../assets/images/letterbox/sendletter.webp";
 import receive from "../assets/images/letterbox/receiveletter.webp";
 import picture from "../assets/images/letterbox/picture.webp";
 import defaultchar from "../assets/images/letterbox/defaultcharacter.webp";
+import arrow from "../assets/images/letterbox/arrow.webp";
 import letterpicture from "../assets/images/letterbox/letterpicture.webp";
 import BackButton from "../components/commons/BackButton";
 import cat from "../assets/images/loading/cat2.webp"
@@ -17,6 +18,8 @@ import monkey from "../assets/images/loading/monkey.webp"
 import { useGetLetterBookList } from "../hooks/useGetLetterBookList"
 import { useGetLetterList } from "../hooks/useGetLetterList"
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
+import btnSound from "../assets/music/btn_sound.mp3";
+import backSound from "../assets/music/back_sound.mp3";
 
 
 function LetterList() {
@@ -27,7 +30,11 @@ function LetterList() {
   const BOOKS_PER_PAGE = 6;
   const [currentPage, setCurrentPage] = useState(0);
   const LETTERS_PER_PAGE = 4;
-  const handleTabChange = (tab: 'sent' | 'received') => setActiveTab(tab);
+  const handleTabChange = (tab: 'sent' | 'received') => {
+    const audio = new Audio(btnSound);
+    audio.play();
+    setActiveTab(tab);
+  };
 
 
   // React Query로 데이터 fetching
@@ -134,13 +141,13 @@ function LetterList() {
         {/* ✅ 오른쪽 상단 탭 버튼 */}
         <div className="fixed right-[10vw] tablet2560:top-[6vh] top-[4vh] flex justify-center gap-[5vw] z-10 mt-[2vh]">
           <div
-            className={`cursor-pointer transition-transform ${activeTab === 'sent' ? 'scale-110 drop-shadow-lg' : 'opacity-80 hover:opacity-100'}`}
+            className={`cursor-pointer transition-transform ${activeTab === 'sent' ? 'scale-110 drop-shadow-lg' : 'opacity-50 hover:opacity-100'}`}
             onClick={() => handleTabChange('sent')}
           >
             <img src={send} alt="보낸 편지" className="w-[18vw]" />
           </div>
           <div
-            className={`cursor-pointer transition-transform ${activeTab === 'received' ? 'scale-110 drop-shadow-lg' : 'opacity-80 hover:opacity-100'}`}
+            className={`cursor-pointer transition-transform ${activeTab === 'received' ? 'scale-110 drop-shadow-lg' : 'opacity-50 hover:opacity-100'}`}
             onClick={() => handleTabChange('received')}
           >
             <img src={receive} alt="받은 편지" className="w-[18vw]" />
@@ -152,16 +159,16 @@ function LetterList() {
           {/* 왼쪽 화살표 */}
           {currentPage > 0 && (
             <button
-              className="absolute left-[-4vw] top-1/2 transform -translate-y-1/2 text-9xl text-stone-700 hover:text-brown-700 transition-colors"
+              className="absolute left-[-10%] top-[55%] transform -translate-y-1/2 hover:scale-110 transition-transform"
               onClick={() => setCurrentPage(prev => prev - 1)}
             >
-              &#8249;
+              <img src={arrow} alt="Previous" className="w-[4vw] rotate-180" />
             </button>
           )}
 
           {/* 편지 목록 */}
           <div className={`grid grid-cols-2 gap-[5vh] tablet2560:gap-20 p-8 w-[40vw]
-            ${letterBooks?.data?.book?.length < 2 ? 'mt-[6vh] tablet2560:mt-[3vh]' : 'mt-[12vh] tablet2560:mt-[8vh]'}`}>
+            ${currentLetters.length <= 2 ? 'mt-[2vh] tablet2560:mt-[1vh]' : 'mt-[12vh] tablet2560:mt-[8vh]'}`}>
             {currentLetters?.map((letter) => (
               <div
                 key={letter.letter_id}
@@ -195,10 +202,10 @@ function LetterList() {
           {/* 오른쪽 화살표 */}
           {letters?.content && (currentPage + 1) * LETTERS_PER_PAGE < letters.content.length && (
             <button
-              className="absolute right-[-4vw] top-1/2 transform -translate-y-1/2 text-9xl text-stone-700 hover:text-brown-700 transition-colors"
+              className="absolute right-[-9%] top-[55%] transform -translate-y-1/2 hover:scale-110 transition-transform"
               onClick={() => setCurrentPage(prev => prev + 1)}
             >
-              &#8250;
+              <img src={arrow} alt="Next" className="w-[4vw]" />
             </button>
           )}
         </div>
@@ -215,11 +222,9 @@ function LetterList() {
 
   // 뒤로가기 처리
   const handleBackButton = () => {
-    if (selectedBookId) {
-      setSelectedBook(null);
-    } else {
-      navigate("/home");
-    }
+    navigate("/home");
+    const audio = new Audio(backSound);
+    audio.play();
   };
 
   return (
@@ -270,7 +275,7 @@ function LetterList() {
                       className="mt-[1vh] text-white hover:text-brown-700 transition-colors"
                       onClick={() => setBookPage(prev => prev + 1)}
                     >
-                      <MdKeyboardArrowDown size={50}/>
+                      <MdKeyboardArrowDown size={50} />
                     </button>
                   )}
                 </div>
