@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useBookCharacter } from "../hooks/useBookCharacter";
 import selectbackground from "../assets/images/writeletter/selectbackground.webp";
 import BackButton from "../components/commons/BackButton";
+import { useBookStore } from "../stores/bookStore";
 
 function SendWho() {
   const navigate = useNavigate();

@@ -36,7 +36,7 @@ function BookEnd() {
           </button>
         </div>
         <div className="mb-[45vh]">
-          <button onClick={() => navigate(`/bookdetail/${id}`)}>
+          <button onClick={() => navigate(`/bookdetail/${id}`, { state: { bookId: id } })}>
             <img src={ReplayBook} alt="다시보기" className="w-[20vw] max-w-[700px] min-w-[100px]" />
           </button>
         </div>

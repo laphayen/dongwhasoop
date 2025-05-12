@@ -4,16 +4,17 @@ import BackIcon from "../../assets/buttons/backicon.webp";
 interface BackButtonProps {
   to?: string;
   onClick?: () => void;
+  state?: any;
 }
 
-function BackButton({ to, onClick }: BackButtonProps) {
+function BackButton({ to, onClick, state }: BackButtonProps) {
   const navigate = useNavigate();
 
   const handleClick = () => {
     if (onClick) {
       onClick();
     } else if (to) {
-      navigate(to);
+      navigate(to, { state });
     } else {
       navigate(-1);
     }

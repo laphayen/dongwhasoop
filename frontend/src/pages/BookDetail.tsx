@@ -34,7 +34,7 @@ function BookDetail() {
       />
 
       {/* Background Images Container */}
-      <div 
+      <div
         className="absolute inset-0 flex transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${currentPage * 100}%)` }}
       >
