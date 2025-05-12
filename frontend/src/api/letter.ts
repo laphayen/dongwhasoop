@@ -9,8 +9,16 @@ import {
   GetLetterListResponse,
   GetLetterDetailResponse,
   LetterResponse,
+  LetterRequest,
 } from "../types/letter";
 import { useSelectedChild } from "../stores/useSelectedChild";
+import api from "../lib/axiosInstance";
+
+// 편지 쓰기
+export const writeLetter = async (characterId: number, body: LetterRequest): Promise<LetterResponse> => {
+  const response = await api.post(`/letters/${characterId}`, body);
+  return response.data;
+};
 
 // 동화책 목록 조회
 export const getLetterBookList = async () => {

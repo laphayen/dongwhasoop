@@ -24,6 +24,12 @@ export interface LetterResponse {
   timeStamp: string;
 }
 
+// 편지 요청 응답 구조
+export interface LetterRequest {
+  childId: number;
+  content: string;
+}
+
 // 편지 목록 조회
 export interface Letter {
   letter_id: number;

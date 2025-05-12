@@ -1,11 +1,16 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 import writeletterbackground from "../assets/images/writeletter/writeletterback.webp";
 import record from "../assets/images/writeletter/record.webp";
+import voicerec from "../assets/images/settingpage/voicerec.webp";
+import yetvoicerec from "../assets/images/settingpage/yetvoicerec.webp";
 import send from "../assets/images/writeletter/send.webp";
 import BackButton from "../components/commons/BackButton";
 import Modal from "../components/commons/Modal";
+import { useLetterStore } from "../stores/letterStore";
+import { useWriteLetter } from "../hooks/useBook/useWriteLetter";
+import { useSelectedChild } from "../stores/useSelectedChild";
 
 function WriteLetter() {
   const navigate = useNavigate();
@@ -15,21 +20,59 @@ function WriteLetter() {
 
   // 음성 녹음 상태 관리
   const [isListening, setIsListening] = useState(false);
+  const [hasRecorded, setHasRecorded] = useState(false);
   const { transcript, resetTranscript } = useSpeechRecognition();
+
+  const { letterContent, setLetterContent, clearLetterContent } = useLetterStore();
+  const { selectedChild } = useSelectedChild();
+  const writeLetter = useWriteLetter();
+
+  useEffect(() => {
+    setLetterContent(transcript);
+  }, [transcript, setLetterContent]);
+
+  useEffect(() => {
+    return () => {
+      SpeechRecognition.stopListening(); // 페이지 벗어나면 녹음 중지
+      resetTranscript();
+    };
+  }, []);
 
   const handleRecord = () => {
     if (!isListening) {
       SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
     } else {
       SpeechRecognition.stopListening();
+      setHasRecorded(true);
     }
     setIsListening(!isListening);
   };
 
   const handleSendClick = () => {
+    if (!hasRecorded) return alert("녹음을 먼저 완료해주세요.");
     console.log("편지 대상:", { characterId, bookId });
     console.log("녹음한 텍스트:", transcript);
+    console.log("편지 내용", letterContent);
     setIsModalOpen(true);
+  };
+
+  const handleConfirmSend = () => {
+    if (!characterId || !selectedChild || !letterContent.trim()) return;
+    writeLetter.mutate(
+      {
+        characterId,
+        body: {
+          childId: selectedChild.childId,
+          content: letterContent,
+        },
+      },
+      {
+        onSuccess: () => {
+          clearLetterContent();
+          navigate("/sendletter");
+        },
+      }
+    );
   };
 
   return (
@@ -39,27 +82,26 @@ function WriteLetter() {
     >
       <BackButton to="/sendwho" state={{ bookId }} />
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={() => navigate("/sendletter")}
-        type="send"
-      />
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={handleConfirmSend} type="send" />
 
       {/* 녹음 보이스 텍스트 변환 */}
-      <div className="absolute bg-white/80 rounded-xl p-4 w-[40vw] text-2xl font-maplestory">
-        <p>{transcript || "보내고 싶은 편지 내용을 녹음해주세요."}</p>
+      <div className="absolute left-[20vw] top-[30vh] bg-white/80 rounded-xl p-4 w-[40vw] tablet2560:w-[40vw] tablet2560:text-5xl xl:text-2xl font-maplestory">
+        <p>{letterContent || "보내고 싶은 편지 내용을 녹음해주세요."}</p>
       </div>
 
       <div className="fixed right-12 top-1/2 -translate-y-1/2 flex flex-col gap-4 px-16">
         {/* 녹음 버튼 */}
         <button onClick={handleRecord}>
-          <img src={record} alt="record" className="w-[20vw] max-w-[1200px] min-w-[100px]" />
+          <img
+            src={isListening ? voicerec : yetvoicerec}
+            alt="record"
+            className="w-[20vw] max-w-[1200px] min-w-[100px]"
+          />
         </button>
 
         {/* 편지 보내기 */}
-        <button onClick={handleSendClick}>
-          <img src={send} alt="send" className="w-[20vw] max-w-[1200px] min-w-[100px]" />
+        <button onClick={handleSendClick} disabled={!hasRecorded}>
+          <img src={send} alt="send" className="w-[20vw] max-w-[1200px] min-w-[100px] opacity-100" />
         </button>
       </div>
     </div>
