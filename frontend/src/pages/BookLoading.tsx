@@ -1,6 +1,18 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import bookintrobackground from "../assets/images/bookintro/bookintrobackground.webp";
+import kidbook from "../assets/images/bookintro/kidbook.webp";
 
 const BookLoading = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate("/home");
+    }, 8000); // 8초 후 실행
+
+    return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 정리
+  }, [navigate]);
 
   return (
     <div
@@ -16,13 +28,13 @@ const BookLoading = () => {
 
       </div>
 
-      {/* <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center">
         <img
           src={kidbook}
           alt="kidbook"
           className="w-[20vw] animate-fly"
         />
-      </div> */}
+      </div>
     </div>
   );
 };

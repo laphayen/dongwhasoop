@@ -1,26 +1,69 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import BackButton from "../components/commons/BackButton";
 import NextPage from "../assets/images/detailpage/nextpage.webp";
 import PrevPage from "../assets/images/detailpage/prevpage.webp";
 import RestartBook from "../assets/images/detailpage/restart.webp";
 import Modal from "../components/commons/Modal";
-
-// 더미데이터
-import shimcheongDetail from "../data/bookDetailDummy";
+import { useBookStore } from "../stores/bookStore";
 
 function BookDetail() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { id } = useParams();
-  const book = shimcheongDetail;
+  const bookPages = useBookStore((state) => state.bookPages);
+  const [audio] = useState(new Audio());  // 오디오 객체 생성
+
   const handleBackClick = () => {
     setIsModalOpen(true);
   };
 
   const [currentPage, setCurrentPage] = useState(0);
-  const currentContent = book.pages[currentPage];
+
+  // 데이터가 없으면 인트로 페이지로 리다이렉트
+  useEffect(() => {
+    if (!bookPages) {
+      navigate(`/intro/${id}`);
+    }
+  }, [bookPages, id, navigate]);
+
+  // 현재 페이지의 컨텐츠
+  const currentContent = bookPages?.[currentPage];
+
+  // 페이지 변경시 자동 재생
+  useEffect(() => {
+    let isCurrentPage = true; // 현재 페이지 체크를 위한 플래그
+
+    const playAudio = async () => {
+      if (currentContent?.audioUrl && isCurrentPage) {
+        try {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.src = currentContent.audioUrl;
+          await audio.play();
+        } catch (error) {
+          console.log("Audio playback error:", error);
+        }
+      }
+    };
+
+    playAudio();
+
+    return () => {
+      isCurrentPage = false; // cleanup에서 플래그 false로 설정
+      audio.pause();
+      audio.currentTime = 0;
+    };
+  }, [currentPage, currentContent, audio]);
+
+  // 다시듣기 버튼도 수정
+  const handleReplay = () => {
+    if (currentContent?.audioUrl) {
+      audio.currentTime = 0;
+      audio.play();
+    }
+  };
 
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden">
@@ -38,11 +81,11 @@ function BookDetail() {
         className="absolute inset-0 flex transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${currentPage * 100}%)` }}
       >
-        {book.pages.map((page, index) => (
+        {bookPages?.map((page, index) => (
           <div
             key={index}
             className="min-w-full h-full bg-cover bg-center flex-shrink-0"
-            style={{ backgroundImage: `url(${page.image})` }}
+            style={{ backgroundImage: `url(${page.imageUrl})` }}
           />
         ))}
       </div>
@@ -50,7 +93,7 @@ function BookDetail() {
       {/* Current Page Text */}
       <div className="absolute inset-0 flex flex-col items-center justify-end pb-[8vh] px-[5vw]">
         <p className="text-[5vh] font-bazzi text-center bg-black/50 p-4 rounded-xl shadow-md max-w-[90vw] text-white">
-          {currentContent.text}
+          {currentContent?.textContent}
         </p>
       </div>
 
@@ -58,7 +101,9 @@ function BookDetail() {
       <div className="absolute bottom-[35vh] w-full flex justify-center gap-[70vw] z-[10]">
         {/* 이전 버튼 */}
         {currentPage > 0 ? (
-          <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+          >
             <img src={PrevPage} alt="이전" className="w-[10vw] max-w-[200px]" />
           </button>
         ) : (
@@ -66,21 +111,29 @@ function BookDetail() {
         )}
 
         {/* 다음 버튼 */}
-        {currentPage < book.pages.length - 1 ? (
+        {bookPages && currentPage < bookPages.length - 1 ? (
           <button onClick={() => setCurrentPage((prev) => prev + 1)}>
             <img src={NextPage} alt="다음" className="w-[10vw] max-w-[200px]" />
           </button>
         ) : (
           <button onClick={() => navigate("/bookend", { state: { id } })}>
-            <img src={NextPage} alt="넘어가기" className="w-[10vw] max-w-[200px]" />
+            <img
+              src={NextPage}
+              alt="넘어가기"
+              className="w-[10vw] max-w-[200px]"
+            />
           </button>
         )}
       </div>
 
-      {/* 다시보기 버튼 */}
+      {/* 다시듣기 버튼 */}
       <div className="absolute z-[10] mt-[5vh] right-[5vh]">
-        <button onClick={() => console.log("다시 듣기 기능은 추후 연결 예정입니당~~")}>
-          <img src={RestartBook} alt="다시 듣기" className="w-[13vw] h-[18vh]" />
+        <button onClick={handleReplay}>
+          <img
+            src={RestartBook}
+            alt="다시 듣기"
+            className="w-[13vw] h-[18vh]"
+          />
         </button>
       </div>
     </div>
