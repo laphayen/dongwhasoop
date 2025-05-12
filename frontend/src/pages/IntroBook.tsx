@@ -23,14 +23,14 @@ function IntroBook() {
   }, [data, setVoices]);
 
   const handleVoiceClick = (voiceType: string) => {
-    const selectedVoice = voices.find(voice => voice.voiceType === voiceType);
+    const selectedVoice = voices.find((voice) => voice.voiceType === voiceType);
     if (selectedVoice) {
       navigate(`/bookdetail/${id}`, { state: { voiceId: selectedVoice.voiceId } });
     }
   };
 
   const hasVoice = (voiceType: string) => {
-    return voices.some(voice => voice.voiceType === voiceType);
+    return voices.some((voice) => voice.voiceType === voiceType);
   };
 
   const buttonContainerStyle = "flex justify-center items-center h-full gap-x-[5vw] mt-[-15vh]";
@@ -46,18 +46,18 @@ function IntroBook() {
       <h1 className="text-[13vh] font-bazzi text-black-500 text-outline-sm text-center mt-[9vh]">어떻게 읽을까요?</h1>
 
       <div className={buttonContainerStyle}>
-        {hasVoice('MOM') && (
-          <button className={buttonStyle}>
+        {hasVoice("MOM") && (
+          <button className={buttonStyle} onClick={() => handleVoiceClick("MOM")}>
             <img src={Mother} alt="엄마목소리" className={imageStyle} />
           </button>
         )}
-        {hasVoice('DAD') && (
-          <button className={buttonStyle}>
+        {hasVoice("DAD") && (
+          <button className={buttonStyle} onClick={() => handleVoiceClick("DAD")}>
             <img src={Father} alt="아빠목소리" className={imageStyle} />
           </button>
         )}
-        {hasVoice('BEAR') && (
-          <button className={buttonStyle}>
+        {hasVoice("BEAR") && (
+          <button className={buttonStyle} onClick={() => handleVoiceClick("BEAR")}>
             <img src={BearVoice} alt="곰돌이목소리" className={imageStyle} />
           </button>
         )}

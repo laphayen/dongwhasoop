@@ -16,7 +16,15 @@ export interface GetBookListResponse {
   timeStamp: string;
 }
 
-// 편지 목록 조회 
+// 편지쓰기
+export interface LetterResponse {
+  status: number;
+  success: boolean;
+  message: string;
+  timeStamp: string;
+}
+
+// 편지 목록 조회
 export interface Letter {
   letter_id: number;
   character_id: number;
@@ -61,7 +69,7 @@ export interface GetLetterListResponse {
   timeStamp: string;
 }
 
-// 편지 상세 
+// 편지 상세
 export interface LetterDetail {
   letter_id: number;
   character_id: number;
