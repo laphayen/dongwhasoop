@@ -41,7 +41,7 @@ function BookEnd() {
           </button>
         </div>
         <div className="mb-[45vh]">
-          <button onClick={() => navigate("/sendwho")}>
+          <button onClick={() => navigate("/sendwho", { state: { bookId: id } })}>
             <img src={Letter} alt="편지쓰기" className="w-[20vw] max-w-[700px] min-w-[100px]" />
           </button>
         </div>
