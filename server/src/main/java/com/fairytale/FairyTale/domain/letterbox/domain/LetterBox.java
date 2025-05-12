@@ -32,7 +32,7 @@ public class LetterBox extends BaseEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @OneToMany(mappedBy = "letterBox")
+    @OneToMany(mappedBy = "letterBox", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Letter> letterList = new ArrayList<>();
 
     @Builder
