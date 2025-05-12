@@ -28,11 +28,13 @@ public class CharacterListResponse {
     public static class CharacterDto {
         private Long character_id;
         private String name;
+        private String image_url;
 
         public static CharacterDto from(Character character) {
             return CharacterDto.builder()
                 .character_id(character.getId())
                 .name(character.getName())
+                .image_url(character.getImageUrl())
                 .build();
         }
     }
