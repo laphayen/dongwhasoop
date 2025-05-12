@@ -26,15 +26,23 @@ function SendWho() {
       style={{ backgroundImage: `url(${selectbackground})` }}
     >
       <BackButton to="/bookend" />
-      <div className="flex justify-center h-screen gap-28 mt-28">
+
+      {/* 동화책 주인공 */}
+      <div className="relative z-[10] flex justify-center items-center gap-[10vw] mt-[35vh]">
         {characters.map((char) => (
-          <button
-            key={char.character_id}
-            onClick={() => navigate("/writeletter", { state: { characterId: char.character_id, bookId } })}
-            className="text-[8vh] font-bazzi text-outline-sm text-center"
-          >
-            {char.name}
-          </button>
+          <div key={char.character_id} className="flex flex-col items-center">
+            <img
+              src={char.image_url}
+              alt={char.name}
+              onClick={() =>
+                navigate("/writeletter", {
+                  state: { characterId: char.character_id, bookId },
+                })
+              }
+              className="w-[35vh] h-[35vh] cursor-pointer mb-4"
+            />
+            <span className="text-[6vh] font-bazzi text-outline-sm text-center">{char.name}</span>
+          </div>
         ))}
       </div>
     </div>

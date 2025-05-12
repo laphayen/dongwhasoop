@@ -1,6 +1,7 @@
 export interface Character {
   character_id: number;
   name: string;
+  image_url: string;
 }
 
 export interface BookCharacterRead {

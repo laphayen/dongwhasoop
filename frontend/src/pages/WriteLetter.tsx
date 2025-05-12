@@ -2,9 +2,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 import writeletterbackground from "../assets/images/writeletter/writeletterback.webp";
-import record from "../assets/images/writeletter/record.webp";
-import voicerec from "../assets/images/settingpage/voicerec.webp";
-import yetvoicerec from "../assets/images/settingpage/yetvoicerec.webp";
+import endvoicerec from "../assets/images/settingpage/endvoicerec.webp";
+import recstory from "../assets/images/settingpage/recstory.webp";
 import send from "../assets/images/writeletter/send.webp";
 import BackButton from "../components/commons/BackButton";
 import Modal from "../components/commons/Modal";
@@ -93,7 +92,7 @@ function WriteLetter() {
         {/* 녹음 버튼 */}
         <button onClick={handleRecord}>
           <img
-            src={isListening ? voicerec : yetvoicerec}
+            src={isListening ? endvoicerec : recstory}
             alt="record"
             className="w-[20vw] max-w-[1200px] min-w-[100px]"
           />
