@@ -6,5 +6,6 @@ export const useBookCharacter = (characterId: number) => {
   return useQuery<BookCharacterRead>({
     queryKey: ["book-character", characterId],
     queryFn: () => getBookCharacter(characterId),
+    enabled: !!characterId,
   });
 };

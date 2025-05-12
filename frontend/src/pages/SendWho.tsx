@@ -6,12 +6,15 @@ import { useBookStore } from "../stores/bookStore";
 
 function SendWho() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const bookId = location.state?.bookId;
+  const { selectedBook } = useBookStore();
+  const bookId = selectedBook?.bookId;
 
-  const { data, isLoading, isError } = useBookCharacter(bookId);
+  const query = useBookCharacter(bookId!);
 
   if (!bookId) return <div className="text-white">동화책을 불러오지 못했어요.</div>;
+
+  const { data, isLoading, isError } = query;
+
   if (isLoading) return <div className="text-white">불러오는 중...</div>;
   if (isError || !data) return <div className="text-white">캐릭터를 불러오지 못했어요.</div>;
 
