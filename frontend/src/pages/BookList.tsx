@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 // import { ScaleLoader } from "react-spinners";
 
@@ -8,7 +8,8 @@ import GoBack from "../assets/images/BookList/goback.webp";
 import GoFront from "../assets/images/BookList/gofront.webp";
 
 import { useBookStore } from "../stores/bookStore";
-import { useGetBookList } from "../hooks/useGetBookList";
+import { useGetBookList } from "../hooks/useBook/useGetBookList";
+import { GetBookListApiResponse } from "../types/book";
 
 function BookList() {
   const navigate = useNavigate();
@@ -38,16 +39,13 @@ function BookList() {
   const books = data?.content || [];
 
   return (
-    <div
-      className="fixed inset-0 w-screen h-screen bg-cover bg-center"
-      style={{ backgroundImage: `url(${booklistbackground})` }}
-    >
+    <div className="fixed inset-0 w-screen h-screen bg-cover bg-center"
+      style={{ backgroundImage: `url(${booklistbackground})` }}>
       <BackButton to="/home" />
 
-      {/* 책 리스트 */}
       <div className="relative flex flex-col justify-center items-center min-h-[70vh] z-10">
         <div className="grid grid-cols-3 gap-y-[2vh] gap-x-[5vw] talblet2560:gap-x-[5vw] mt-[4vh] tablet2560:mt-[11vh]">
-          {books.map((book) => (
+          {books.map((book: GetBookListApiResponse['data']['content'][0]) => (
             <div
               key={book.bookId}
               className="flex flex-col items-center cursor-pointer"

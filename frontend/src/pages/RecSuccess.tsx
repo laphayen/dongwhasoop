@@ -1,5 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useGetUserVoice } from "../hooks/useVoice/useGetUserVoice";
+import { useChildProfile } from "../hooks/useChildProfile";
+import useVoiceStore from "../stores/useVoiceStore";
 
 import mainpage from "../assets/images/mainpage/mainpage.webp";
 import RightButton from "../assets/buttons/rightbutton.webp";
@@ -13,29 +16,31 @@ import RecAlert from "../assets/images/settingpage/recalert.webp";
 
 function RecSuccess() {
   const navigate = useNavigate();
-  // const location = useLocation();
   const [message, setMessage] = useState("");
-  // const [nextRoute, setNextRoute] = useState("/startsettings");
+  const voices = useVoiceStore((state) => state.voices);
+  const setVoices = useVoiceStore((state) => state.setVoices);
+  const { data: voiceData } = useGetUserVoice();
+  const { data: childData } = useChildProfile();
 
   useEffect(() => {
-    const voiceRecorded = localStorage.getItem("voiceRecorded");
-    const childRegistered = localStorage.getItem("childRegistered");
+    // Store에 데이터가 없으면 API 데이터로 업데이트
+    if (voiceData?.data.voices) {
+      setVoices(voiceData.data.voices);
+    }
 
-    if (voiceRecorded !== "true") {
-      setMessage("녹음이 완료되었어요.");
-      localStorage.setItem("voiceRecorded", "true");
-      return;
-    }
-    if (childRegistered !== "true") {
-      setMessage("자녀 등록이 완료되었어요.");
-      localStorage.setItem("childRegistered", "true");
-      return;
-    }
-    navigate("/startsettings");
-  }, [navigate]);
+    // 메시지 설정
+    setMessage("녹음이 완료되었어요.");
+  }, [voiceData, setVoices]);
 
   const handleNext = () => {
-    navigate("/startsettings");
+    const hasVoice = voices && voices.length > 0;
+    const hasChild = childData && childData.length > 0;
+
+    if (!hasVoice || !hasChild) {
+      navigate("/startsettings");
+    } else {
+      navigate("/settings");
+    }
   };
 
   return (

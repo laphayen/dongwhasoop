@@ -11,12 +11,12 @@ import YetMother from "../assets/images/settingpage/yetmother.webp";
 import YetFather from "../assets/images/settingpage/yetfather.webp";
 import Modal from "../components/commons/Modal";
 
-// 목소리 선택 안하고 넘어가면 목소리 선택하라고 뜨기
-
 function StartSettings() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedParent, setSelectedParent] = useState<"mother" | "father" | null>(null);
+  const [selectedParent, setSelectedParent] = useState<
+    "mother" | "father" | null
+  >(null);
 
   const handleMotherClick = () => {
     setSelectedParent("mother");
@@ -25,10 +25,12 @@ function StartSettings() {
   const handleFatherClick = () => {
     setSelectedParent("father");
   };
-  
 
   return (
-    <div className="fixed inset-0 w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${mainpage})` }}>
+    <div
+      className="fixed inset-0 w-screen h-screen bg-cover bg-center"
+      style={{ backgroundImage: `url(${mainpage})` }}
+    >
       <BackButton to="/recinfo" />
 
       <Modal
@@ -45,17 +47,25 @@ function StartSettings() {
             <img src={RecAlert} alt="경고안내문" className="w-full h-auto" />
 
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <h1 className="text-[8vh] font-bazzi text-center text-outline-ss mt-4">녹음하는 사람은 누구인가요?</h1>
+              <h1 className="text-[8vh] font-bazzi text-center text-outline-ss mt-4">
+                녹음하는 사람은 누구인가요?
+              </h1>
 
               <div className="flex justify-center items-center gap-5">
-                <button className="hover:scale-105 transition-transform" onClick={handleMotherClick}>
+                <button
+                  className="hover:scale-105 transition-transform"
+                  onClick={handleMotherClick}
+                >
                   <img
                     src={selectedParent === "mother" ? Mother : YetMother}
                     alt="엄마"
                     className="xl:w-[20vw] xl:max-w-[400px] tablet2560:w-[25vw] tablet2560:max-w-[600px] w-[25vw] h-auto"
                   />
                 </button>
-                <button className="hover:scale-105 transition-transform" onClick={handleFatherClick}>
+                <button
+                  className="hover:scale-105 transition-transform"
+                  onClick={handleFatherClick}
+                >
                   <img
                     src={selectedParent === "father" ? Father : YetFather}
                     alt="아빠"
@@ -73,7 +83,11 @@ function StartSettings() {
         <button
           onClick={() => {
             if (selectedParent) {
-              navigate("/voicerec", { state: { gender: selectedParent === "mother" ? "FEMALE" : "MALE" } });
+              navigate("/voicerec", {
+                state: {
+                  gender: selectedParent === "mother" ? "FEMALE" : "MALE",
+                },
+              });
             } else {
               setIsModalOpen(true);
             }

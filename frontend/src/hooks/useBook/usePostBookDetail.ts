@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
-import { getBookContent } from "../api/book";
-import { GetBookContentResponse } from "../types/book";
-import { useBookStore } from "../stores/bookStore";
+import { getBookContent } from "../../api/book";  // 경로 수정
+import { GetBookContentResponse } from "../../types/book";  // 경로 수정
+import { useBookStore } from "../../stores/bookStore";  // 경로 수정
 
 interface BookContentParams {
   bookId: number;

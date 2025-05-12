@@ -1,9 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import BackButton from "../components/commons/BackButton";
-import { useGetSong } from "../hooks/useGetSongDetail";
+import { useGetSong } from "../hooks/useBook/useGetSongDetail";
 import { useBookStore } from "../stores/bookStore";
-import { useGetBookList } from "../hooks/useGetBookList";
 
 function SongDetail() {
   const navigate = useNavigate();

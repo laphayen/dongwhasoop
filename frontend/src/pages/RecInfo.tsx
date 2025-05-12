@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import useVoiceStore from "../stores/useVoiceStore";
 
 import mainpage from "../assets/images/mainpage/mainpage.webp";
 import BackButton from "../components/commons/BackButton";
@@ -7,10 +8,13 @@ import RecAlert from "../assets/images/settingpage/recalert.webp";
 
 function RecInfo() {
   const navigate = useNavigate();
+  const voices = useVoiceStore((state) => state.voices);
+  const hasVoice = voices && voices.length > 1;
   const stext = "text-[6vh] font-bazzi text-center text-outline-xs";
+
   return (
     <div className="fixed inset-0 w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${mainpage})` }}>
-      <BackButton to="/startsettings" />
+      <BackButton to={hasVoice ? "/settings" : "/startsettings"} />
 
       {/* 경고 안내문 */}
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center w-[95vw] max-w-[1800px] lg:w-[60vw] md:mt-[3vw]">

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { getBookList } from '../api/book';
-import { GetBookListApiResponse } from '../types/book';
-import { useBookStore } from '../stores/bookStore';
+import { getBookList } from '../../api/book';  // 경로 수정
+import { GetBookListApiResponse } from '../../types/book';  // 경로 수정
+import { useBookStore } from '../../stores/bookStore';  // 경로 수정
 
 export const useGetBookList = () => {
   const { currentPage } = useBookStore();

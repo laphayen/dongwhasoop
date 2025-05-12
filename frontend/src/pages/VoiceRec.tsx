@@ -1,5 +1,10 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useGetUserVoice } from "../hooks/useVoice/useGetUserVoice";
+import { usePostUserVoice } from "../hooks/useVoice/usePostUserVoice";
+import { useDeleteUserVoice } from "../hooks/useVoice/useDeleteUserVoice";
+import useVoiceStore from "../stores/useVoiceStore";
+import storyData from "../assets/storyex/story.json";
 
 import mainpage from "../assets/images/mainpage/mainpage.webp";
 import BackButton from "../components/commons/BackButton";
@@ -7,62 +12,211 @@ import ReadChild from "../assets/images/settingpage/readchild.webp";
 import SittingChild from "../assets/images/settingpage/sittingchild.webp";
 import SubmitRec from "../assets/images/settingpage/submitrec.webp";
 import RecStory from "../assets/images/settingpage/recstory.webp";
+import Endvoicerec from "../assets/images/settingpage/endvoicerec.webp";
+import Listen from "../assets/images/settingpage/listen.webp";
 import RightButton from "../assets/buttons/rightbutton.webp";
 import LeftButton from "../assets/buttons/leftbutton.webp";
 
 function VoiceRec() {
   const navigate = useNavigate();
   const location = useLocation();
-
-  // 녹음중인지 아닌지 (프론트 확인용) 추후 수정 필요!
   const [isRecording, setIsRecording] = useState(false);
-  const gender = location.state?.gender || null;
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const gender = location.state?.gender === "MALE";
+  const postVoiceMutation = usePostUserVoice();
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const deleteVoiceMutation = useDeleteUserVoice();
+  const voices = useVoiceStore((state) => state.voices);
+  const setVoices = useVoiceStore((state) => state.setVoices);
+  const { data: voiceData } = useGetUserVoice();
 
-  const handleRecord = () => {
-    setIsRecording(true);
-    console.log("녹음 시작 (확인용)");
+  // 서버에서 가져온 목소리 데이터를 store에 저장
+  useEffect(() => {
+    if (voiceData?.data.voices) {
+      setVoices(voiceData.data.voices);
+    }
+  }, [voiceData, setVoices]);
 
-    setTimeout(() => {
+  const handleRecord = async () => {
+    if (isRecording) {
+      // 녹음 중지
+      mediaRecorderRef.current?.stop();
       setIsRecording(false);
-      console.log("녹음 완료");
-    }, 3000);
+    } else {
+      // 녹음 시작
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorderRef.current = mediaRecorder;
+        chunksRef.current = [];
+
+        mediaRecorder.ondataavailable = (e) => {
+          chunksRef.current.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(chunksRef.current, { type: "audio/wav" });
+          setAudioBlob(blob);
+          const url = URL.createObjectURL(blob);
+          setAudioUrl(url);
+          stream.getTracks().forEach((track) => track.stop());
+        };
+
+        mediaRecorder.start();
+        setIsRecording(true);
+      } catch (error) {
+        console.error("Error accessing microphone:", error);
+      }
+    }
   };
 
-  const handleSubmit = () => {
-    console.log("녹음 등록 완료!");
-    console.log("선택한 목소리:", gender);
-
-    navigate("/recsuccess");
+  const handlePlayback = () => {
+    if (audioRef.current && audioUrl) {
+      audioRef.current.play();
+    }
   };
+
+  const handleSubmit = async () => {
+    if (!audioBlob) return;
+
+    const file = new File([audioBlob], "voice.wav", { type: "audio/wav" });
+
+    try {
+      // 같은 성별의 목소리가 있는지 확인
+      const existingVoice = voices.find((voice) => voice.gender === gender);
+      // 같은 성별의 목소리가 있다면 먼저 삭제
+      if (existingVoice) {
+        await deleteVoiceMutation.mutateAsync({
+          gender: gender,
+        });
+      }
+      // 새로운 목소리 등록
+      const result = await postVoiceMutation.mutateAsync({
+        voiceFile: file,
+        gender: gender,
+      });
+
+      // mutation이 성공적으로 완료된 후에만 navigate
+      if (result.success) {
+        navigate("/recsuccess");
+      }
+    } catch (error) {
+      console.error("Error uploading voice:", error);
+    }
+  };
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const totalPages = storyData.story.length;
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages - 1) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  // Cleanup URL when component unmounts
+  useEffect(() => {
+    return () => {
+      if (audioUrl) {
+        URL.revokeObjectURL(audioUrl);
+      }
+    };
+  }, [audioUrl]);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${mainpage})` }}>
+    <div
+      className="fixed inset-0 w-screen h-screen bg-cover bg-center"
+      style={{ backgroundImage: `url(${mainpage})` }}
+    >
       <BackButton />
 
       <div className="xl:pt-[1vw] tablet2560:pt-[4vw]">
         {/* Title */}
-        <h1 className="text-[6vh] font-bazzi text-center text-outline-ss mt-8">아래 대본을 모두 읽어주세요</h1>
+        <h1 className="text-[6vh] font-bazzi text-center text-outline-ss mt-8">
+          아래 대본을 모두 읽어주세요
+        </h1>
 
         <div className="relative flex items-center justify-center mt-8">
-          <button className="hover:scale-105 transition-transform">
-            <img src={LeftButton} alt="이전" className="w-[8vw]" />
+          <button
+            className="hover:scale-105 transition-transform"
+            onClick={handlePrevPage}
+            disabled={currentPage === 0}
+          >
+            <img
+              src={LeftButton}
+              alt="이전"
+              className={`w-[8vw] ${currentPage === 0 ? "opacity-50" : ""}`}
+            />
           </button>
 
-          <div className="w-[65vw] h-[40vh] bg-white/80 rounded-3xl mx-8">{/* Script content will go here */}</div>
+          <div className="w-[65vw] h-[40vh] bg-white/80 rounded-3xl mx-8 p-8 overflow-y-auto">
+            <p className="text-[5.3vh] font-bazzi whitespace-pre-line">
+              {storyData.story[currentPage]}
+            </p>
+          </div>
 
-          <button className="hover:scale-105 transition-transform">
-            <img src={RightButton} alt="다음" className="w-[8vw]" />
+          <button
+            className="hover:scale-105 transition-transform"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages - 1}
+          >
+            <img
+              src={RightButton}
+              alt="다음"
+              className={`w-[8vw] ${
+                currentPage === totalPages - 1 ? "opacity-50" : ""
+              }`}
+            />
           </button>
         </div>
 
         {/* 녹음 버튼들*/}
         <div className="flex justify-center items-center gap-10 mt-[2vw] relative z-10">
-          <button className="hover:scale-105 transition-transform" onClick={handleRecord} disabled={isRecording}>
-            <img src={RecStory} alt="녹음하기" className={`w-[18vw] ${isRecording ? "opacity-50" : ""}`} />
+          <button
+            className="hover:scale-105 transition-transform"
+            onClick={handleRecord}
+          >
+            <img
+              src={isRecording ? Endvoicerec : RecStory}
+              alt={isRecording ? "녹음종료" : "녹음하기"}
+              className="w-[18vw]"
+            />
           </button>
 
-          <button className="hover:scale-105 transition-transform" onClick={handleSubmit} disabled={isRecording}>
-            <img src={SubmitRec} alt="등록하기" className="w-[18vw]" />
+          {audioBlob && !isRecording && (
+            <>
+              <button
+                className="hover:scale-105 transition-transform"
+                onClick={handlePlayback}
+              >
+                <img src={Listen} alt="녹음 듣기" className="w-[18vw]" />
+              </button>
+              <audio ref={audioRef} src={audioUrl || ""} />
+            </>
+          )}
+          <button
+            className="hover:scale-105 transition-transform"
+            onClick={handleSubmit}
+            disabled={isRecording || !audioBlob}
+          >
+            <img
+              src={SubmitRec}
+              alt="등록하기"
+              className={`w-[18vw] ${
+                isRecording || !audioBlob ? "opacity-50" : ""
+              }`}
+            />
           </button>
         </div>
       </div>
