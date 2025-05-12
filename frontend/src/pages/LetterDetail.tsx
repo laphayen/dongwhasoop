@@ -8,72 +8,57 @@ import princess from "../assets/images/letterbox/princess.webp";
 import replay from "../assets/images/letterbox/replay.webp";
 import home from "../assets/images/letterbox/home.webp";
 import BackButton from "../components/commons/BackButton";
+import { useGetLetterDetail } from "../hooks/useGetLetterDetail";
+import { useLetterStore } from "../stores/letterStore";
 
 function LetterDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'received' | 'sent'>('received');
+  const { data, isLoading, error } = useGetLetterDetail(id || '');
+  const { setSelectedLetter } = useLetterStore();
 
-  // 예시 편지 데이터
-  const letterData = {
-    to: "효원이에게",
-    content: "편지 보내줘서 정말 고마워~\n숲속 작은 오두막에서 일곱 난쟁이들과\n함께 행복하게 지내고 있어\n숲속 오두막으로 놀러 와~",
-    date: "2025.04.22",
-    from: "백설공주가"
-  };
 
-  const handleTabChange = (tab: 'received' | 'sent') => {
-    setActiveTab(tab);
-  };
+  useEffect(() => {
+    if (data) {
+      setSelectedLetter(data);
+    }
+    return () => setSelectedLetter(null);
+  }, [data, setSelectedLetter]);
+
+  if (isLoading) return <div>로딩 중...</div>;
+  if (error) return <div>편지를 불러오는데 실패했습니다.</div>;
+  if (!data) return null;
 
   const handleBackButton = () => {
     navigate(-1);
   };
 
+
   return (
     <div className="fixed inset-0 w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${mainpage})` }}>
-      <BackButton onClick={handleBackButton} />
+      <BackButton onClick={() => navigate(-1)} />
 
-      {/* 상단 탭 버튼 */}
-      <div className="absolute top-[10vh] left-1/2 transform -translate-x-1/2 flex gap-[10vh]">
-        <div
-          className={`cursor-pointer transition-transform ${activeTab === 'sent' ? 'scale-110 drop-shadow-lg' : 'opacity-80 hover:opacity-100'}`}
-          onClick={() => handleTabChange('sent')}
-        >
-          <img src={receive} alt="Sent" className="w-[40vh]" />
-        </div>
-        <div
-          className={`cursor-pointer transition-transform ${activeTab === 'received' ? 'scale-110 drop-shadow-lg' : 'opacity-80 hover:opacity-100'}`}
-          onClick={() => handleTabChange('received')}
-        >
-          <img src={send} alt="Received" className="w-[40vh]" />
-        </div>
-      </div>
-
-      <div className="flex justify-between items-center h-full px-10 pt-10
-      xl:mt-20 
-      tablet2560:px-60 xl:px-40 tablet2560:mt-40">
+      <div className="flex justify-between items-center h-full px-[15vh] tablet2560:px-24 pt-10 ">
         {/* 편지 내용 */}
-        <div className="relative w-[50vw] xl:w-[47vw] tablet2560:w-[90vh]">
+        <div className="relative w-[55vw] xl:w-[50vw] left-[14%] tablet2560:w-[90vh]">
           <img src={letterpaper} alt="Letter Paper" className="w-full" />
 
-          <div className="tablet2560:text-6xl xl:text-2xl xl:mt-5 font-maplestory tablet2560:mt-10 absolute top-[10%] left-[8%] right-[8%] bottom-[10%] flex flex-col">
-            {/* 받는 사람 */}
-            <div className="tablet2560:mb-16 xl:mb-12">
-              {letterData.to}
-            </div>
-
+          <div className="tablet2560:text-5xl xl:text-2xl font-maplestory absolute top-[10%] left-[5%] right-[5%] bottom-[10%] flex flex-col">
             {/* 편지 내용 */}
-            <div className="leading-relaxed flex-grow whitespace-pre-line">
-              {letterData.content}
+            <div className="leading-relaxed whitespace-pre-line min-h-[80%]">
+              {data.letter_content}
             </div>
 
             {/* 날짜와 보낸 사람 */}
-            <div className="flex tablet2560:text-6xl xl:text-2xl font-maplestory justify-end items-center gap-8">
-              <div>{letterData.date}</div>
+            <div className="flex tablet2560:text-5xl xl:text-2xl tablet2560:pb-10 font-maplestory justify-end items-center gap-8 mt-[4vh]">
+              <div>{new Date(data.created_at).toLocaleDateString()}</div>
               <div className="flex items-center gap-3">
-                <span>{letterData.from}</span>
-                <img src={princess} alt="Character" className="w-[10vh] h-[10vh]" />
+                <span>{data.character_name}</span>
+                <img 
+                  src={data.character_image_url || princess} 
+                  alt="Character" 
+                  className="w-[8vh] h-[8vh] rounded-full object-cover"
+                />
               </div>
             </div>
           </div>
@@ -81,9 +66,20 @@ function LetterDetail() {
 
         {/* 다시 듣기 버튼 */}
         <div className="flex flex-col gap-6">
-          <div className="cursor-pointer transition-transform hover:scale-105">
-            <img src={replay} alt="Replay" className="w-[30vh] h-[30vh]" />
-          </div>
+          {data.audio_url && (
+            <audio id="letterAudio" src={data.audio_url} />
+          )}
+          {data.audio_url && (
+            <div 
+              className="cursor-pointer transition-transform hover:scale-105"
+              onClick={() => {
+                const audioElement = document.getElementById('letterAudio') as HTMLAudioElement;
+                audioElement?.play();
+              }}
+            >
+              <img src={replay} alt="Replay" className="w-[30vh] h-[30vh]" />
+            </div>
+          )}
           <div 
             className="cursor-pointer transition-transform hover:scale-105"
             onClick={() => navigate('/home')}

@@ -1,56 +1,121 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLetterStore } from "../stores/letterStore";
+import { getLetterBookList } from "../api/letter";
 import mainpage from "../assets/images/mainpage/mainpage.webp";
 import letterlist from "../assets/images/letterbox/letterlist.webp";
-// import receive from "../assets/images/letterbox/receive.webp";
-// import send from "../assets/images/letterbox/send.webp";
 import readletter from "../assets/images/letterbox/readletter.webp";
 import unreadletter from "../assets/images/letterbox/unreadletter.webp";
+import send from "../assets/images/letterbox/sendletter.webp";
+import receive from "../assets/images/letterbox/receiveletter.webp";
 import picture from "../assets/images/letterbox/picture.webp";
+import defaultchar from "../assets/images/letterbox/defaultcharacter.webp";
 import letterpicture from "../assets/images/letterbox/letterpicture.webp";
 import BackButton from "../components/commons/BackButton";
 import cat from "../assets/images/loading/cat2.webp"
 import monkey from "../assets/images/loading/monkey.webp"
+import { useGetLetterBookList } from "../hooks/useGetLetterBookList"
+import { useGetLetterList } from "../hooks/useGetLetterList"
+import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 
 
 function LetterList() {
   const navigate = useNavigate();
-  const [selectedBook, setSelectedBook] = useState<string | null>(null);
+  const { selectedBookId, setSelectedBook } = useLetterStore();
+  const [activeTab, setActiveTab] = useState<'sent' | 'received'>('sent');
+  const [bookPage, setBookPage] = useState(0);
+  const BOOKS_PER_PAGE = 6;
+  const [currentPage, setCurrentPage] = useState(0);
+  const LETTERS_PER_PAGE = 4;
+  const handleTabChange = (tab: 'sent' | 'received') => setActiveTab(tab);
 
-  // 동화책별 편지 데이터 (예시)
-  const bookLetters = {
-    "금도끼 은도끼": [
-      { date: "2025.04.22", title: "산신령과 나눈 편지", id: "1" },
-      { date: "2025.04.15", title: "산신령과 나눈 편지", id: "2" },
-    ],
-    "아기 돼지 삼형제": [
-      { date: "2025.04.20", title: "엄마 돼지와 나눈 편지", id: "3" },
-      { date: "2025.04.10", title: "늑대와 나눈 편지", id: "4" },
-    ],
-    "백설공주": [
-      { date: "2025.04.20", title: "백설공주와 나눈 편지", id: "6" },
-      { date: "2025.04.17", title: "백설공주와 나눈 편지", id: "6" },
-      { date: "2025.04.12", title: "난쟁이와 나눈 편지", id: "7" },
-    ],
-    "토끼와 베짱이": [
-      { date: "2025.04.17", title: "토끼와 나눈 편지", id: "8" },
-      { date: "2025.04.08", title: "베짱이와 나눈 편지", id: "9" },
-    ],
+
+  // React Query로 데이터 fetching
+  const { data: letterBooks, isLoading, error } = useGetLetterBookList();
+  const { data: letters } = useGetLetterList(selectedBookId || 0, activeTab === 'sent');
+
+
+  // 데이터 확인용 로그
+  // useEffect(() => {
+  //   if (letterBooks?.data?.book) {
+  //     console.log("현재 보유한 동화책:", letterBooks.data.book);
+  //   }
+  // }, [letterBooks]);
+
+  // 탭 변경시 페이지 초기화
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [activeTab, selectedBookId]);
+
+  // 편지 목록 페이지네이션
+  const getCurrentPageLetters = () => {
+    if (!letters?.content) return [];
+    const startIndex = currentPage * LETTERS_PER_PAGE;
+    return letters.content.slice(startIndex, startIndex + LETTERS_PER_PAGE);
   };
 
+  const currentLetters = getCurrentPageLetters();
+
+  // 화면 크기에 따른 동화책 개수 조정
+  const getBooksPerPage = () => {
+    if (window.matchMedia('(min-width: 2560px) and (min-height: 1600px)').matches) {
+      return 6; // tablet2560 해상도(2560x1600)에서는 6개로 고정
+    } else {
+      // 현재 컨테이너 높이를 기준으로 동적 계산
+      const containerHeight = window.innerHeight * 0.45; // 화면 높이의 60%
+      const bookItemHeight = 60; // 각 동화책 항목의 예상 높이
+      return Math.floor(containerHeight / bookItemHeight);
+    }
+  };
+
+  // 동화책 목록 페이지네이션 수정
+  const getCurrentPageBooks = () => {
+    if (!letterBooks?.data?.book) return [];
+    const booksPerPage = getBooksPerPage();
+    const startIndex = bookPage * booksPerPage;
+    return letterBooks.data.book.slice(startIndex, startIndex + booksPerPage);
+  };
+
+  // 페이지네이션 버튼 표시 조건 수정
+  const showPaginationButtons = () => {
+    if (!letterBooks?.data?.book) return false;
+    const booksPerPage = getBooksPerPage();
+    return letterBooks.data.book.length > booksPerPage;
+  };
+
+  // 편지 상세 페이지로 이동
   const handleLetterClick = (letterId: string) => {
-    // 편지 상세 페이지로 이동
     navigate(`/letterdetail/${letterId}`);
   };
 
+  // 선택되지 않은 경우 안내 메시지 표시
   const renderRightContent = () => {
-    // 동화책이 선택되지 않았을 때 안내 메시지와 동물 캐릭터 표시
-    if (!selectedBook) {
+    if (isLoading) {
+      return <div>로딩 중...</div>;
+    }
+
+    if (error) {
+      return <div>편지함을 불러오는데 실패했습니다.</div>;
+    }
+
+    if (!letterBooks?.data?.book || letterBooks.data.book.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center h-full">
-          <h2
-            className="font-bazzi text-outline-sm text-[10vh] mt-40 mb-4 text-center"
-          >
+          <h2 className="font-bazzi text-outline-sm text-[7vh] mt-40 mb-4 text-center">
+            편지를 작성한 동화책이 없어요~
+          </h2>
+          <div className="flex items-end xl:pt-10 gap-40 mt-[5vh] mb-[7vh]">
+            <img src={cat} alt="Cat" className="w-[15vw] animate-shake1" />
+            <img src={monkey} alt="Monkey" className="w-[15vw] animate-shake2" />
+          </div>
+        </div>
+      );
+    }
+
+    if (!selectedBookId) {
+      return (
+        <div className="flex flex-col items-center justify-center h-full">
+          <h2 className="font-bazzi text-outline-sm text-[9vh] mt-40 mb-4 text-center">
             동화책을 선택해주세요~
           </h2>
           <div className="flex items-end xl:pt-10 gap-40 mt-[5vh] mb-[7vh]">
@@ -61,42 +126,99 @@ function LetterList() {
       );
     }
 
-    // 선택된 동화책의 편지 목록 표시
-    const letters = bookLetters[selectedBook as keyof typeof bookLetters] || [];
+    const selectedBook = letterBooks?.data?.book.find(book => book.book_id === selectedBookId);
+    if (!selectedBook) return null;
 
     return (
-      <div className="grid grid-cols-2 gap-24 xl:gap-8 tablet2560:gap-36 p-8">
-        {letters.map((letter, index) => (
+      <div className="relative w-full flex flex-col items-center">
+        {/* ✅ 오른쪽 상단 탭 버튼 */}
+        <div className="fixed right-[10vw] tablet2560:top-[6vh] top-[4vh] flex justify-center gap-[5vw] z-10 mt-[2vh]">
           <div
-            key={index}
-            className="relative cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => handleLetterClick(letter.id)}
+            className={`cursor-pointer transition-transform ${activeTab === 'sent' ? 'scale-110 drop-shadow-lg' : 'opacity-80 hover:opacity-100'}`}
+            onClick={() => handleTabChange('sent')}
           >
-            <img src={letterpicture} alt="Polaroid" className="w-[20vw] tablet2560:w-[30rem]" />
-            <div className="
-            text-maplestory font-bold absolute
-            top-10 text-sm
-            xl:top-16 xl:text-base xl:left-5 
-            tablet2560:top-8 tablet2560:left-11 tablet2560:text-3xl tablet2560:mt-20 
-            ms-6 text-gray-600">{letter.date}</div>
-            <div className="absolute 
-            text-base bottom-3 w-full text-center font-maplestory 
-            xl:bottom-6 xl:text-2xl
-            tablet2560:bottom-12 tablet2560:text-4xl">
-              {letter.title}
-            </div>
+            <img src={send} alt="보낸 편지" className="w-[18vw]" />
           </div>
-        ))}
+          <div
+            className={`cursor-pointer transition-transform ${activeTab === 'received' ? 'scale-110 drop-shadow-lg' : 'opacity-80 hover:opacity-100'}`}
+            onClick={() => handleTabChange('received')}
+          >
+            <img src={receive} alt="받은 편지" className="w-[18vw]" />
+          </div>
+        </div>
+
+        {/* ✅ 편지 내용 */}
+        <div className="flex items-center justify-center w-full relative">
+          {/* 왼쪽 화살표 */}
+          {currentPage > 0 && (
+            <button
+              className="absolute left-[-4vw] top-1/2 transform -translate-y-1/2 text-9xl text-stone-700 hover:text-brown-700 transition-colors"
+              onClick={() => setCurrentPage(prev => prev - 1)}
+            >
+              &#8249;
+            </button>
+          )}
+
+          {/* 편지 목록 */}
+          <div className={`grid grid-cols-2 gap-[5vh] tablet2560:gap-20 p-8 w-[40vw]
+            ${letterBooks?.data?.book?.length < 2 ? 'mt-[6vh] tablet2560:mt-[3vh]' : 'mt-[12vh] tablet2560:mt-[8vh]'}`}>
+            {currentLetters?.map((letter) => (
+              <div
+                key={letter.letter_id}
+                className="relative cursor-pointer hover:scale-105 transition-transform"
+                onClick={() => handleLetterClick(letter.letter_id.toString())}
+              >
+                <img src={letterpicture} alt="Polaroid" className="w-[15vw] tablet2560:w-[30rem]" />
+                <div className="text-maplestory font-bold absolute top-10 text-sm xl:top-10 xl:text-sm tablet2560:top-5 tablet2560:left-11 tablet2560:text-3xl tablet2560:mt-20 ms-6 text-gray-600">
+                  {new Date(letter.created_at).toLocaleDateString()}
+                </div>
+
+                {/* 캐릭터 이미지와 이름을 감싸는 컨테이너 */}
+                <div className="absolute top-[60%] left-[45%] tablet2560:left-1/2 tablet2560:top-[63%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-[1.5vh]">
+                  <img
+                    src={letter.character_image_url || defaultchar}
+                    alt="Character"
+                    className="w-[16vh] tablet2560:w-[19rem] rounded-2xl object-cover"
+                  />
+                  <div className="text-base xl:text-xl tablet2560:text-4xl font-maplestory text-center">
+                    {letter.character_name}
+                  </div>
+                </div>
+
+                {/* <div className="absolute text-base bottom-3 tablet2560:left-1/2 w-full text-center font-maplestory xl:bottom-4 xl:text-xl tablet2560:bottom-12 tablet2560:text-4xl">
+                  {letter.character_name}
+                </div> */}
+              </div>
+            ))}
+          </div>
+
+          {/* 오른쪽 화살표 */}
+          {letters?.content && (currentPage + 1) * LETTERS_PER_PAGE < letters.content.length && (
+            <button
+              className="absolute right-[-4vw] top-1/2 transform -translate-y-1/2 text-9xl text-stone-700 hover:text-brown-700 transition-colors"
+              onClick={() => setCurrentPage(prev => prev + 1)}
+            >
+              &#8250;
+            </button>
+          )}
+        </div>
+
+        {/* 받은 편지가 없을 때 문구 */}
+        {activeTab === 'received' && letters?.content?.length === 0 && (
+          <h2 className="font-bazzi text-outline-sm text-[8vh] text-center mb-[10vh]">
+            아직 받은 편지가 없어요.
+          </h2>
+        )}
       </div>
     );
   };
 
-  // 뒤로가기 핸들러
+  // 뒤로가기 처리
   const handleBackButton = () => {
-    if (selectedBook) {
-      setSelectedBook(null); // 동화책 선택 취소
+    if (selectedBookId) {
+      setSelectedBook(null);
     } else {
-      navigate(-1); // 이전 페이지로
+      navigate("/home");
     }
   };
 
@@ -108,45 +230,56 @@ function LetterList() {
           {/* Left Side - Letter List */}
           <div className="fixed left-[5vw] top-[12vh] w-[35vw]
            xl:left-60 tablet2560:left-80 xl:w-[25vw]
-           tablet2560:top-50 tablet2560:w-[47vh]" >
+           tablet2560:top-50 tablet2560:left-[15vw] tablet2560:w-[47vh]" >
             <img src={letterlist} alt="Letter List" className="tablet2560:mt-16 tablet2560:w-800px" />
-            <div className="absolute top-0 left-0 
-            pt-[10vh] tablet2560:pt-48 px-[7.5vh]
+            <div className="absolute top-0 right-1 
+            pt-[10vh] tablet2560:pt-48 px-[8vh]
             w-full flex flex-col justify-center">
               <ul className="space-y-3 mt-2 tablet2560:space-y-7 xl:space-y-4 font-maplestory text-lg tablet2560:text-4xl xl:text-xl">
-                <li
-                  className={`flex items-center gap-2 tablet2560:gap-8 xl:gap-3 ${selectedBook === "금도끼 은도끼" ? "bg-[#ECD5AB] bg-opacity-90" : "bg-[#e9ddc3] bg-opacity-40"} rounded-lg p-2 tablet2560:p-5 cursor-pointer hover:bg-opacity-100 transition-all`}
-                  onClick={() => setSelectedBook("금도끼 은도끼")}  >
-                  <img src={selectedBook === "금도끼 은도끼" ? readletter : unreadletter} alt="Letter" className="w-[3vw] tablet2560:w-13" />
-                  <span>금도끼 은도끼</span>
-                </li>
-                <li
-                  className={`flex items-center gap-4 tablet2560:gap-8 ${selectedBook === "아기 돼지 삼형제" ? "bg-[#ECD5AB] bg-opacity-90" : "bg-[#e9ddc3] bg-opacity-40"} rounded-lg p-2 tablet2560:p-5 cursor-pointer hover:bg-opacity-100 transition-all`}
-                  onClick={() => setSelectedBook("아기 돼지 삼형제")}
-                >
-                  <img src={selectedBook === "아기 돼지 삼형제" ? readletter : unreadletter} alt="Letter" className="w-[3vw] tablet2560:w-13" />
-                  <span>아기 돼지 삼형제</span>
-                </li>
-                <li
-                  className={`flex items-center gap-4 tablet2560:gap-8 ${selectedBook === "백설공주" ? "bg-[#ECD5AB] bg-opacity-90" : "bg-[#e9ddc3] bg-opacity-40"} rounded-lg p-2 tablet2560:p-5 cursor-pointer hover:bg-opacity-70 transition-all`}
-                  onClick={() => setSelectedBook("백설공주")}
-                >
-                  <img src={selectedBook === "백설공주" ? readletter : unreadletter} alt="Letter" className="w-[3vw] tablet2560:w-13" />
-                  <span>백설공주</span>
-                </li>
-                <li
-                  className={`flex items-center gap-4 tablet2560:gap-8 ${selectedBook === "토끼와 베짱이" ? "bg-[#ECD5AB] bg-opacity-90" : "bg-[#e9ddc3] bg-opacity-40"}  rounded-lg p-2 tablet2560:p-5 cursor-pointer hover:bg-opacity-70 transition-all`}
-                  onClick={() => setSelectedBook("토끼와 베짱이")}
-                >
-                  <img src={selectedBook === "토끼와 베짱이" ? readletter : unreadletter} alt="Letter" className="w-[3vw] tablet2560:w-13" />
-                  <span>토끼와 베짱이</span>
-                </li>
+                {getCurrentPageBooks().map((book) => (
+                  <li
+                    key={book.book_id}
+                    className={`flex items-center gap-2 tablet2560:gap-8 xl:gap-3 
+                      ${selectedBookId === book.book_id ? "bg-[#ECD5AB] bg-opacity-90" : "bg-[#e9ddc3] bg-opacity-40"} 
+                      rounded-lg p-2 tablet2560:p-5 cursor-pointer hover:bg-opacity-100 transition-all`}
+                    onClick={() => setSelectedBook(book.book_id)}
+                  >
+                    <img
+                      src={selectedBookId === book.book_id ? readletter : unreadletter}
+                      alt="Letter"
+                      className="w-[2vw] tablet2560:w-[4vh]"
+                    />
+                    <span>{book.title}</span>
+                  </li>
+                ))}
               </ul>
+
+              {/* 페이지네이션 버튼 */}
+              {showPaginationButtons() && (
+                <div className="flex flex-col items-center gap-2 mt-2">
+                  {bookPage > 0 && (
+                    <button
+                      className="mt-[1vh] text-white hover:text-brown-700 transition-colors"
+                      onClick={() => setBookPage(prev => prev - 1)}
+                    >
+                      <MdKeyboardArrowUp size={50} />
+                    </button>
+                  )}
+                  {letterBooks?.data?.book && (bookPage + 1) * getBooksPerPage() < letterBooks.data.book.length && (
+                    <button
+                      className="mt-[1vh] text-white hover:text-brown-700 transition-colors"
+                      onClick={() => setBookPage(prev => prev + 1)}
+                    >
+                      <MdKeyboardArrowDown size={50}/>
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Right Side - Dynamic Content */}
-          <div className="ml-[45vw] tablet2560:ml-[1000px] xl:ml-[35vw] mt-0 h-screen flex items-center">
+          {/* 오른쪽 영역 - 선택 안내 문구 or 편지 목록 */}
+          <div className="ml-[50vw] tablet2560:ml-[1000px] xl:ml-[35vw] mt-0 h-screen flex items-center">
             {renderRightContent()}
           </div>
         </div>

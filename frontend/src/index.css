@@ -110,14 +110,14 @@ button:focus-visible {
 
 @font-face {
   font-family: "Maplestory";
-  src: url("./assets/fonts/Maplestory\ Light.ttf") format("truetype");
+  src: url("./assets/fonts/Maplestory OTF Light.otf") format("opentype");
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Maplestory";
-  src: url("./assets/fonts/Maplestory\ Bold.ttf") format("truetype");
+  src: url("./assets/fonts/Maplestory OTF Bold.otf") format("opentype");
   font-weight: 700;
   font-style: normal;
 }
