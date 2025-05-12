@@ -10,6 +10,7 @@ import Modal from "../components/commons/Modal";
 import { useLetterStore } from "../stores/letterStore";
 import { useWriteLetter } from "../hooks/useBook/useWriteLetter";
 import { useSelectedChild } from "../stores/useSelectedChild";
+import backSound from "../assets/music/back_sound.mp3";
 
 function WriteLetter() {
   const navigate = useNavigate();
@@ -74,21 +75,26 @@ function WriteLetter() {
     );
   };
 
+  const handleBack = () => {
+    new Audio(backSound).play();
+    navigate("/sendwho", { state: { bookId } });
+  };
+
   return (
     <div
       className="fixed inset-0 w-screen h-screen bg-cover bg-center"
       style={{ backgroundImage: `url(${writeletterbackground})` }}
     >
-      <BackButton to="/sendwho" state={{ bookId }} />
+      <BackButton onClick={handleBack} />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={handleConfirmSend} type="send" />
 
       {/* 녹음 보이스 텍스트 변환 */}
-      <div className="absolute left-[20vw] top-[30vh] bg-white/80 rounded-xl p-4 w-[40vw] tablet2560:w-[40vw] tablet2560:text-5xl xl:text-2xl font-maplestory">
+      <div className="absolute left-[20vw] top-[30vh] bg-white/80 rounded-xl p-4 w-[40vw] tablet2560:w-[40vw] text-[4vh] font-maplestory">
         <p>{letterContent || "보내고 싶은 편지 내용을 녹음해주세요."}</p>
       </div>
 
-      <div className="fixed right-12 top-1/2 -translate-y-1/2 flex flex-col gap-4 px-16">
+      <div className="fixed right-12 top-1/2 -translate-y-1/2 flex flex-col gap-4 px-[2vh] md:px-[4vh] xl:px-[8vh]">
         {/* 녹음 버튼 */}
         <button onClick={handleRecord}>
           <img
