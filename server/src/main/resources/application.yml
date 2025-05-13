@@ -47,6 +47,9 @@ logging.level:
   org.hibernate.SQL: debug
 
 oauth:
+  kakaoClientId: ${KAKAO_CLIENT_ID}
+  kakaoRedirectUrl: ${KAKAO_REDIRECT_URL_CALLBACK}
+  kakaoBaseUrl: ${KAKAO_BASE_URL}
   kakao:
     app-id: ${KAKAO_APP_ID}
     client-id: ${KAKAO_CLIENT_ID}

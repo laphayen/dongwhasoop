@@ -11,6 +11,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class OauthProperties {
 
     private OAuthSecret kakao;
+    private String kakaoClientId;
+    private String kakaoRedirectUrl;
+    private String kakaoBaseUrl;
 
     @Getter
     @Setter
