@@ -8,6 +8,7 @@ import com.fairytale.FairyTale.domain.credential.presentation.dto.response.Check
 import com.fairytale.FairyTale.domain.credential.presentation.dto.response.OauthLoginLinkResponse;
 import com.fairytale.FairyTale.domain.credential.service.CredentialService;
 import com.fairytale.FairyTale.domain.credential.service.OauthProvider;
+import com.fairytale.FairyTale.global.property.OauthProperties;
 import org.springframework.web.servlet.view.RedirectView;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +23,7 @@ public class CredentialController {
 
     private final CredentialService credentialService;
 
-    @Value("${frontend.redirect-url}")
-    private String redirectUrlBase;
+    private final OauthProperties oauthProperties;
 
     @PostMapping("/sign-up-test")
     public void signUptTest(){
@@ -46,7 +46,8 @@ public class CredentialController {
 
         CheckRegisteredResponse response = credentialService.getUserAvailableRegister(code, OauthProvider.KAKAO);
 
-        String redirectUrl = redirectUrlBase + "?idToken=" + response.getIdToken()
+        String redirectUrl = oauthProperties.getKakaoRedirectUrl()
+                + "?idToken=" + response.getIdToken()
                 + "&isRegistered=" + response.getIsRegistered();
 
         return new RedirectView(redirectUrl);
