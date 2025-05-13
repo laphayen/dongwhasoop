@@ -48,8 +48,9 @@ public class SecurityConfig {
                         "/api/v1/credentials/oauth/link/kakao", "/api/v1/credentials/oauth/kakao",
                         "/api/v1/credentials/oauth/link/google", "/api/v1/credentials/oauth/google",
                         "/api/v1/credentials/oauth/valid/register", "/api/v1/credentials/login",
+                            "/api/v1/credentials/callback/kakao",
                         "/api/v1/user-preference/random", "/api/v1/credentials", "/actuator/**"
-                        , "api/v1/ws/**").permitAll()
+                        , "/api/v1/ws/**").permitAll()
                     //.anyRequest().permitAll()
                     .anyRequest().authenticated()
             );
