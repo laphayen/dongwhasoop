@@ -1,8 +1,8 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { useBookCharacter } from "../hooks/useBookCharacter";
-import selectbackground from "../assets/images/writeletter/selectbackground.webp";
-import BackButton from "../components/commons/BackButton";
-import { useBookStore } from "../stores/bookStore";
+import { useBookCharacter } from "../../hooks/useBookCharacter";
+import selectbackground from "../../assets/images/writeletter/selectbackground.webp";
+import BackButton from "../../components/commons/BackButton";
+import { useBookStore } from "../../stores/bookStore";
 
 function SendWho() {
   const navigate = useNavigate();
@@ -21,15 +21,15 @@ function SendWho() {
   const characters = data.data.character;
 
   const handleBack = () => {
-      navigate("/bookend");
-    };
+    navigate("/bookend");
+  };
 
-    return (
-      <div
-        className="fixed inset-0 w-screen h-screen bg-cover bg-center"
-        style={{ backgroundImage: `url(${selectbackground})` }}
-      >
-        <BackButton onClick={handleBack} />
+  return (
+    <div
+      className="fixed inset-0 w-screen h-screen bg-cover bg-center"
+      style={{ backgroundImage: `url(${selectbackground})` }}
+    >
+      <BackButton onClick={handleBack} />
 
       {/* 동화책 주인공 */}
       <div className="relative z-[10] flex justify-center items-center gap-[10vw] mt-[35vh]">

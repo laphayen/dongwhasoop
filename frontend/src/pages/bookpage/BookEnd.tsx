@@ -1,13 +1,13 @@
 import { useNavigate, useLocation } from "react-router-dom";
 
-import endpagebackground from "../assets/images/endpage/endpagebackground.webp";
+import endpagebackground from "../../assets/images/endpage/endpagebackground.webp";
 // import Home from "../assets/images/endpage/home.webp";
-import Letter from "../assets/images/endpage/letter.webp";
-import Song from "../assets/images/endpage/song.webp";
-import Bear from "../assets/images/endpage/bear.webp";
-import Monkey from "../assets/images/endpage/monkey.webp";
-import GoBookList from "../assets/images/endpage/gobooklist.webp";
-import ReplayBook from "../assets/images/endpage/replaybook.webp";
+import Letter from "../../assets/images/endpage/letter.webp";
+import Song from "../../assets/images/endpage/song.webp";
+import Bear from "../../assets/images/endpage/bear.webp";
+import Monkey from "../../assets/images/endpage/monkey.webp";
+import GoBookList from "../../assets/images/endpage/gobooklist.webp";
+import ReplayBook from "../../assets/images/endpage/replaybook.webp";
 // import HomeButton from "../components/commons/HomeButton";
 
 function BookEnd() {

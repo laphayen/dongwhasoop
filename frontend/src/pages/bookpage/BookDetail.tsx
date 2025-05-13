@@ -1,19 +1,19 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import BackButton from "../components/commons/BackButton";
-import NextPage from "../assets/images/detailpage/nextpage.webp";
-import PrevPage from "../assets/images/detailpage/prevpage.webp";
-import RestartBook from "../assets/images/detailpage/restart.webp";
-import Modal from "../components/commons/Modal";
-import { useBookStore } from "../stores/bookStore";
+import BackButton from "../../components/commons/BackButton";
+import NextPage from "../../assets/images/detailpage/nextpage.webp";
+import PrevPage from "../../assets/images/detailpage/prevpage.webp";
+import RestartBook from "../../assets/images/detailpage/restart.webp";
+import Modal from "../../components/commons/Modal";
+import { useBookStore } from "../../stores/bookStore";
 
 function BookDetail() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { id } = useParams();
   const bookPages = useBookStore((state) => state.bookPages);
-  const [audio] = useState(new Audio());  // 오디오 객체 생성
+  const [audio] = useState(new Audio()); // 오디오 객체 생성
 
   const handleBackClick = () => {
     setIsModalOpen(true);
@@ -101,9 +101,7 @@ function BookDetail() {
       <div className="absolute bottom-[35vh] w-full flex justify-center gap-[70vw] z-[10]">
         {/* 이전 버튼 */}
         {currentPage > 0 ? (
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
-          >
+          <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}>
             <img src={PrevPage} alt="이전" className="w-[10vw] max-w-[200px]" />
           </button>
         ) : (
@@ -117,11 +115,7 @@ function BookDetail() {
           </button>
         ) : (
           <button onClick={() => navigate("/bookend", { state: { id } })}>
-            <img
-              src={NextPage}
-              alt="넘어가기"
-              className="w-[10vw] max-w-[200px]"
-            />
+            <img src={NextPage} alt="넘어가기" className="w-[10vw] max-w-[200px]" />
           </button>
         )}
       </div>
@@ -129,11 +123,7 @@ function BookDetail() {
       {/* 다시듣기 버튼 */}
       <div className="absolute z-[10] mt-[5vh] right-[5vh]">
         <button onClick={handleReplay}>
-          <img
-            src={RestartBook}
-            alt="다시 듣기"
-            className="w-[13vw] h-[18vh]"
-          />
+          <img src={RestartBook} alt="다시 듣기" className="w-[13vw] h-[18vh]" />
         </button>
       </div>
     </div>

@@ -2,16 +2,15 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 // import { ScaleLoader } from "react-spinners";
 
-import booklistbackground from "../assets/images/BookList/booklistbackground.webp";
-import BackButton from "../components/commons/BackButton";
-import GoBack from "../assets/images/BookList/goback.webp";
-import GoFront from "../assets/images/BookList/gofront.webp";
-import btnSound from "../assets/music/btn_sound.mp3";
+import booklistbackground from "../../assets/images/BookList/booklistbackground.webp";
+import BackButton from "../../components/commons/BackButton";
+import GoBack from "../../assets/images/BookList/goback.webp";
+import GoFront from "../../assets/images/BookList/gofront.webp";
+import btnSound from "../../assets/music/btn_sound.mp3";
 
-
-import { useBookStore } from "../stores/bookStore";
-import { useGetBookList } from "../hooks/useBook/useGetBookList";
-import { GetBookListApiResponse } from "../types/book";
+import { useBookStore } from "../../stores/bookStore";
+import { useGetBookList } from "../../hooks/useBook/useGetBookList";
+import { GetBookListApiResponse } from "../../types/book";
 
 function BookList() {
   const navigate = useNavigate();

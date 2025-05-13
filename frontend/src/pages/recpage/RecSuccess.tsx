@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useGetUserVoice } from "../hooks/useVoice/useGetUserVoice";
-import { useChildProfile } from "../hooks/useChildProfile";
-import useVoiceStore from "../stores/useVoiceStore";
+import { useGetUserVoice } from "../../hooks/useVoice/useGetUserVoice";
+import { useChildProfile } from "../../hooks/useChildProfile";
+import useVoiceStore from "../../stores/useVoiceStore";
 
-import mainpage from "../assets/images/mainpage/mainpage.webp";
-import RightButton from "../assets/buttons/rightbutton.webp";
-import RecAlert from "../assets/images/settingpage/recalert.webp";
-import btnSound from "../assets/music/btn_sound.mp3";
+import mainpage from "../../assets/images/mainpage/mainpage.webp";
+import RightButton from "../../assets/buttons/rightbutton.webp";
+import RecAlert from "../../assets/images/settingpage/recalert.webp";
+import btnSound from "../../assets/music/btn_sound.mp3";
 
 // 상황별 내용과 버튼 네비가 달라져야함.
 // 1. 녹음 완료 -> 녹음 완료 피드백, startsettings 으로 네비

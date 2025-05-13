@@ -1,23 +1,21 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import mainpage from "../assets/images/mainpage/mainpage.webp";
-import BackButton from "../components/commons/BackButton";
-import RightButton from "../assets/buttons/rightbutton.webp";
-import RecAlert from "../assets/images/settingpage/recalert.webp";
-import Mother from "../assets/images/settingpage/mother.webp";
-import Father from "../assets/images/settingpage/father.webp";
-import YetMother from "../assets/images/settingpage/yetmother.webp";
-import YetFather from "../assets/images/settingpage/yetfather.webp";
-import Modal from "../components/commons/Modal";
-import btnSound from "../assets/music/btn_sound.mp3";
+import mainpage from "../../assets/images/mainpage/mainpage.webp";
+import BackButton from "../../components/commons/BackButton";
+import RightButton from "../../assets/buttons/rightbutton.webp";
+import RecAlert from "../../assets/images/settingpage/recalert.webp";
+import Mother from "../../assets/images/settingpage/mother.webp";
+import Father from "../../assets/images/settingpage/father.webp";
+import YetMother from "../../assets/images/settingpage/yetmother.webp";
+import YetFather from "../../assets/images/settingpage/yetfather.webp";
+import Modal from "../../components/commons/Modal";
+import btnSound from "../../assets/music/btn_sound.mp3";
 
 function StartSettings() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedParent, setSelectedParent] = useState<
-    "mother" | "father" | null
-  >(null);
+  const [selectedParent, setSelectedParent] = useState<"mother" | "father" | null>(null);
 
   const handleMotherClick = () => {
     setSelectedParent("mother");
@@ -28,10 +26,7 @@ function StartSettings() {
   };
 
   return (
-    <div
-      className="fixed inset-0 w-screen h-screen bg-cover bg-center"
-      style={{ backgroundImage: `url(${mainpage})` }}
-    >
+    <div className="fixed inset-0 w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${mainpage})` }}>
       <BackButton to="/recinfo" />
 
       <Modal

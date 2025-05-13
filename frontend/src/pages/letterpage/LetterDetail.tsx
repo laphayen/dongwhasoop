@@ -1,23 +1,22 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import mainpage from "../assets/images/mainpage/mainpage.webp";
-import letterpaper from "../assets/images/letterbox/letterpaper1.webp";
-import send from "../assets/images/letterbox/sendletter.webp";
-import receive from "../assets/images/letterbox/receiveletter.webp";
-import princess from "../assets/images/letterbox/princess.webp";
-import replay from "../assets/images/letterbox/replay.webp";
-import home from "../assets/images/letterbox/home.webp";
-import BackButton from "../components/commons/BackButton";
-import { useGetLetterDetail } from "../hooks/useGetLetterDetail";
-import { useLetterStore } from "../stores/letterStore";
-import btnSound from "../assets/music/btn_sound.mp3";
+import mainpage from "../../assets/images/mainpage/mainpage.webp";
+import letterpaper from "../../assets/images/letterbox/letterpaper1.webp";
+// import send from "../assets/images/letterbox/sendletter.webp";
+// import receive from "../assets/images/letterbox/receiveletter.webp";
+import princess from "../../assets/images/letterbox/princess.webp";
+import replay from "../../assets/images/letterbox/replay.webp";
+import home from "../../assets/images/letterbox/home.webp";
+import BackButton from "../../components/commons/BackButton";
+import { useGetLetterDetail } from "../../hooks/useGetLetterDetail";
+import { useLetterStore } from "../../stores/letterStore";
+import btnSound from "../../assets/music/btn_sound.mp3";
 
 function LetterDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data, isLoading, error } = useGetLetterDetail(id || '');
+  const { data, isLoading, error } = useGetLetterDetail(id || "");
   const { setSelectedLetter } = useLetterStore();
-
 
   useEffect(() => {
     if (data) {
@@ -34,7 +33,6 @@ function LetterDetail() {
     navigate(-1);
   };
 
-
   return (
     <div className="fixed inset-0 w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${mainpage})` }}>
       <BackButton onClick={() => handleBackButton()} />
@@ -46,18 +44,16 @@ function LetterDetail() {
 
           <div className="tablet2560:text-5xl xl:text-2xl font-maplestory absolute top-[10%] left-[5%] right-[5%] bottom-[10%] flex flex-col">
             {/* 편지 내용 */}
-            <div className="leading-relaxed whitespace-pre-line min-h-[80%]">
-              {data.letter_content}
-            </div>
+            <div className="leading-relaxed whitespace-pre-line min-h-[80%]">{data.letter_content}</div>
 
             {/* 날짜와 보낸 사람 */}
             <div className="flex tablet2560:text-5xl xl:text-2xl tablet2560:pb-10 font-maplestory justify-end items-center gap-8 mt-[4vh]">
               <div>{new Date(data.created_at).toLocaleDateString()}</div>
               <div className="flex items-center gap-3">
                 <span>{data.character_name}</span>
-                <img 
-                  src={data.character_image_url || princess} 
-                  alt="Character" 
+                <img
+                  src={data.character_image_url || princess}
+                  alt="Character"
                   className="w-[8vh] h-[8vh] rounded-full object-cover"
                 />
               </div>
@@ -67,25 +63,23 @@ function LetterDetail() {
 
         {/* 다시 듣기 버튼 */}
         <div className="flex flex-col gap-6">
+          {data.audio_url && <audio id="letterAudio" src={data.audio_url} />}
           {data.audio_url && (
-            <audio id="letterAudio" src={data.audio_url} />
-          )}
-          {data.audio_url && (
-            <div 
+            <div
               className="cursor-pointer transition-transform hover:scale-105"
               onClick={() => {
-                const audioElement = document.getElementById('letterAudio') as HTMLAudioElement;
+                const audioElement = document.getElementById("letterAudio") as HTMLAudioElement;
                 audioElement?.play();
               }}
             >
               <img src={replay} alt="Replay" className="w-[30vh] h-[30vh]" />
             </div>
           )}
-          <div 
+          <div
             className="cursor-pointer transition-transform hover:scale-105"
             onClick={() => {
               new Audio(btnSound).play();
-              navigate('/home');
+              navigate("/home");
             }}
           >
             <img src={home} alt="Home" className="w-[30vh] h-[30vh]" />

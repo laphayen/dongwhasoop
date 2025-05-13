@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-import mainpage from "../assets/images/mainpage/mainpage.webp";
-import BackButton from "../components/commons/BackButton";
-import ChildAddEdit from "../assets/images/settingpage/childaddedit.webp";
-import OnQuestion from "../assets/images/settingpage/onquestion.webp";
-import OffQuestion from "../assets/images/settingpage/offquestion.webp";
-import VoiceRec from "../assets/images/settingpage/voicerec.webp";
-import btnSound from "../assets/music/btn_sound.mp3";
+import mainpage from "../../assets/images/mainpage/mainpage.webp";
+import BackButton from "../../components/commons/BackButton";
+import ChildAddEdit from "../../assets/images/settingpage/childaddedit.webp";
+import OnQuestion from "../../assets/images/settingpage/onquestion.webp";
+import OffQuestion from "../../assets/images/settingpage/offquestion.webp";
+import VoiceRec from "../../assets/images/settingpage/voicerec.webp";
+import btnSound from "../../assets/music/btn_sound.mp3";
 
 function Settings() {
   const navigate = useNavigate();
@@ -25,30 +25,36 @@ function Settings() {
       <div className="relative z-[10] flex justify-center items-center gap-[0vw] mt-[28vh]">
         {/* 녹음 버튼 */}
         <div className="mb-[5vh]">
-          <button onClick={() => {
-            new Audio(btnSound).play();
-            navigate("/recinfo");
-          }}>
+          <button
+            onClick={() => {
+              new Audio(btnSound).play();
+              navigate("/recinfo");
+            }}
+          >
             <img src={VoiceRec} alt="녹음하기" className="w-[25vw] max-w-[700px] min-w-[100px]" />
           </button>
         </div>
 
         {/* 자녀 관리 버튼 */}
         <div className="mb-[5vh]">
-          <button onClick={() => {
-            new Audio(btnSound).play();
-            navigate("/editprofile");
-          }}>
+          <button
+            onClick={() => {
+              new Audio(btnSound).play();
+              navigate("/editprofile");
+            }}
+          >
             <img src={ChildAddEdit} alt="자녀추가등록" className="w-[25vw] max-w-[700px] min-w-[100px]" />
           </button>
         </div>
 
         {/* 질문 켜기 */}
         <div className="mb-[5vh]">
-          <button onClick={() => {
-            new Audio(btnSound).play();
-            handleQuestionToggle();
-          }}>
+          <button
+            onClick={() => {
+              new Audio(btnSound).play();
+              handleQuestionToggle();
+            }}
+          >
             <img
               src={isQuestionOn ? OffQuestion : OnQuestion}
               alt={isQuestionOn ? "질문끄기" : "질문켜기"}

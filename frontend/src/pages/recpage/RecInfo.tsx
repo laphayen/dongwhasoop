@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import useVoiceStore from "../stores/useVoiceStore";
+import useVoiceStore from "../../stores/useVoiceStore";
 
-import mainpage from "../assets/images/mainpage/mainpage.webp";
-import BackButton from "../components/commons/BackButton";
-import RightButton from "../assets/buttons/rightbutton.webp";
-import RecAlert from "../assets/images/settingpage/recalert.webp";
-import btnSound from "../assets/music/btn_sound.mp3";
+import mainpage from "../../assets/images/mainpage/mainpage.webp";
+import BackButton from "../../components/commons/BackButton";
+import RightButton from "../../assets/buttons/rightbutton.webp";
+import RecAlert from "../../assets/images/settingpage/recalert.webp";
+import btnSound from "../../assets/music/btn_sound.mp3";
 
 function RecInfo() {
   const navigate = useNavigate();
@@ -33,10 +33,12 @@ function RecInfo() {
 
       {/* 다음 버튼 */}
       <div className="absolute w-[15vw] max-w-[300px] right-0 mr-[10vh] top-[40vh]">
-        <button onClick={() => {
-          new Audio(btnSound).play();
-          navigate("/voiceselect");
-        }}>
+        <button
+          onClick={() => {
+            new Audio(btnSound).play();
+            navigate("/voiceselect");
+          }}
+        >
           <img src={RightButton} alt="넘어가기" />
         </button>
       </div>

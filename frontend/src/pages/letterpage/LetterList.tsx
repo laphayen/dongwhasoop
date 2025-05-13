@@ -1,45 +1,41 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLetterStore } from "../stores/letterStore";
-import { getLetterBookList } from "../api/letter";
-import mainpage from "../assets/images/mainpage/mainpage.webp";
-import letterlist from "../assets/images/letterbox/letterlist.webp";
-import readletter from "../assets/images/letterbox/readletter.webp";
-import unreadletter from "../assets/images/letterbox/unreadletter.webp";
-import send from "../assets/images/letterbox/sendletter.webp";
-import receive from "../assets/images/letterbox/receiveletter.webp";
+import { useLetterStore } from "../../stores/letterStore";
+import mainpage from "../../assets/images/mainpage/mainpage.webp";
+import letterlist from "../../assets/images/letterbox/letterlist.webp";
+import readletter from "../../assets/images/letterbox/readletter.webp";
+import unreadletter from "../../assets/images/letterbox/unreadletter.webp";
+import send from "../../assets/images/letterbox/sendletter.webp";
+import receive from "../../assets/images/letterbox/receiveletter.webp";
 import picture from "../assets/images/letterbox/picture.webp";
-import defaultchar from "../assets/images/letterbox/defaultcharacter.webp";
-import arrow from "../assets/images/letterbox/arrow.webp";
-import letterpicture from "../assets/images/letterbox/letterpicture.webp";
-import BackButton from "../components/commons/BackButton";
-import cat from "../assets/images/loading/cat2.webp"
-import monkey from "../assets/images/loading/monkey.webp"
-import { useGetLetterBookList } from "../hooks/useGetLetterBookList"
-import { useGetLetterList } from "../hooks/useGetLetterList"
+import defaultchar from "../../assets/images/letterbox/defaultcharacter.webp";
+import arrow from "../../assets/images/letterbox/arrow.webp";
+import letterpicture from "../../assets/images/letterbox/letterpicture.webp";
+import BackButton from "../../components/commons/BackButton";
+import cat from "../../assets/images/loading/cat2.webp";
+import monkey from "../../assets/images/loading/monkey.webp";
+import { useGetLetterBookList } from "../../hooks/useGetLetterBookList";
+import { useGetLetterList } from "../../hooks/useGetLetterList";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
-import btnSound from "../assets/music/btn_sound.mp3";
-
+import btnSound from "../../assets/music/btn_sound.mp3";
 
 function LetterList() {
   const navigate = useNavigate();
   const { selectedBookId, setSelectedBook } = useLetterStore();
-  const [activeTab, setActiveTab] = useState<'sent' | 'received'>('sent');
+  const [activeTab, setActiveTab] = useState<"sent" | "received">("sent");
   const [bookPage, setBookPage] = useState(0);
   const BOOKS_PER_PAGE = 6;
   const [currentPage, setCurrentPage] = useState(0);
   const LETTERS_PER_PAGE = 4;
-  const handleTabChange = (tab: 'sent' | 'received') => {
+  const handleTabChange = (tab: "sent" | "received") => {
     const audio = new Audio(btnSound);
     audio.play();
     setActiveTab(tab);
   };
 
-
   // React Query로 데이터 fetching
   const { data: letterBooks, isLoading, error } = useGetLetterBookList();
-  const { data: letters } = useGetLetterList(selectedBookId || 0, activeTab === 'sent');
-
+  const { data: letters } = useGetLetterList(selectedBookId || 0, activeTab === "sent");
 
   // 데이터 확인용 로그
   // useEffect(() => {
@@ -64,7 +60,7 @@ function LetterList() {
 
   // 화면 크기에 따른 동화책 개수 조정
   const getBooksPerPage = () => {
-    if (window.matchMedia('(min-width: 2560px) and (min-height: 1600px)').matches) {
+    if (window.matchMedia("(min-width: 2560px) and (min-height: 1600px)").matches) {
       return 6; // tablet2560 해상도(2560x1600)에서는 6개로 고정
     } else {
       // 현재 컨테이너 높이를 기준으로 동적 계산
@@ -121,9 +117,7 @@ function LetterList() {
     if (!selectedBookId) {
       return (
         <div className="flex flex-col items-center justify-center h-full">
-          <h2 className="font-bazzi text-outline-sm text-[9vh] mt-40 mb-4 text-center">
-            동화책을 선택해주세요~
-          </h2>
+          <h2 className="font-bazzi text-outline-sm text-[9vh] mt-40 mb-4 text-center">동화책을 선택해주세요~</h2>
           <div className="flex items-end xl:pt-10 gap-40 mt-[5vh] mb-[7vh]">
             <img src={cat} alt="Cat" className="w-[15vw] animate-shake1" />
             <img src={monkey} alt="Monkey" className="w-[15vw] animate-shake2" />
@@ -132,7 +126,7 @@ function LetterList() {
       );
     }
 
-    const selectedBook = letterBooks?.data?.book.find(book => book.book_id === selectedBookId);
+    const selectedBook = letterBooks?.data?.book.find((book) => book.book_id === selectedBookId);
     if (!selectedBook) return null;
 
     return (
@@ -140,14 +134,18 @@ function LetterList() {
         {/* ✅ 오른쪽 상단 탭 버튼 */}
         <div className="fixed right-[10vw] tablet2560:top-[6vh] top-[4vh] flex justify-center gap-[5vw] z-10 mt-[2vh]">
           <div
-            className={`cursor-pointer transition-transform ${activeTab === 'sent' ? 'scale-110 drop-shadow-lg' : 'opacity-50 hover:opacity-100'}`}
-            onClick={() => handleTabChange('sent')}
+            className={`cursor-pointer transition-transform ${
+              activeTab === "sent" ? "scale-110 drop-shadow-lg" : "opacity-50 hover:opacity-100"
+            }`}
+            onClick={() => handleTabChange("sent")}
           >
             <img src={send} alt="보낸 편지" className="w-[18vw]" />
           </div>
           <div
-            className={`cursor-pointer transition-transform ${activeTab === 'received' ? 'scale-110 drop-shadow-lg' : 'opacity-50 hover:opacity-100'}`}
-            onClick={() => handleTabChange('received')}
+            className={`cursor-pointer transition-transform ${
+              activeTab === "received" ? "scale-110 drop-shadow-lg" : "opacity-50 hover:opacity-100"
+            }`}
+            onClick={() => handleTabChange("received")}
           >
             <img src={receive} alt="받은 편지" className="w-[18vw]" />
           </div>
@@ -159,15 +157,17 @@ function LetterList() {
           {currentPage > 0 && (
             <button
               className="absolute left-[-10%] top-[55%] transform -translate-y-1/2 hover:scale-110 transition-transform"
-              onClick={() => setCurrentPage(prev => prev - 1)}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
             >
               <img src={arrow} alt="Previous" className="w-[4vw] rotate-180" />
             </button>
           )}
 
           {/* 편지 목록 */}
-          <div className={`grid grid-cols-2 gap-[5vh] tablet2560:gap-20 p-8 w-[40vw]
-            ${currentLetters.length <= 2 ? 'mt-[2vh] tablet2560:mt-[1vh]' : 'mt-[12vh] tablet2560:mt-[8vh]'}`}>
+          <div
+            className={`grid grid-cols-2 gap-[5vh] tablet2560:gap-20 p-8 w-[40vw]
+            ${currentLetters.length <= 2 ? "mt-[2vh] tablet2560:mt-[1vh]" : "mt-[12vh] tablet2560:mt-[8vh]"}`}
+          >
             {currentLetters?.map((letter) => (
               <div
                 key={letter.letter_id}
@@ -202,7 +202,7 @@ function LetterList() {
           {letters?.content && (currentPage + 1) * LETTERS_PER_PAGE < letters.content.length && (
             <button
               className="absolute right-[-9%] top-[55%] transform -translate-y-1/2 hover:scale-110 transition-transform"
-              onClick={() => setCurrentPage(prev => prev + 1)}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
             >
               <img src={arrow} alt="Next" className="w-[4vw]" />
             </button>
@@ -210,10 +210,8 @@ function LetterList() {
         </div>
 
         {/* 받은 편지가 없을 때 문구 */}
-        {activeTab === 'received' && letters?.content?.length === 0 && (
-          <h2 className="font-bazzi text-outline-sm text-[8vh] text-center mb-[10vh]">
-            아직 받은 편지가 없어요.
-          </h2>
+        {activeTab === "received" && letters?.content?.length === 0 && (
+          <h2 className="font-bazzi text-outline-sm text-[8vh] text-center mb-[10vh]">아직 받은 편지가 없어요.</h2>
         )}
       </div>
     );
@@ -230,13 +228,17 @@ function LetterList() {
       <div className="flex justify-center items-center h-full">
         <div className="flex items-start gap-[4vw] tablet2560:gap-32">
           {/* Left Side - Letter List */}
-          <div className="fixed left-[5vw] top-[12vh] w-[35vw]
+          <div
+            className="fixed left-[5vw] top-[12vh] w-[35vw]
            xl:left-60 tablet2560:left-80 xl:w-[25vw]
-           tablet2560:top-50 tablet2560:left-[15vw] tablet2560:w-[47vh]" >
+           tablet2560:top-50 tablet2560:left-[15vw] tablet2560:w-[47vh]"
+          >
             <img src={letterlist} alt="Letter List" className="tablet2560:mt-16 tablet2560:w-800px" />
-            <div className="absolute top-0 right-1 
+            <div
+              className="absolute top-0 right-1 
             pt-[10vh] tablet2560:pt-48 px-[8vh]
-            w-full flex flex-col justify-center">
+            w-full flex flex-col justify-center"
+            >
               <ul className="space-y-3 mt-2 tablet2560:space-y-7 xl:space-y-4 font-maplestory text-lg tablet2560:text-4xl xl:text-xl">
                 {getCurrentPageBooks().map((book) => (
                   <li
@@ -262,7 +264,7 @@ function LetterList() {
                   {bookPage > 0 && (
                     <button
                       className="mt-[1vh] text-white hover:text-brown-700 transition-colors"
-                      onClick={() => setBookPage(prev => prev - 1)}
+                      onClick={() => setBookPage((prev) => prev - 1)}
                     >
                       <MdKeyboardArrowUp size={50} />
                     </button>
@@ -270,7 +272,7 @@ function LetterList() {
                   {letterBooks?.data?.book && (bookPage + 1) * getBooksPerPage() < letterBooks.data.book.length && (
                     <button
                       className="mt-[1vh] text-white hover:text-brown-700 transition-colors"
-                      onClick={() => setBookPage(prev => prev + 1)}
+                      onClick={() => setBookPage((prev) => prev + 1)}
                     >
                       <MdKeyboardArrowDown size={50} />
                     </button>

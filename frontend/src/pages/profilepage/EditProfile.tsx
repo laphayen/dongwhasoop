@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getChildProfiles } from "../api/children";
-import { useChildrenStore } from "../stores/useChildrenStore";
-import mainpage from "../assets/images/mainpage/mainpage.webp";
-import Pencil from "../assets/images/eidtprofile/pencil.webp";
-import PlusBtn from "../assets/images/eidtprofile/plus.webp";
-import cat from "../assets/images/settingpage/cat.webp";
-import dog from "../assets/images/settingpage/dog.webp";
-import bear from "../assets/images/settingpage/bear.webp";
-import chik from "../assets/images/settingpage/chik.webp";
-import panda from "../assets/images/settingpage/panda.webp";
-import BackButton from "../components/commons/BackButton";
-import Modal from "../components/commons/Modal";
-import btnSound from "../assets/music/btn_sound.mp3";
+import { getChildProfiles } from "../../api/children";
+import { useChildrenStore } from "../../stores/useChildrenStore";
+import mainpage from "../../assets/images/mainpage/mainpage.webp";
+import Pencil from "../../assets/images/eidtprofile/pencil.webp";
+import PlusBtn from "../../assets/images/eidtprofile/plus.webp";
+import cat from "../../assets/images/settingpage/cat.webp";
+import dog from "../../assets/images/settingpage/dog.webp";
+import bear from "../../assets/images/settingpage/bear.webp";
+import chik from "../../assets/images/settingpage/chik.webp";
+import panda from "../../assets/images/settingpage/panda.webp";
+import BackButton from "../../components/commons/BackButton";
+import Modal from "../../components/commons/Modal";
+import btnSound from "../../assets/music/btn_sound.mp3";
 
 interface ChildProfile {
   childId: number;

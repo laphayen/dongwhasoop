@@ -1,18 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useCreateChildProfile } from "../hooks/useCreateChildProfile";
-import mainpage from "../assets/images/mainpage/mainpage.webp";
-import BackButton from "../components/commons/BackButton";
-import Child from "../assets/images/settingpage/child.webp";
-import CheckBox from "../assets/images/settingpage/checkbox.webp";
-import TreeBox from "../assets/images/settingpage/treebox.webp";
-import choiceCharacter from "../assets/images/settingpage/choicecharacter.webp";
-import chik from "../assets/images/settingpage/chik.webp";
-import cat from "../assets/images/settingpage/cat.webp";
-import dog from "../assets/images/settingpage/dog.webp";
-import panda from "../assets/images/settingpage/panda.webp";
-import bear from "../assets/images/settingpage/bear.webp";
-import Modal from "../components/commons/Modal";
+import { useCreateChildProfile } from "../../hooks/useCreateChildProfile";
+import mainpage from "../../assets/images/mainpage/mainpage.webp";
+import BackButton from "../../components/commons/BackButton";
+import Child from "../../assets/images/settingpage/child.webp";
+import CheckBox from "../../assets/images/settingpage/checkbox.webp";
+import TreeBox from "../../assets/images/settingpage/treebox.webp";
+import choiceCharacter from "../../assets/images/settingpage/choicecharacter.webp";
+import chik from "../../assets/images/settingpage/chik.webp";
+import cat from "../../assets/images/settingpage/cat.webp";
+import dog from "../../assets/images/settingpage/dog.webp";
+import panda from "../../assets/images/settingpage/panda.webp";
+import bear from "../../assets/images/settingpage/bear.webp";
+import Modal from "../../components/commons/Modal";
 
 function AddingProfile() {
   const navigate = useNavigate();

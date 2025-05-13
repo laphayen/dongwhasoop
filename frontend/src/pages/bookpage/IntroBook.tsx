@@ -1,17 +1,16 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import { usePostBookDetail } from "../hooks/useBook/usePostBookDetail";
-import bookintrobackground from "../assets/images/bookintro/bookintrobackground.webp";
-import BackButton from "../components/commons/BackButton";
-import Mother from "../assets/images/bookintro/mother.webp";
-import Father from "../assets/images/bookintro/father.webp";
-import BearVoice from "../assets/images/bookintro/bearvoice.webp";
-import { useGetUserVoice } from "../hooks/useVoice/useGetUserVoice";
-import useVoiceStore from "../stores/useVoiceStore";
-import { useBookStore } from "../stores/bookStore";
-import btnSound from "../assets/music/btn_sound.mp3";
-
+import { usePostBookDetail } from "../../hooks/useBook/usePostBookDetail";
+import bookintrobackground from "../../assets/images/bookintro/bookintrobackground.webp";
+import BackButton from "../../components/commons/BackButton";
+import Mother from "../../assets/images/bookintro/mother.webp";
+import Father from "../../assets/images/bookintro/father.webp";
+import BearVoice from "../../assets/images/bookintro/bearvoice.webp";
+import { useGetUserVoice } from "../../hooks/useVoice/useGetUserVoice";
+import useVoiceStore from "../../stores/useVoiceStore";
+import { useBookStore } from "../../stores/bookStore";
+import btnSound from "../../assets/music/btn_sound.mp3";
 
 function IntroBook() {
   const navigate = useNavigate();
@@ -23,8 +22,7 @@ function IntroBook() {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const setBookPages = useBookStore((state) => state.setBookPages);
 
-  const buttonContainerStyle =
-    "flex justify-center items-center h-full gap-x-[5vw] mt-[-15vh]";
+  const buttonContainerStyle = "flex justify-center items-center h-full gap-x-[5vw] mt-[-15vh]";
   const buttonStyle = "w-[25vw] h-[25vw] flex items-center justify-center";
   const imageStyle = "w-full h-full object-contain";
 
@@ -39,9 +37,7 @@ function IntroBook() {
     const accessToken = localStorage.getItem("accessToken");
     console.log("Connecting WebSocket...");
 
-    const newWs = new WebSocket(
-      `ws://k12b202.p.ssafy.io/api/v1/ws/tts-progress?token=${accessToken}`
-    );
+    const newWs = new WebSocket(`ws://k12b202.p.ssafy.io/api/v1/ws/tts-progress?token=${accessToken}`);
 
     newWs.addEventListener("open", () => {});
 
@@ -120,9 +116,7 @@ function IntroBook() {
       style={{ backgroundImage: `url(${bookintrobackground})` }}
     >
       <BackButton to={`/intro/${id}`} />
-      <h1 className="text-[13vh] font-bazzi text-black-500 text-outline-sm text-center mt-[9vh]">
-        어떻게 읽을까요?
-      </h1>
+      <h1 className="text-[13vh] font-bazzi text-black-500 text-outline-sm text-center mt-[9vh]">어떻게 읽을까요?</h1>
 
       <div className={buttonContainerStyle}>
         {hasVoice("MOM") && (

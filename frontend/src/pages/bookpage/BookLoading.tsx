@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import bookintrobackground from "../assets/images/bookintro/bookintrobackground.webp";
-import kidbook from "../assets/images/bookintro/kidbook.webp";
+import bookintrobackground from "../../assets/images/bookintro/bookintrobackground.webp";
+import kidbook from "../../assets/images/bookintro/kidbook.webp";
 
 const BookLoading = () => {
   const navigate = useNavigate();
@@ -24,16 +24,10 @@ const BookLoading = () => {
         <h1 className="">5~10분 정도 걸리니 기다려 주세요!</h1>
       </div>
 
-      <div className="flex justify-center items-center mt-[4vw] relative animate-bounce-infinite3 ">
-
-      </div>
+      <div className="flex justify-center items-center mt-[4vw] relative animate-bounce-infinite3 "></div>
 
       <div className="flex justify-center items-center">
-        <img
-          src={kidbook}
-          alt="kidbook"
-          className="w-[20vw] animate-fly"
-        />
+        <img src={kidbook} alt="kidbook" className="w-[20vw] animate-fly" />
       </div>
     </div>
   );
