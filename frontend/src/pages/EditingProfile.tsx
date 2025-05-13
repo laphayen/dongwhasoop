@@ -13,6 +13,7 @@ import dog from "../assets/images/settingpage/dog.webp";
 import bear from "../assets/images/settingpage/bear.webp";
 import chik from "../assets/images/settingpage/chik.webp";
 import panda from "../assets/images/settingpage/panda.webp";
+import btnSound from "../assets/music/btn_sound.mp3";
 
 interface ChildProfile {
   childId: number;
@@ -56,6 +57,7 @@ function EditingProfile() {
   }, [childId, children, editingChild]);
 
   const handleSave = async () => {
+    new Audio(btnSound).play();
     if (!editingChild?.childName) {
       alert("이름을 입력해주세요");
       return;
@@ -78,6 +80,7 @@ function EditingProfile() {
   };
 
   const handleDelete = () => {
+    new Audio(btnSound).play();
     if (!editingChild?.childId) {
       console.warn("childId 에러:", editingChild);
       return;

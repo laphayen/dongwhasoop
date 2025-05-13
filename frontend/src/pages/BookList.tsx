@@ -6,6 +6,8 @@ import booklistbackground from "../assets/images/BookList/booklistbackground.web
 import BackButton from "../components/commons/BackButton";
 import GoBack from "../assets/images/BookList/goback.webp";
 import GoFront from "../assets/images/BookList/gofront.webp";
+import btnSound from "../assets/music/btn_sound.mp3";
+
 
 import { useBookStore } from "../stores/bookStore";
 import { useGetBookList } from "../hooks/useBook/useGetBookList";
@@ -29,10 +31,12 @@ function BookList() {
   }, [data, setTotalBooks]);
 
   const handlePrev = () => {
+    new Audio(btnSound).play();
     if (currentPage > 0) setCurrentPage(currentPage - 1); // page -> currentPage
   };
 
   const handleNext = () => {
+    new Audio(btnSound).play();
     if (!data?.last) setCurrentPage(currentPage + 1); // page -> currentPage
   };
 

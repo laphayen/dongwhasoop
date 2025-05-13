@@ -16,6 +16,7 @@ import Endvoicerec from "../assets/images/settingpage/endvoicerec.webp";
 import Listen from "../assets/images/settingpage/listen.webp";
 import RightButton from "../assets/buttons/rightbutton.webp";
 import LeftButton from "../assets/buttons/leftbutton.webp";
+import btnSound from "../assets/music/btn_sound.mp3";
 
 function VoiceRec() {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ function VoiceRec() {
   }, [voiceData, setVoices]);
 
   const handleRecord = async () => {
+    new Audio(btnSound).play();
     if (isRecording) {
       // 녹음 중지
       mediaRecorderRef.current?.stop();
@@ -76,12 +78,14 @@ function VoiceRec() {
   };
 
   const handlePlayback = () => {
+    new Audio(btnSound).play();
     if (audioRef.current && audioUrl) {
       audioRef.current.play();
     }
   };
 
   const handleSubmit = async () => {
+    new Audio(btnSound).play();
     if (!audioBlob) return;
 
     const file = new File([audioBlob], "voice.wav", { type: "audio/wav" });

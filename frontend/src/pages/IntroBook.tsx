@@ -10,6 +10,8 @@ import BearVoice from "../assets/images/bookintro/bearvoice.webp";
 import { useGetUserVoice } from "../hooks/useVoice/useGetUserVoice";
 import useVoiceStore from "../stores/useVoiceStore";
 import { useBookStore } from "../stores/bookStore";
+import btnSound from "../assets/music/btn_sound.mp3";
+
 
 function IntroBook() {
   const navigate = useNavigate();
@@ -126,7 +128,10 @@ function IntroBook() {
         {hasVoice("MOM") && (
           <button
             className={buttonStyle}
-            onClick={() => handleVoiceClick("MOM")}
+            onClick={() => {
+              new Audio(btnSound).play();
+              handleVoiceClick("MOM");
+            }}
           >
             <img src={Mother} alt="엄마목소리" className={imageStyle} />
           </button>
@@ -134,7 +139,10 @@ function IntroBook() {
         {hasVoice("DAD") && (
           <button
             className={buttonStyle}
-            onClick={() => handleVoiceClick("DAD")}
+            onClick={() => {
+              new Audio(btnSound).play();
+              handleVoiceClick("DAD");
+            }}
           >
             <img src={Father} alt="아빠목소리" className={imageStyle} />
           </button>
@@ -142,7 +150,10 @@ function IntroBook() {
         {hasVoice("BEAR") && (
           <button
             className={buttonStyle}
-            onClick={() => handleVoiceClick("BEAR")}
+            onClick={() => {
+              new Audio(btnSound).play();
+              handleVoiceClick("BEAR");
+            }}
           >
             <img src={BearVoice} alt="곰돌이목소리" className={imageStyle} />
           </button>

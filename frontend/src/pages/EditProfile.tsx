@@ -12,6 +12,7 @@ import chik from "../assets/images/settingpage/chik.webp";
 import panda from "../assets/images/settingpage/panda.webp";
 import BackButton from "../components/commons/BackButton";
 import Modal from "../components/commons/Modal";
+import btnSound from "../assets/music/btn_sound.mp3";
 
 interface ChildProfile {
   childId: number;
@@ -56,12 +57,14 @@ function EditProfile() {
 
   // handleEdit function modification
   const handleEdit = (child: ChildProfile) => {
+    new Audio(btnSound).play();
     navigate(`/editingprofile/${child.childId}`, {
       state: child,
     });
   };
 
   const handleAdd = () => {
+    new Audio(btnSound).play();
     if (children.length >= 3) {
       setIsModalOpen(true);
       return;

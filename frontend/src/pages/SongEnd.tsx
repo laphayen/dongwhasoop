@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { useSongStore } from "../stores/songStore";
+import { useBookStore } from "../stores/bookStore";
 
 import endpagebackground from "../assets/images/endpage/endpagebackground.webp";
 import Home from "../assets/images/endpage/home.webp";
@@ -6,9 +8,12 @@ import Book from "../assets/images/endpage/book.webp";
 import Bird from "../assets/images/endpage/bird.webp";
 import Frog from "../assets/images/endpage/frog.webp";
 import SongAgain from "../assets/images/endpage/songagain.webp";
+import btnSound from "../assets/music/btn_sound.mp3";
 
-function BookEnd() {
+function SongEnd() {
   const navigate = useNavigate();
+  const { currentSongId } = useSongStore();
+  const { selectedBook } = useBookStore();
 
   return (
     <div
@@ -23,17 +28,30 @@ function BookEnd() {
       {/* 홈, 편지, 동요 버튼*/}
       <div className="relative z-[10] flex justify-center items-center h-full gap-[0vw]">
         <div className="mb-[45vh]">
-          <button onClick={() => navigate("/home")}>
+          <button onClick={() => {
+            new Audio(btnSound).play();
+            navigate("/home");
+          }}>
             <img src={Home} alt="홈버튼" className="w-[24vw] max-w-[700px] min-w-[100px]" />
           </button>
         </div>
         <div className="mb-[45vh]">
-          <button>
+          <button onClick={() => {
+            new Audio(btnSound).play();
+            if (currentSongId) {
+              navigate(`/songdetail/${currentSongId}`);
+            }
+          }}>
             <img src={SongAgain} alt="다시듣기" className="w-[25vw] max-w-[700px] min-w-[100px]" />
           </button>
         </div>
         <div className="mb-[45vh]">
-          <button onClick={() => navigate("/bookdetail")}>
+          <button onClick={() => {
+            new Audio(btnSound).play();
+            if (selectedBook?.bookId) {
+              navigate(`/introbook/${selectedBook.bookId}`);
+            }
+          }}>
             <img src={Book} alt="동화보기" className="w-[25vw] max-w-[700px] min-w-[100px]" />
           </button>
         </div>
@@ -48,4 +66,4 @@ function BookEnd() {
   );
 }
 
-export default BookEnd;
+export default SongEnd;

@@ -4,11 +4,15 @@ import BackButton from "../components/commons/BackButton";
 import Fairytale from "../assets/images/bookintro/bear.webp";
 import Song from "../assets/images/bookintro/fairytale.webp";
 import { useBookStore } from "../stores/bookStore";
+import { useSongStore } from "../stores/songStore";
+import btnSound from "../assets/music/btn_sound.mp3";
+
 
 function Intro() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { selectedBook } = useBookStore(); // 저장된 책 정보 사용
+  const { selectedBook } = useBookStore();
+  const { setCurrentSongId } = useSongStore();
 
   if (!selectedBook || selectedBook.bookId !== Number(id)) {
     return <div className="text-white">책 정보를 찾을 수 없습니다.</div>;
@@ -40,11 +44,18 @@ function Intro() {
 
         {/* 동요, 동화 버튼 */}
         <div className="flex flex-col gap-[4vh] mt-[4vh] lg:mb-[15vh]">
-          <button onClick={() => navigate(`/introbook/${id}`)}>
+          <button onClick={() => {
+            new Audio(btnSound).play();
+            navigate(`/introbook/${id}`);
+          }}>
             <img src={Fairytale} alt="동화" className="w-[25vw]" />
           </button>
 
-          <button onClick={() => navigate(`/songdetail/${id}`)}>
+          <button onClick={() => {
+            new Audio(btnSound).play();
+            setCurrentSongId(Number(id));
+            navigate(`/songdetail/${id}`);
+          }}>
             <img src={Song} alt="동요" className="w-[25vw] " />
           </button>
         </div>
