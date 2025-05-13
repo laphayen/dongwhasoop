@@ -12,6 +12,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 public class CredentialController {
 
     private final CredentialService credentialService;
+
+    @Value("${frontend.redirect-url}")
+    private String redirectUrlBase;
 
     @PostMapping("/sign-up-test")
     public void signUptTest(){
@@ -42,8 +46,7 @@ public class CredentialController {
 
         CheckRegisteredResponse response = credentialService.getUserAvailableRegister(code, OauthProvider.KAKAO);
 
-        String redirectUrl = "http://localhost:5173/auth?"
-                + "idToken=" + response.getIdToken()
+        String redirectUrl = redirectUrlBase + "?idToken=" + response.getIdToken()
                 + "&isRegistered=" + response.getIsRegistered();
 
         return new RedirectView(redirectUrl);
