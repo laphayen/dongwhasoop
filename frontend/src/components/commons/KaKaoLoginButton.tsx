@@ -2,13 +2,13 @@ import { useCallback } from "react";
 import KaKaoLogin from "../../assets/images/loginpage/kakologin.webp";
 
 function KakaoLoginButton() {
-  const handleKakaoLogin = useCallback(() => {
-    const KAKAO_REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
-    const REDIRECT_URI = "https://k12b202.p.ssafy.io/auth";
+  const handleKakaoLogin = () => {
+    const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
+    const REDIRECT_URI = encodeURIComponent(import.meta.env.VITE_KAKAO_REDIRECT_URI);
 
-    const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+    const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
     window.location.href = kakaoURL;
-  }, []);
+  };
 
   return (
     <div className="absolute bottom-[20vh] w-full flex justify-center">

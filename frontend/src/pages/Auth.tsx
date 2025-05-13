@@ -1,55 +1,31 @@
 // src/pages/Auth.tsx
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 function Auth() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const code = new URL(window.location.href).searchParams.get("code");
+    const searchParams = new URL(window.location.href).searchParams;
 
-    if (!code) {
-      alert("로그인 인가 코드가 없습니다.");
+    const accessToken = searchParams.get("access_token");
+    const isNewUser = searchParams.get("isNewUser");
+
+    if (!accessToken) {
+      alert("로그인에 실패했습니다. access_token이 없습니다.");
       navigate("/");
       return;
     }
 
-    const checkMembershipAndLogin = async () => {
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/credentials/oauth/valid/register`, {
-          params: {
-            code,
-            provider: "KAKAO",
-          },
-        });
+    // 1. access_token 저장
+    localStorage.setItem("access_token", accessToken);
 
-        const { isMember, idToken } = res.data;
-
-        if (isMember) {
-          // 로그인 요청
-          const loginRes = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/credentials/login`, null, {
-            params: {
-              idToken,
-              provider: "KAKAO",
-            },
-          });
-
-          const accessToken = loginRes.data.accessToken;
-          localStorage.setItem("access_token", accessToken);
-          navigate("/home");
-        } else {
-          // 회원가입으로 이동
-          navigate("/startsettings", { state: { idToken } });
-        }
-      } catch (error) {
-        console.error("카카오 로그인 처리 중 오류 발생:", error);
-        alert("로그인 중 문제가 발생했습니다.");
-        navigate("/");
-      }
-    };
-
-    checkMembershipAndLogin();
+    // 2. 회원 여부에 따라 분기
+    if (isNewUser === "true") {
+      navigate("/startsettings"); // 신규 회원이면 설정 페이지로 이동
+    } else {
+      navigate("/home"); // 기존 회원이면 홈으로 이동
+    }
   }, [navigate]);
 
   return <div className="text-white text-center mt-[30vh] text-3xl">로그인 처리 중입니다...</div>;
