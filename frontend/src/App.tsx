@@ -31,9 +31,9 @@ import KakaoCallback from "./pages/KakaoCallback";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AddingProfile from "./pages/AddingProfile";
 import TestApiPage from "./pages/TestApiPage";
+import Auth from "./pages/Auth";
 import bgm from "./assets/music/fairytale_bgm.mp3";
 import { useMusicStore } from "./stores/musicStore";
-
 
 function App() {
   // const navigate = useNavigate();
@@ -56,8 +56,8 @@ function App() {
     audioRef.current = new Audio(bgm);
     audioRef.current.loop = true;
     audioRef.current.volume = 0.5;
-    audioRef.current.muted = true;  // 초기에 음소거 상태로 설정
-    
+    audioRef.current.muted = true; // 초기에 음소거 상태로 설정
+
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -68,7 +68,7 @@ function App() {
 
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.muted = !isPlaying;  // isPlaying 상태에 따라 음소거 토글
+      audioRef.current.muted = !isPlaying; // isPlaying 상태에 따라 음소거 토글
       if (isPlaying) {
         audioRef.current.play();
         console.log("배경음악이 재생됩니다.");
@@ -112,6 +112,7 @@ function App() {
         <Route path="/addingprofile" element={<AddingProfile></AddingProfile>}></Route>
         <Route path="/auth" element={<KakaoCallback></KakaoCallback>}></Route>
         <Route path="/testapipage" element={<TestApiPage></TestApiPage>}></Route>
+        <Route path="/auth" element={<Auth></Auth>}></Route>
       </Routes>
     </>
   );
