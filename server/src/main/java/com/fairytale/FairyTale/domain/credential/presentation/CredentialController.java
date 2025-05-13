@@ -23,6 +23,9 @@ public class CredentialController {
 
     private final CredentialService credentialService;
 
+    @Value("${frontend.redirect-url}")
+    private String frontendRedirectUrl;
+
     private final OauthProperties oauthProperties;
 
     @PostMapping("/sign-up-test")
@@ -40,14 +43,13 @@ public class CredentialController {
         return new OauthLoginLinkResponse(credentialService.getOauthLink(OauthProvider.KAKAO));
     }
 
-    @GetMapping("/oauth/kakao")
+    @GetMapping("/callback/kakao")
     public RedirectView kakaoAuth(@RequestParam("code") String code) {
         log.info("카카오 OAuth 인증 코드 수신: {}", code);
 
         CheckRegisteredResponse response = credentialService.getUserAvailableRegister(code, OauthProvider.KAKAO);
 
-        String redirectUrl = oauthProperties.getKakaoRedirectUrl()
-                + "?idToken=" + response.getIdToken()
+        String redirectUrl = frontendRedirectUrl + "?idToken=" + response.getIdToken()
                 + "&isRegistered=" + response.getIsRegistered();
 
         return new RedirectView(redirectUrl);
