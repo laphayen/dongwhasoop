@@ -34,6 +34,9 @@ public class KaKaoOauthStrategy implements OauthStrategy {
 
     @Override
     public String getOauthLink() {
+        log.info("🟡 Kakao clientId = {}", oauthProperties.getKakaoClientId());
+        log.info("🟡 Kakao redirectUrl = {}", oauthProperties.getKakaoRedirectUrl());
+
         return oauthProperties.getKakaoBaseUrl()
                 + String.format(
                 QUERY_STRING,
@@ -43,12 +46,16 @@ public class KaKaoOauthStrategy implements OauthStrategy {
 
     @Override
     public OauthTokenInfoDto getOauthToken(String code) {
-        log.info("\uD83D\uDD25\uD83D\uDD25\uD83D\uDD25 Kakao getOauthToken called with code = {}", code);
-        OauthTokenResponse oauthTokenResponse = kakaoOauthClient
-                .kakaoAuth(
-                        oauthProperties.getKakaoClientId(),
-                        oauthProperties.getKakaoRedirectUrl(),
-                        code);
+        log.info("🔥 Kakao getOauthToken called with code = {}", code);
+        log.info("🔥 Kakao clientId = {}", oauthProperties.getKakaoClientId());
+        log.info("🔥 Kakao redirectUri = {}", oauthProperties.getKakaoRedirectUrl());
+
+        OauthTokenResponse oauthTokenResponse = kakaoOauthClient.kakaoAuth(
+                "authorization_code",
+                oauthProperties.getKakaoClientId(),
+                oauthProperties.getKakaoRedirectUrl(),
+                code
+        );
 
         log.info("🟢 Kakao oauthTokenResponse = {}", oauthTokenResponse);
 

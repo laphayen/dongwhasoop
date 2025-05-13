@@ -6,8 +6,8 @@ import feign.Headers;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "KakaoAuthClient", url = "https://kauth.kakao.com")
 public interface KakaoOauthClient {
@@ -17,10 +17,11 @@ public interface KakaoOauthClient {
     OIDCKeysResponse getKakaoOIDCOpenKeys();
 
     @Headers("Content-type: application/x-www-form-urlencoded;charset=utf-8")
-    @PostMapping(
-            "/oauth/token?grant_type=authorization_code&client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&code={CODE}")
+    @PostMapping("/oauth/token")
     OauthTokenResponse kakaoAuth(
-            @PathVariable("CLIENT_ID") String clientId,
-            @PathVariable("REDIRECT_URI") String redirectUri,
-            @PathVariable("CODE") String code);
+            @RequestParam("grant_type") String grantType,
+            @RequestParam("client_id") String clientId,
+            @RequestParam("redirect_uri") String redirectUri,
+            @RequestParam("code") String code
+    );
 }
