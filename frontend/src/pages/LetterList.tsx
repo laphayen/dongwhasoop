@@ -19,7 +19,6 @@ import { useGetLetterBookList } from "../hooks/useGetLetterBookList"
 import { useGetLetterList } from "../hooks/useGetLetterList"
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import btnSound from "../assets/music/btn_sound.mp3";
-import backSound from "../assets/music/back_sound.mp3";
 
 
 function LetterList() {
@@ -223,8 +222,6 @@ function LetterList() {
   // 뒤로가기 처리
   const handleBackButton = () => {
     navigate("/home");
-    const audio = new Audio(backSound);
-    audio.play();
   };
 
   return (

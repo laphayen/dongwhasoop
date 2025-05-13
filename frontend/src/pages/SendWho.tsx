@@ -3,8 +3,6 @@ import { useBookCharacter } from "../hooks/useBookCharacter";
 import selectbackground from "../assets/images/writeletter/selectbackground.webp";
 import BackButton from "../components/commons/BackButton";
 import { useBookStore } from "../stores/bookStore";
-import backSound from "../assets/music/back_sound.mp3";
-
 
 function SendWho() {
   const navigate = useNavigate();
@@ -23,7 +21,6 @@ function SendWho() {
   const characters = data.data.character;
 
   const handleBack = () => {
-      new Audio(backSound).play();
       navigate("/bookend");
     };
 

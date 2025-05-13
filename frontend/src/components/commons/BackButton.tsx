@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import BackIcon from "../../assets/buttons/backicon.webp";
+import backSound from "../../assets/music/back_sound.mp3";
 
 interface BackButtonProps {
   to?: string;
@@ -11,6 +12,8 @@ function BackButton({ to, onClick, state }: BackButtonProps) {
   const navigate = useNavigate();
 
   const handleClick = () => {
+    new Audio(backSound).play();
+    
     if (onClick) {
       onClick();
     } else if (to) {

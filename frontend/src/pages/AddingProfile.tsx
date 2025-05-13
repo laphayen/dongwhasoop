@@ -127,8 +127,8 @@ function AddingProfile() {
               w-[23vw] max-w-[600px] h-[6vw]  placeholder-black
             rounded-full px-8 py-6
             text-center bg-[#fff4d3b8] font-maplestory
-            xl:w-[90vw] xl:max-w-[320px] xl:h-[5vw] xl:text-3xl
-            tablet2560:w-[90vw] tablet2560:max-w-[550px] tablet2560:text-6xl
+            xl:w-[90vw] xl:max-w-[320px] xl:h-[5vw] xl:text-2xl
+            tablet2560:w-[90vw] tablet2560:max-w-[550px] tablet2560:text-5xl
             "
             />
           </div>

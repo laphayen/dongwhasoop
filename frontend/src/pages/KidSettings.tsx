@@ -16,6 +16,7 @@ import dog from "../assets/images/settingpage/dog.webp";
 import panda from "../assets/images/settingpage/panda.webp";
 import bear from "../assets/images/settingpage/bear.webp";
 import Modal from "../components/commons/Modal";
+import btnSound from "../assets/music/btn_sound.mp3";
 
 function KidSettings() {
   const navigate = useNavigate();
@@ -44,6 +45,8 @@ function KidSettings() {
 
   // 저장 버튼 누르면?
   const handleSave = () => {
+    new Audio(btnSound).play();
+    
     if (!childName || !selectedCharacter) {
       setIsModalOpen(true)
       return;
@@ -142,9 +145,9 @@ function KidSettings() {
               className="
               w-[23vw] max-w-[600px] h-[6vw]  
             rounded-full px-8 py-6
-            text-center bg-[#fff4d3b8] font-bazzi
-            xl:w-[90vw] xl:max-w-[320px] xl:h-[5vw] xl:text-4xl
-            tablet2560:w-[90vw] tablet2560:max-w-[550px] tablet2560:text-6xl
+            text-center bg-[#fff4d3b8] font-maplestory placeholder-black
+            xl:w-[90vw] xl:max-w-[320px] xl:h-[5vw] xl:text-2xl
+            tablet2560:w-[90vw] tablet2560:max-w-[550px] tablet2560:text-5xl
             "
             />
           </div>

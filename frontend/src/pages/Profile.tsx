@@ -10,6 +10,8 @@ import treebox from "../assets/images/settingpage/treebox.webp";
 import { useState } from "react";
 import { useChildProfile } from "../hooks/useChildProfile";
 import { useSelectedChild } from "../stores/useSelectedChild";
+import btnSound from "../assets/music/btn_sound.mp3";
+
 
 function Profile() {
   const navigate = useNavigate();
@@ -57,15 +59,21 @@ function Profile() {
       style={{ backgroundImage: `url(${mainpage})` }}
     >
       {/* 프로필 선택 */}
-      <button onClick={() => setShowSettings(true)} className="absolute top-7 right-7 z-10">
+      <button 
+        onClick={() => {
+          new Audio(btnSound).play();
+          setShowSettings(true);
+        }} 
+        className="absolute top-7 right-7 z-10"
+      >
         <img src={settingsbtn} alt="설정" className="w-[9vw] max-w-[500px] min-w-[50px] m-[3vh]" />
       </button>
 
       <div className="flex flex-col pt-16">
-        <h1 className="pt-[14vh] text-[9vh] sm:text-[11vh] xl:text-[10vh] text-outline-sm text-center">
+        <h1 className="pt-[15vh] text-[9vh] sm:text-[11vh] xl:text-[10vh] text-outline-sm text-center">
           어떤 친구가 오늘의 주인공이 될까요?
         </h1>
-        <div className="flex justify-center items-center gap-10 sm:gap-20 xl:gap-40 mt-6 sm:mt-12 xl:mt-20 tablet2560:mt-40">
+        <div className="flex justify-center items-center gap-10 sm:gap-20 xl:gap-40 mt-6 sm:mt-12 xl:mt-18 tablet2560:mt-40">
           {useChildProfile().data?.map((child) => {
             let mascotImg = cat;
             if (child.mascotId === 2) mascotImg = dog;
@@ -77,6 +85,7 @@ function Profile() {
               <button
                 key={child.childId}
                 onClick={() => {
+                  new Audio(btnSound).play();
                   setSelectedChild(child);
                   navigate("/home");
                 }}
@@ -85,7 +94,7 @@ function Profile() {
                 <img
                   src={mascotImg}
                   alt={child.childName}
-                  className="w-[20vh] h-[20vh] sm:w-[25vh] sm:h-[25vh] xl:w-[30vh] xl:h-[30vh] rounded-full bg-[#90EE90]"
+                  className="w-[20vh] h-[20vh] sm:w-[25vh] sm:h-[25vh] xl:w-[30vh] xl:h-[30vh] rounded-full"
                 />
                 <p className="mt-4 text-[5vh] sm:text-[7vh] xl:text-[8vh] text-outline-sm">{child.childName}</p>
               </button>

@@ -10,7 +10,7 @@ import home from "../assets/images/letterbox/home.webp";
 import BackButton from "../components/commons/BackButton";
 import { useGetLetterDetail } from "../hooks/useGetLetterDetail";
 import { useLetterStore } from "../stores/letterStore";
-import backSound from "../assets/music/back_sound.mp3";
+import btnSound from "../assets/music/btn_sound.mp3";
 
 function LetterDetail() {
   const { id } = useParams();
@@ -32,8 +32,6 @@ function LetterDetail() {
 
   const handleBackButton = () => {
     navigate(-1);
-    const audio = new Audio(backSound);
-    audio.play();
   };
 
 
@@ -85,7 +83,10 @@ function LetterDetail() {
           )}
           <div 
             className="cursor-pointer transition-transform hover:scale-105"
-            onClick={() => navigate('/home')}
+            onClick={() => {
+              new Audio(btnSound).play();
+              navigate('/home');
+            }}
           >
             <img src={home} alt="Home" className="w-[30vh] h-[30vh]" />
           </div>

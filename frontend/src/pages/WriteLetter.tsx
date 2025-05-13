@@ -10,7 +10,6 @@ import Modal from "../components/commons/Modal";
 import { useLetterStore } from "../stores/letterStore";
 import { useWriteLetter } from "../hooks/useBook/useWriteLetter";
 import { useSelectedChild } from "../stores/useSelectedChild";
-import backSound from "../assets/music/back_sound.mp3";
 
 function WriteLetter() {
   const navigate = useNavigate();
@@ -76,7 +75,6 @@ function WriteLetter() {
   };
 
   const handleBack = () => {
-    new Audio(backSound).play();
     navigate("/sendwho", { state: { bookId } });
   };
 
