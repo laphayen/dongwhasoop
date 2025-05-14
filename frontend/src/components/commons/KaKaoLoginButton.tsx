@@ -3,10 +3,10 @@ import KaKaoLogin from "../../assets/images/loginpage/kakologin.webp";
 
 function KakaoLoginButton() {
   const handleKakaoLogin = () => {
-    const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
+    const CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
     const REDIRECT_URI = encodeURIComponent(import.meta.env.VITE_KAKAO_REDIRECT_URI);
 
-    const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+    const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
     window.location.href = kakaoURL;
   };
 

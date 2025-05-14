@@ -7,24 +7,23 @@ function Auth() {
 
   useEffect(() => {
     const searchParams = new URL(window.location.href).searchParams;
+    const idToken = searchParams.get("idToken");
+    const isRegistered = searchParams.get("isRegistered");
 
-    const accessToken = searchParams.get("access_token");
-    const isNewUser = searchParams.get("isNewUser");
-
-    if (!accessToken) {
-      alert("로그인에 실패했습니다. access_token이 없습니다.");
+    if (!idToken) {
+      alert("로그인에 실패했습니다. idToken이 없습니다.");
       navigate("/");
       return;
     }
 
-    // 1. access_token 저장
-    localStorage.setItem("access_token", accessToken);
+    // ✅ 1. idToken을 저장 (access_token 대신)
+    localStorage.setItem("access_token", idToken); // 네 앱에서 access_token처럼 쓰는 용도라면 이름은 그대로 둬도 됨
 
-    // 2. 회원 여부에 따라 분기
-    if (isNewUser === "true") {
-      navigate("/startsettings"); // 신규 회원이면 설정 페이지로 이동
+    // ✅ 2. 등록 여부에 따라 분기
+    if (isRegistered === "false") {
+      navigate("/startsettings"); // 신규 회원
     } else {
-      navigate("/home"); // 기존 회원이면 홈으로 이동
+      navigate("/home"); // 기존 회원
     }
   }, [navigate]);
 
