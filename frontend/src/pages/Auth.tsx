@@ -1,9 +1,10 @@
-// src/pages/Auth.tsx
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLogin } from "../hooks/useLogin";
 
 function Auth() {
   const navigate = useNavigate();
+  const loginMutation = useLogin();
 
   useEffect(() => {
     const searchParams = new URL(window.location.href).searchParams;
@@ -16,16 +17,22 @@ function Auth() {
       return;
     }
 
-    // ✅ 1. idToken을 저장 (access_token 대신)
-    localStorage.setItem("access_token", idToken); // 네 앱에서 access_token처럼 쓰는 용도라면 이름은 그대로 둬도 됨
-
-    // ✅ 2. 등록 여부에 따라 분기
-    if (isRegistered === "false") {
-      navigate("/startsettings"); // 신규 회원
-    } else {
-      navigate("/home"); // 기존 회원
-    }
-  }, [navigate]);
+    // ✅ 백엔드 login API 호출
+    loginMutation.mutate(idToken, {
+      onSuccess: () => {
+        // 로그인 API 응답 저장은 useLogin 안에서 처리 중
+        if (isRegistered === "false") {
+          navigate("/startsettings");
+        } else {
+          navigate("/home");
+        }
+      },
+      onError: () => {
+        alert("로그인 처리 중 오류가 발생했습니다.");
+        navigate("/");
+      },
+    });
+  }, [navigate, loginMutation]);
 
   return <div className="text-white text-center mt-[30vh] text-3xl">로그인 처리 중입니다...</div>;
 }
