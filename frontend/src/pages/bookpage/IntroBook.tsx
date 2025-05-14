@@ -35,7 +35,7 @@ function IntroBook() {
   //웹소켓 연결 부분 post 요청 전에 실행하고 post 보내고 닫음
   const connectWebSocket = () => {
     const accessToken = localStorage.getItem("accessToken");
-    console.log("Connecting WebSocket...");
+    // console.log("Connecting WebSocket...");
 
     const newWs = new WebSocket(`ws://k12b202.p.ssafy.io/api/v1/ws/tts-progress?token=${accessToken}`);
 
@@ -60,7 +60,7 @@ function IntroBook() {
     });
 
     newWs.addEventListener("close", (event) => {
-      console.log("WebSocket closed:", event.code, event.reason);
+      // console.log("WebSocket closed:", event.code, event.reason);
     });
 
     return newWs;
