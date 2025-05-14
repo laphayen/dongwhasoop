@@ -9,6 +9,7 @@ interface LetterState {
   totalLetterBooks: Book[] | null;
   setTotalLetterBooks: (books: Book[]) => void;
 
+
   // 편지 조회
   letters: Letter[] | null;
   setLetters: (letters: Letter[]) => void;
@@ -30,6 +31,10 @@ interface LetterState {
   letterContent: string;
   setLetterContent: (content: string) => void;
   clearLetterContent: () => void;
+
+  // Active tab state
+  activeTab: "sent" | "received";
+  setActiveTab: (tab: "sent" | "received") => void;
 }
 
 export const useLetterStore = create<LetterState>((set) => ({
@@ -61,4 +66,8 @@ export const useLetterStore = create<LetterState>((set) => ({
   letterContent: "",
   setLetterContent: (content) => set({ letterContent: content }),
   clearLetterContent: () => set({ letterContent: "" }),
+
+  // Active tab state
+  activeTab: "sent",
+  setActiveTab: (tab) => set({ activeTab: tab }),
 }));

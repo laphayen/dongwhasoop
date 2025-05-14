@@ -130,7 +130,7 @@ function BookDetail() {
           <img
             src={RestartBook}
             alt="다시 듣기"
-            className="w-[10vw]"
+            className="w-[18vh] tablet2560:w-[11.5vw]"
           />
         </button>
       </div>

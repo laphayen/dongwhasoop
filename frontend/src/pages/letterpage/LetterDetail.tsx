@@ -42,12 +42,18 @@ function LetterDetail() {
         <div className="relative w-[55vw] xl:w-[50vw] left-[14%] tablet2560:w-[90vh]">
           <img src={letterpaper} alt="Letter Paper" className="w-full" />
 
-          <div className="tablet2560:text-5xl xl:text-2xl font-maplestory absolute top-[10%] left-[5%] right-[5%] bottom-[10%] flex flex-col">
+          <div className="tablet2560:text-[4vh] xl:text-2xl font-maplestory absolute top-[10%] left-[5%] right-[5%] bottom-[10%] flex flex-col">
             {/* 편지 내용 */}
-            <div className="leading-relaxed whitespace-pre-line min-h-[80%]">{data.letter_content}</div>
+            <div className={`leading-relaxed whitespace-pre-line min-h-[80%] ${
+              data.letter_content.length > 160 ? 'text-[3vh]' : ''
+            }`}>
+              {data.letter_content}
+            </div>
 
             {/* 날짜와 보낸 사람 */}
-            <div className="flex tablet2560:text-5xl xl:text-2xl tablet2560:pb-10 font-maplestory justify-end items-center gap-8 mt-[4vh]">
+            <div className={`flex tablet2560:text-[3vh] xl:text-2xl tablet2560:pb-10 font-maplestory justify-end items-center gap-8 mt-[4vh] ${
+              data.letter_content.length > 45 ? 'text-[3vh]' : ''
+            }`}>
               <div>{new Date(data.created_at).toLocaleDateString()}</div>
               <div className="flex items-center gap-3">
                 <span>{data.character_name}</span>

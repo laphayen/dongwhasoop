@@ -30,6 +30,7 @@ export const getSong = async (bookId: number) => {
       },
     }
   );
+  console.log(response.data.data)
   return response.data.data.songUrl;
 };
 

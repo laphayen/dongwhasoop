@@ -10,10 +10,13 @@ import GoBookList from "../../assets/images/endpage/gobooklist.webp";
 import ReplayBook from "../../assets/images/endpage/replaybook.webp";
 // import HomeButton from "../components/commons/HomeButton";
 
+import { useBookStore } from "../../stores/bookStore";
+
 function BookEnd() {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = location.state || {};
+  const { selectedBook } = useBookStore();
 
   return (
     <div
@@ -24,7 +27,7 @@ function BookEnd() {
       {/* 제목 */}
       <div className="mt-[15vh]">
         <h1 className="text-[10vh] font-bazzi text-black-600 text-center text-outline-sm">
-          다음 이야기에서도 함께 해요!
+          다음 이야기도 함께 해요!
         </h1>
       </div>
 
@@ -36,7 +39,11 @@ function BookEnd() {
           </button>
         </div>
         <div className="mb-[45vh]">
-          <button onClick={() => navigate(`/bookdetail/${id}`, { state: { bookId: id } })}>
+          <button onClick={() => {
+            if (selectedBook?.bookId) {
+              navigate(`/bookdetail/${selectedBook.bookId}`);
+            }
+          }}>
             <img src={ReplayBook} alt="다시보기" className="w-[20vw] max-w-[700px] min-w-[100px]" />
           </button>
         </div>
@@ -46,7 +53,11 @@ function BookEnd() {
           </button>
         </div>
         <div className="mb-[45vh]">
-          <button>
+          <button onClick={() => {
+            if (selectedBook?.bookId) {
+              navigate(`/songdetail/${selectedBook.bookId}`);
+            }
+          }}>
             <img src={Song} alt="동요듣기" className="w-[20vw] max-w-[700px] min-w-[100px]" />
           </button>
         </div>

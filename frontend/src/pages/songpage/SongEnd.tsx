@@ -25,7 +25,7 @@ function SongEnd() {
         <h1 className="text-[10vh] font-bazzi text-black-600 text-center text-outline-sm">신나게 노래 들었어요!</h1>
       </div>
 
-      {/* 홈, 편지, 동요 버튼*/}
+      {/* 홈, 다시듣기, 동화보기 버튼*/}
       <div className="relative z-[10] flex justify-center items-center h-full gap-[0vw]">
         <div className="mb-[45vh]">
           <button

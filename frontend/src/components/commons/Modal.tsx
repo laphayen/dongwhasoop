@@ -4,13 +4,14 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  type: 'back' | 'send' | 'loading' | 'selectvoice' | 'setting' | 'childlimit';
+  type: 'back' | 'send' | 'loading' | 'selectvoice' | 'setting' | 'childlimit' | 'cannotsend';
   showCancelButton?: boolean;  // New prop to control button display
 }
 
 const modalTexts = {
-  back: "정말 뒤로 가나요?\n보고 있던 페이지로 돌아가지 못합니다.",
-  send: "정말 편지를 보낼까요?\n편지는 수정할 수 없습니다",
+  back: "보고 있던 페이지로 다시 돌아오지 못해요.\n정말 책 읽기를 종료할까요?",
+  send: "정말 편지를 보낼까요?\n보낸 편지는 수정할 수 없어요.",
+  cannotsend: "음성 녹음을 통해 편지를 쓴 후,\n편지를 보내주세요.",
   loading: "잠시만 기다려주세요.\n동화책을 만들고 있습니다.",
   selectvoice: "녹음하는 사람이 누군지 선택해주세요!",
   setting: "이름과 캐릭터를 선택해주세요!",

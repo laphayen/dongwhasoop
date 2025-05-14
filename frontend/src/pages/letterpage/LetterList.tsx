@@ -21,17 +21,12 @@ import btnSound from "../../assets/music/btn_sound.mp3";
 
 function LetterList() {
   const navigate = useNavigate();
-  const { selectedBookId, setSelectedBook } = useLetterStore();
-  const [activeTab, setActiveTab] = useState<"sent" | "received">("sent");
+  const { selectedBookId, setSelectedBook, activeTab, setActiveTab } = useLetterStore();
   const [bookPage, setBookPage] = useState(0);
   const BOOKS_PER_PAGE = 6;
   const [currentPage, setCurrentPage] = useState(0);
   const LETTERS_PER_PAGE = 4;
-  const handleTabChange = (tab: "sent" | "received") => {
-    const audio = new Audio(btnSound);
-    audio.play();
-    setActiveTab(tab);
-  };
+
 
   // React Query로 데이터 fetching
   const { data: letterBooks, isLoading, error } = useGetLetterBookList();
@@ -48,6 +43,12 @@ function LetterList() {
   useEffect(() => {
     setCurrentPage(0);
   }, [activeTab, selectedBookId]);
+
+  const handleTabChange = (tab: "sent" | "received") => {
+    const audio = new Audio(btnSound);
+    audio.play();
+    setActiveTab(tab); // Use store's setActiveTab
+  };
 
   // 편지 목록 페이지네이션
   const getCurrentPageLetters = () => {
@@ -174,7 +175,13 @@ function LetterList() {
                 className="relative cursor-pointer hover:scale-105 transition-transform"
                 onClick={() => handleLetterClick(letter.letter_id.toString())}
               >
-                <img src={letterpicture} alt="Polaroid" className="w-[15vw] tablet2560:w-[30rem]" />
+                <img 
+                  src={letterpicture} 
+                  alt="Polaroid" 
+                  className={`w-[15vw] tablet2560:w-[30rem] ${
+                    !letter.is_read ? 'brightness-110 contrast-110' : 'brightness-90 contrast-90'
+                  }`} 
+                />
                 <div className="text-maplestory font-bold absolute top-10 text-sm xl:top-10 xl:text-sm tablet2560:top-5 tablet2560:left-11 tablet2560:text-3xl tablet2560:mt-20 ms-6 text-gray-600">
                   {new Date(letter.created_at).toLocaleDateString()}
                 </div>
@@ -184,7 +191,9 @@ function LetterList() {
                   <img
                     src={letter.character_image_url || defaultchar}
                     alt="Character"
-                    className="w-[16vh] tablet2560:w-[19rem] rounded-2xl object-cover"
+                    className={`w-[16vh] tablet2560:w-[19rem] rounded-2xl object-cover ${
+                      !letter.is_read ? 'brightness-110 contrast-110' : 'brightness-90 contrast-90'
+                    }`}
                   />
                   <div className="text-base xl:text-xl tablet2560:text-4xl font-maplestory text-center">
                     {letter.character_name}

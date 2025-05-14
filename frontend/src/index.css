@@ -88,6 +88,7 @@ button:focus-visible {
   }
 }
 
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -125,3 +126,28 @@ button:focus-visible {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes fly-right {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(25vw) translateY(-10vh);
+  }
+  50% {
+    transform: translateX(50vw) translateY(0);
+  }
+  75% {
+    transform: translateX(75vw) translateY(-10vh);
+  }
+  100% {
+    transform: translateX(100vw) translateY(0);
+  }
+}
+
+.animate-fly-right {
+  animation: fly-right 5s linear infinite;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
