@@ -25,6 +25,7 @@ export const registerUser = async (idToken: string, requestData: RegisterUserReq
   const response = await api.post<RegisterUserResponse>("/credentials", requestData, {
     headers: {
       Authorization: `Bearer ${idToken}`, // 로그인 전이라 accessToken은 없음
+      'Content-Type': 'application/json',
     },
     params: {
       idToken,

@@ -100,8 +100,15 @@ function StartSettings() {
             }
 
             const payload = {
-              children: child,
-              voice: voice,
+              children: {
+                name: child.name,
+                mascotId: child.mascotId
+              },
+              voice: {
+                data: voice.data,
+                format: voice.format,
+                gender: voice.gender
+              }
             };
 
             console.log("Payload structure:", payload);  // 자세한 로깅
