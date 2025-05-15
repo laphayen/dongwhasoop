@@ -13,7 +13,7 @@ function BookDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const bookPages = useBookStore((state) => state.bookPages);
   const bookID = useBookStore((state) => state.selectedBook?.bookId);
-  const [audio] = useState(new Audio());  // 오디오 객체 생성
+  const [audio] = useState(new Audio()); // 오디오 객체 생성
 
   const handleBackClick = () => {
     setIsModalOpen(true);
@@ -65,6 +65,20 @@ function BookDetail() {
     }
   };
 
+  useEffect(() => {
+    if (!bookPages) return;
+
+    // 현재 페이지, 다음 페이지, 이전 페이지 미리 로딩
+    const preloadTargets = [bookPages[currentPage - 1], bookPages[currentPage], bookPages[currentPage + 1]];
+
+    preloadTargets.forEach((page) => {
+      if (page?.imageUrl) {
+        const img = new Image();
+        img.src = page.imageUrl;
+      }
+    });
+  }, [currentPage, bookPages]);
+
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden">
       <BackButton onClick={handleBackClick} />
@@ -115,11 +129,7 @@ function BookDetail() {
           </button>
         ) : (
           <button onClick={() => navigate("/bookend", { state: { bookID } })}>
-            <img
-              src={NextPage}
-              alt="넘어가기"
-              className="w-[10vw] max-w-[200px]"
-            />
+            <img src={NextPage} alt="넘어가기" className="w-[10vw] max-w-[200px]" />
           </button>
         )}
       </div>
@@ -127,11 +137,7 @@ function BookDetail() {
       {/* 다시듣기 버튼 */}
       <div className="absolute z-[10] mt-[5vh] right-[5vh]">
         <button onClick={handleReplay}>
-          <img
-            src={RestartBook}
-            alt="다시 듣기"
-            className="w-[18vh] tablet2560:w-[11.5vw]"
-          />
+          <img src={RestartBook} alt="다시 듣기" className="w-[18vh] tablet2560:w-[11.5vw]" />
         </button>
       </div>
     </div>

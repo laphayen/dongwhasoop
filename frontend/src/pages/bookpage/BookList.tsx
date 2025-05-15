@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import { ScaleLoader } from "react-spinners";
 
@@ -16,6 +16,11 @@ function BookList() {
   const navigate = useNavigate();
   const { currentPage, setCurrentPage, setSelectedBook, setTotalBooks } = useBookStore();
   const { data, isLoading } = useGetBookList();
+  const [loadedImages, setLoadedImages] = useState<{ [bookId: number]: boolean }>({});
+
+  const handleImageLoad = (bookId: number) => {
+    setLoadedImages((prev) => ({ ...prev, [bookId]: true }));
+  };
 
   // 컴포넌트 마운트 시 currentPage 초기화
   useEffect(() => {
@@ -28,6 +33,29 @@ function BookList() {
       setTotalBooks(data.content);
     }
   }, [data, setTotalBooks]);
+
+  useEffect(() => {
+    if (data?.content) {
+      data.content.forEach((book) => {
+        if (book.imageUrl) {
+          const img = new Image();
+          img.src = book.imageUrl;
+        }
+      });
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (data?.content) {
+      const nextPageBooks = data.content.slice(currentPage + 1, currentPage + 4);
+      nextPageBooks.forEach((book) => {
+        if (book.imageUrl) {
+          const img = new Image();
+          img.src = book.imageUrl;
+        }
+      });
+    }
+  }, [currentPage, data]);
 
   const handlePrev = () => {
     new Audio(btnSound).play();
@@ -60,9 +88,12 @@ function BookList() {
               }}
             >
               <img
-                src={book.imageUrl || "/default-book-cover.png"} // Add a default image
+                src={book.imageUrl || "/default-book-cover.png"}
                 alt={book.title}
-                className="w-[14vw] talblet2560:w[25vw] max-w-[343px] rounded-xl border-4 border-white shadow-md"
+                onLoad={() => handleImageLoad(book.bookId)}
+                className={`transition-opacity duration-500 ease-in ${
+                  loadedImages[book.bookId] ? "opacity-100" : "opacity-0"
+                } w-[14vw] talblet2560:w[25vw] max-w-[343px] rounded-xl border-4 border-white shadow-md`}
               />
 
               <h3 className="mt-2 text-[4.5vh] font-bazzi text-[#384EA6] text-outline-xs text-center">{book.title}</h3>

@@ -1,4 +1,3 @@
-import LoginBackground from "../assets/images/loginpage/loginbackground.webp";
 import BookText from "../assets/images/loginpage/booktext.webp";
 import KaKaoLogin from "../components/commons/KaKaoLoginButton.tsx";
 
@@ -6,7 +5,7 @@ function Login() {
   return (
     <div
       className="fixed inset-0 w-screen h-screen bg-cover bg-center text-white"
-      style={{ backgroundImage: `url(${LoginBackground})` }}
+      style={{ backgroundImage: "url('/backgrounds/loginbackground.webp')" }}
     >
       {/* 동화숲 로고 */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
