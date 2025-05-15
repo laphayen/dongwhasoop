@@ -1,15 +1,17 @@
 #services/letters_service.py
-from db.db import database
+from datetime import datetime, timezone
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, insert
 from db.models import characters, letters, children
 from services.openai_client import ask_chatgpt
-from db.queries.letters import insert_letter
 from config import VOICE_TYPE_URLS
 from services.tts_service import generate_tts
 import asyncio
 
-async def generate_letter(letter_id: int) -> str:
+async def generate_letter(session: AsyncSession, letter_id: int):
   # 1. 기존 편지에서 character_id, child_id 조회
-  original_letter = await wait_for_letter(letter_id)
+  original_letter = await wait_for_letter(session, letter_id)
 
   if not original_letter:
     raise ValueError("기존 편지를 찾을 수 없습니다.")
@@ -20,8 +22,10 @@ async def generate_letter(letter_id: int) -> str:
   previous_content = original_letter["letter_content"]
 
   # 2. 캐릭터 정보 조회
-  char_query = characters.select().where(characters.c.character_id == character_id)
-  character = await database.fetch_one(char_query)
+  char_query = select(characters).where(
+    characters.c.character_id == character_id)
+  result = await session.execute(char_query)
+  character = result.mappings().one_or_none()
 
   if not character:
     raise ValueError("캐릭터를 찾을 수 없습니다.")
@@ -29,8 +33,9 @@ async def generate_letter(letter_id: int) -> str:
   character_name = character["name"]
 
   # 3. 아이 이름 조회
-  child_query = children.select().where(children.c.child_id == child_id)
-  child = await database.fetch_one(child_query)
+  child_query = select(children).where(children.c.child_id == child_id)
+  result = await session.execute(child_query)
+  child = result.mappings().one_or_none()
 
   if not child:
     raise ValueError("아이를 찾을 수 없습니다.")
@@ -63,16 +68,29 @@ async def generate_letter(letter_id: int) -> str:
   tts_url = await generate_tts(ai_letter, speaker_url=voice_url)
 
   # 6. DB 저장
-  await insert_letter(character_id, child_id, book_id, ai_letter, message_type=False, audio_url=tts_url)
+  # 7. DB 저장
+  query = insert(letters).values(
+      character_id=character_id,
+      child_id=child_id,
+      book_id=book_id,
+      letter_content=ai_letter,
+      message_type=False,
+      is_read=False,
+      audio_url=tts_url,
+      created_at=datetime.now(timezone.utc),
+      updated_at=datetime.now(timezone.utc),
+  )
+  await session.execute(query)
+  await session.commit()
 
-  return ai_letter
 
 
 # Mysql로 부터 편지 불러오는 함수
-async def wait_for_letter(letter_id: int, max_attempts=5, delay=0.3):
+async def wait_for_letter(session: AsyncSession, letter_id: int, max_attempts=5, delay=0.3):
   for attempt in range(max_attempts):
-    letter_query = letters.select().where(letters.c.letter_id == letter_id)
-    original_letter = await database.fetch_one(letter_query)
+    query = select(letters).where(letters.c.letter_id == letter_id)
+    result = await session.execute(query)
+    original_letter = result.mappings().one_or_none()
     if original_letter:
       return original_letter
     await asyncio.sleep(delay)
