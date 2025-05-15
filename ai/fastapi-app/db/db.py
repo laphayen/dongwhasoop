@@ -1,7 +1,19 @@
 #db/db.py
-from databases import Database
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.orm import declarative_base
 from config import DATABASE_URL
 
-database = Database(DATABASE_URL)
-metadata = MetaData()
+engine = create_async_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    pool_size=5,
+    max_overflow=10
+)
+
+AsyncSessionLocal = async_sessionmaker(
+    bind=engine,
+    expire_on_commit=False,
+    autoflush=False
+)
+
+Base = declarative_base()

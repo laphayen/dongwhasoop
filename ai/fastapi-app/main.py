@@ -5,17 +5,18 @@
 import logging
 from logstash_async.handler import AsynchronousLogstashHandler
 from logstash_async.formatter import LogstashFormatter
+
 from fastapi import FastAPI, UploadFile, File
 from contextlib import asynccontextmanager
 import asyncio
-from db.db import database
+
 from kafka.producer import start_producer, stop_producer, send_message
 from kafka.consumer import consume_messages
 from config import KAFKA_TOPIC
+
 from services.s3_utils import upload_file_to_s3
 
-consumer_task: asyncio.Task = None  # 백그라운드 태스크 (지속적으로 카프카로부터 메시지를 읽어옴)
-
+consumer_task: asyncio.Task # 백그라운드 태스크 (지속적으로 카프카로부터 메시지를 읽어옴)
 # 기본 로거 설정
 logger = logging.getLogger("fastapi-app")
 logger.setLevel(logging.INFO)
@@ -34,17 +35,16 @@ formatter = LogstashFormatter()
 logstash_handler.setFormatter(formatter)
 logger.addHandler(logstash_handler)
 
-# FastAPI 앱의 생명 주기(Lifecycle)를 관리
+#FastAPI 앱의 생명 주기(Lifecycle)를 관리
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global consumer_task
-    await database.connect()
+
     await start_producer()
     consumer_task = asyncio.create_task(consume_messages())
     try:
         yield
     finally:
-        await database.disconnect()
         await stop_producer()
         if consumer_task:
             consumer_task.cancel()
@@ -53,7 +53,6 @@ async def lifespan(app: FastAPI):
             except asyncio.CancelledError:
                 print("🛑 Kafka consumer task cancelled")
 
-# app 객체를 한 번만 정의 (이전에 첫 번째로 정의한 app 객체 제거)
 app = FastAPI(lifespan=lifespan)
 
 @app.middleware("http")
@@ -89,7 +88,7 @@ async def send(message: str):
     await send_message(KAFKA_TOPIC, message)
     return {"status": "sent", "message": message}
 
-# S3 테스트
+#S3 테스트
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
     file_url = upload_file_to_s3(
