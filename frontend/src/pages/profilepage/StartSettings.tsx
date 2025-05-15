@@ -78,6 +78,13 @@ function StartSettings() {
           onClick={() => {
             const child = JSON.parse(localStorage.getItem("child") || "{}");
             const voice = JSON.parse(localStorage.getItem("voice") || "{}");
+            const currentIdToken = localStorage.getItem("idToken");
+
+            if (!currentIdToken) {
+              console.error("No idToken found");
+              alert("인증 정보가 없습니다. 다시 로그인해주세요.");
+              return;
+            }
 
             // 데이터 구조 검증
             if (!child.name || !child.mascotId) {
