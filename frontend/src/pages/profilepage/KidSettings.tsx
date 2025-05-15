@@ -43,6 +43,14 @@ function KidSettings() {
     }
   };
 
+  const mascotIdMap: Record<string, number> = {
+    cat: 1,
+    dog: 2,
+    bear: 3,
+    chik: 4,
+    panda: 5,
+  };
+
   // 저장 버튼 누르면?
   const handleSave = () => {
     new Audio(btnSound).play();
@@ -57,40 +65,17 @@ function KidSettings() {
       mascot: selectedCharacter,
     };
 
-    localStorage.setItem("childProfile", JSON.stringify(childProfile));
+    localStorage.setItem(
+      "child",
+      JSON.stringify({
+        name: childName,
+        mascotId: mascotIdMap[selectedCharacter], // 이건 숫자로!
+      })
+    );
     localStorage.setItem("childRegistered", "true");
 
     navigate("/startsettings");
   };
-
-  // 백엔드 연결용
-  // const mascotIdMap: Record<string, number> = {
-  //   cat: 1,
-  //   dog: 2,
-  //   bear: 3,
-  //   chik: 4,
-  //   panda: 5,
-  // };
-  // const handleSave = async () => {
-  //   if (!childName || !selectedCharacter) {
-  //     alert("이름과 캐릭터를 골라주세요.");
-  //     return;
-  //   }
-
-  //   try {
-  //     await createChildProfile({
-  //       name: childName,
-  //       mascotId: mascotIdMap[selectedCharacter],
-  //     });
-
-  //
-  //     localStorage.setItem("childRegistered", "true");
-  //     navigate("/startsettings");
-  //   } catch (error) {
-  //     console.error("자녀 등록 실패:", error);
-  //     alert("자녀 등록에 실패했습니다. 다시 시도해주세요.");
-  //   }
-  // };
 
   return (
     <div

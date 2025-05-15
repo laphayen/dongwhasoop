@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-
+import { useRegisterUser } from "../../hooks/useRegisterUser";
+import { useLocation } from "react-router-dom";
 import mainpage from "../../assets/images/mainpage/mainpage.webp";
 import AddChild from "../../assets/images/settingpage/addchild.webp"; //애들 추가 완료
 import VoiceRecIcon from "../../assets/images/settingpage/voicerec.webp"; //목소리 녹음 완료
@@ -13,6 +14,9 @@ import btnSound from "../../assets/music/btn_sound.mp3";
 
 function StartSettings() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const idToken = location.state?.idToken;
+  const { mutate: registerUser } = useRegisterUser(idToken);
 
   const [isVoiceRecorded, setIsVoiceRecorded] = useState(false);
   const [isChildAdded, setIsChildAdded] = useState(false);
@@ -61,11 +65,33 @@ function StartSettings() {
 
       {/* 등록하기 버튼 (둘 다 완료되어야 활성화) */}
       {isVoiceRecorded && isChildAdded && (
-        <div className="fixed bottom-0 right-0 mb-4 mx-8">
-          <button onClick={() => navigate("/home")}>
-            <img src={Next} alt="등록하기" className="w-[15vw]" />
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            const child = JSON.parse(localStorage.getItem("child") || "{}");
+            const voice = JSON.parse(localStorage.getItem("voice") || "{}");
+
+            const payload = {
+              children: child,
+              voice: voice,
+            };
+
+            console.log("📦 회원가입 payload:", payload); // 🔍 여기 추가
+            console.log("🟡 idToken:", idToken); // 🔍 여기 추가
+
+            registerUser(payload, {
+              onSuccess: () => {
+                alert("회원가입 완료!");
+                navigate("/home");
+              },
+              onError: (error) => {
+                console.error("회원가입 실패:", error); // 🔍 이거 로그 꼭 찍어줘
+                alert("회원가입 실패");
+              },
+            });
+          }}
+        >
+          <img src={Next} alt="등록하기" />
+        </button>
       )}
     </div>
   );

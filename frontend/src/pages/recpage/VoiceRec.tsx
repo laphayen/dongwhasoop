@@ -21,14 +21,19 @@ import btnSound from "../../assets/music/btn_sound.mp3";
 function VoiceRec() {
   const navigate = useNavigate();
   const location = useLocation();
+  const gender = location.state?.gender === "MALE";
+
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
-  const gender = location.state?.gender === "MALE";
-  const postVoiceMutation = usePostUserVoice();
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const totalPages = storyData.story.length;
+
+  const postVoiceMutation = usePostUserVoice();
   const deleteVoiceMutation = useDeleteUserVoice();
   const voices = useVoiceStore((state) => state.voices);
   const setVoices = useVoiceStore((state) => state.setVoices);
@@ -107,15 +112,30 @@ function VoiceRec() {
 
       // mutation이 성공적으로 완료된 후에만 navigate
       if (result.success) {
-        navigate("/recsuccess");
+        // base64 변환하여 localStorage 저장
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64data = reader.result?.toString().split(",")[1];
+          if (!base64data) return;
+
+          localStorage.setItem(
+            "voice",
+            JSON.stringify({
+              data: base64data,
+              format: "wav",
+              gender: gender ? "MALE" : "FEMALE",
+            })
+          );
+          localStorage.setItem("voiceRecorded", "true");
+
+          navigate("/recsuccess");
+        };
+        reader.readAsDataURL(file);
       }
     } catch (error) {
-      console.error("Error uploading voice:", error);
+      console.error("음성 등록 실패:", error);
     }
   };
-
-  const [currentPage, setCurrentPage] = useState(0);
-  const totalPages = storyData.story.length;
 
   const handleNextPage = () => {
     if (currentPage < totalPages - 1) {

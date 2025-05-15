@@ -1,12 +1,12 @@
-import { useCallback } from "react";
 import KaKaoLogin from "../../assets/images/loginpage/kakologin.webp";
 
 function KakaoLoginButton() {
   const handleKakaoLogin = () => {
     const CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
-    const REDIRECT_URI = encodeURIComponent(import.meta.env.VITE_KAKAO_REDIRECT_URI);
+    const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
 
     const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+
     window.location.href = kakaoURL;
   };
 

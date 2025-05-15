@@ -112,7 +112,7 @@ function App() {
         <Route path="/addingprofile" element={<AddingProfile></AddingProfile>}></Route>
         <Route path="/auth" element={<KakaoCallback></KakaoCallback>}></Route>
         <Route path="/testapipage" element={<TestApiPage></TestApiPage>}></Route>
-        <Route path="/auth" element={<Auth></Auth>}></Route>
+        {/* <Route path="/auth" element={<Auth></Auth>}></Route> */}
       </Routes>
     </>
   );

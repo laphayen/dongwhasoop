@@ -1,35 +1,57 @@
+// KakaoCallback.tsx
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { CheckIsRegistered } from "../api/authApi";
+import { useLogin } from "../hooks/useLogin";
 
 function KakaoCallback() {
   const navigate = useNavigate();
+  const { mutate: loginUser } = useLogin();
 
   useEffect(() => {
-    const searchParams = new URL(window.location.href).searchParams;
-    const accessToken = searchParams.get("access_token");
-    const refreshToken = searchParams.get("refresh_token"); // optional
-    const isNewUser = searchParams.get("isNewUser");
-
-    if (!accessToken) {
-      alert("로그인에 실패했습니다. access_token이 없습니다.");
+    const code = new URL(window.location.href).searchParams.get("code");
+    if (!code) {
+      alert("인가 코드가 없습니다.");
       navigate("/");
       return;
     }
 
-    // 저장
-    localStorage.setItem("accessToken", accessToken);
-    if (refreshToken) {
-      localStorage.setItem("refreshToken", refreshToken);
-    }
+    handleRegisterCheck(code);
+  }, []);
 
-    if (isNewUser === "true") {
-      navigate("/startsettings");
-    } else {
-      navigate("/profile");
-    }
-  }, [navigate]);
+  const handleRegisterCheck = async (code: string) => {
+    try {
+      const { isRegistered, idToken } = await CheckIsRegistered(code);
 
-  return <div>로그인 처리 중입니다...</div>;
+      console.log("isRegistered: ", isRegistered);
+      console.log("idToken: ", idToken);
+
+      if (isRegistered) {
+        loginUser(idToken, {
+          onSuccess: () => {
+            navigate("/home");
+          },
+          onError: () => {
+            alert("로그인 실패");
+            navigate("/");
+          },
+        });
+      } else {
+        navigate("/startsettings", {
+          state: {
+            idToken,
+            provider: "KAKAO",
+          },
+        });
+      }
+    } catch (error) {
+      console.error("로그인 흐름 중 오류", error);
+      alert("로그인 실패");
+      navigate("/");
+    }
+  };
+
+  return <div className="text-center mt-[30vh] text-2xl text-black">로그인 처리 중입니다...</div>;
 }
 
 export default KakaoCallback;
