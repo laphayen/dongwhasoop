@@ -86,11 +86,20 @@ function StartSettings() {
           onClick={() => {
             new Audio(btnSound).play();
             if (selectedParent) {
-              navigate("/voicerec", {
-                state: {
-                  gender: selectedParent === "mother" ? "FEMALE" : "MALE",
-                },
-              });
+              const accessToken = localStorage.getItem("accessToken");
+              if (accessToken) {
+                navigate("/voicerec", {
+                  state: {
+                    gender: selectedParent === "mother" ? "FEMALE" : "MALE",
+                  },
+                });
+              } else {
+                navigate("/startvoicerec", {
+                  state: {
+                    gender: selectedParent === "mother" ? "FEMALE" : "MALE",
+                  },
+                });
+              }
             } else {
               setIsModalOpen(true);
             }

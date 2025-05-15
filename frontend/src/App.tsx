@@ -16,6 +16,7 @@ import SongEnd from "./pages/songpage/SongEnd";
 import StartSettings from "./pages/profilepage/StartSettings";
 import VoiceSelect from "./pages/recpage/VoiceSelect";
 import VoiceRec from "./pages/recpage/VoiceRec";
+import StartVoiceRec from "./pages/recpage/StartVoiceRec";
 import WriteLetter from "./pages/letterpage/WriteLetter";
 import SendWho from "./pages/letterpage/SendWho";
 import SendLetter from "./pages/letterpage/SendLetter";
@@ -104,6 +105,7 @@ function App() {
           <Route path="/startsettings" element={<StartSettings />} />
           <Route path="/recinfo" element={<RecInfo />} />
           <Route path="/voicerec" element={<VoiceRec />} />
+          <Route path="/startvoicerec" element={<StartVoiceRec />} />
           <Route path="/recsuccess" element={<RecSuccess />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/kidsettings" element={<KidSettings />} />
