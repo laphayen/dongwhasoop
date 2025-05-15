@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { useEffect, useRef } from "react";
 import { Routes, Route } from "react-router-dom";
 // import { useAuth } from "./hooks/useAuth";
@@ -5,22 +6,17 @@ import Login from "./pages/Login";
 import BookEnd from "./pages/bookpage/BookEnd";
 import Intro from "./pages/Intro";
 import IntroBook from "./pages/bookpage/IntroBook";
-import BookList from "./pages/bookpage/BookList";
 import BookLoading from "./pages/bookpage/BookLoading";
 import Home from "./pages/Home";
 import Loading from "./pages/Loading";
-import LetterDetail from "./pages/letterpage/LetterDetail";
-import LetterList from "./pages/letterpage/LetterList";
 import Profile from "./pages/profilepage/Profile";
 import RecInfo from "./pages/recpage/RecInfo";
 import Settings from "./pages/profilepage/Settings";
-import SongDetail from "./pages/songpage/SongDetail";
 import SongEnd from "./pages/songpage/SongEnd";
 import StartSettings from "./pages/profilepage/StartSettings";
 import VoiceSelect from "./pages/recpage/VoiceSelect";
 import VoiceRec from "./pages/recpage/VoiceRec";
 import WriteLetter from "./pages/letterpage/WriteLetter";
-import BookDetail from "./pages/bookpage/BookDetail";
 import SendWho from "./pages/letterpage/SendWho";
 import SendLetter from "./pages/letterpage/SendLetter";
 import RecSuccess from "./pages/recpage/RecSuccess";
@@ -34,6 +30,15 @@ import TestApiPage from "./pages/TestApiPage";
 import Auth from "./pages/Auth";
 import bgm from "./assets/music/fairytale_bgm.mp3";
 import { useMusicStore } from "./stores/musicStore";
+
+// Lazy Loading 적용 페이지
+const LetterList = lazy(() => import('./pages/letterpage/LetterList'));
+const BookDetail = lazy(() => import('./pages/bookpage/BookDetail'));
+const SongDetail = lazy(() => import('./pages/songpage/SongDetail'));
+const BookList = lazy(() => import('./pages/bookpage/BookList'));
+const LetterDetail = lazy(() => import('./pages/letterpage/LetterDetail'));
+
+
 
 function App() {
   // const navigate = useNavigate();
@@ -80,40 +85,48 @@ function App() {
 
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Login></Login>}></Route>
-        <Route path="/bookend" element={<BookEnd></BookEnd>}></Route>
-        <Route path="/intro/:id" element={<Intro></Intro>}></Route>
-        <Route path="/introbook/:id" element={<IntroBook></IntroBook>}></Route>
-        <Route path="/booklist" element={<BookList></BookList>}></Route>
-        <Route path="/bookloading" element={<BookLoading></BookLoading>}></Route>
-        <Route path="/home" element={<Home></Home>}></Route>
-        <Route path="/loading" element={<Loading></Loading>}></Route>
-        <Route path="/letterdetail" element={<LetterDetail></LetterDetail>}></Route>
-        <Route path="/letterdetail/:id" element={<LetterDetail></LetterDetail>}></Route>
-        <Route path="/letterlist" element={<LetterList></LetterList>}></Route>
-        <Route path="/profile" element={<Profile></Profile>}></Route>
-        <Route path="/recinfo" element={<RecInfo></RecInfo>}></Route>
-        <Route path="/settings" element={<Settings></Settings>}></Route>
-        <Route path="/songdetail/:id" element={<SongDetail></SongDetail>}></Route>
-        <Route path="/songend" element={<SongEnd></SongEnd>}></Route>
-        <Route path="/startsettings" element={<StartSettings></StartSettings>}></Route>
-        <Route path="/voiceselect" element={<VoiceSelect></VoiceSelect>}></Route>
-        <Route path="/voicerec" element={<VoiceRec></VoiceRec>}></Route>
-        <Route path="/writeletter" element={<WriteLetter></WriteLetter>}></Route>
-        <Route path="/bookdetail/:id" element={<BookDetail></BookDetail>}></Route>
-        <Route path="/sendwho" element={<SendWho></SendWho>}></Route>
-        <Route path="/sendletter" element={<SendLetter></SendLetter>}></Route>
-        <Route path="/recsuccess" element={<RecSuccess></RecSuccess>}></Route>
-        <Route path="/kidsettings" element={<KidSettings></KidSettings>}></Route>
-        <Route path="/editprofile" element={<EditProfile></EditProfile>}></Route>
-        <Route path="/editingprofile" element={<EditingProfile></EditingProfile>}></Route>
-        <Route path="/editingprofile/:id" element={<EditingProfile></EditingProfile>}></Route>
-        <Route path="/addingprofile" element={<AddingProfile></AddingProfile>}></Route>
-        <Route path="/auth" element={<KakaoCallback></KakaoCallback>}></Route>
-        <Route path="/testapipage" element={<TestApiPage></TestApiPage>}></Route>
-        {/* <Route path="/auth" element={<Auth></Auth>}></Route> */}
-      </Routes>
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          {/* 인증 관련 */}
+          <Route path="/" element={<Login />} />
+          <Route path="/auth" element={<KakaoCallback />} />
+          <Route path="/loading" element={<Loading />} />
+
+          {/* lazy loading 적용 */}
+          <Route path="/booklist" element={<BookList />} />
+          <Route path="/bookdetail/:id" element={<BookDetail />} />
+          <Route path="/songdetail/:id" element={<SongDetail />} />
+          <Route path="/letterlist" element={<LetterList />} />
+          <Route path="/letterdetail/:id" element={<LetterDetail />} />
+
+          {/* lazy loading 미적용 */}
+          {/* 설정 관련 */}
+          <Route path="/startsettings" element={<StartSettings />} />
+          <Route path="/recinfo" element={<RecInfo />} />
+          <Route path="/voicerec" element={<VoiceRec />} />
+          <Route path="/recsuccess" element={<RecSuccess />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/kidsettings" element={<KidSettings />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/editprofile" element={<EditProfile />} />
+          <Route path="/editingprofile" element={<EditingProfile />} />
+          <Route path="/editingprofile/:id" element={<EditingProfile />} />
+          <Route path="/addingprofile" element={<AddingProfile />} />
+
+          {/* 기타 */}
+          <Route path="/home" element={<Home />} />
+          <Route path="/intro/:id" element={<Intro />} />
+          <Route path="/introbook/:id" element={<IntroBook />} />
+          <Route path="/voiceselect" element={<VoiceSelect />} />
+          <Route path="/bookloading" element={<BookLoading />} />
+          <Route path="/bookend" element={<BookEnd />} />
+          <Route path="/songend" element={<SongEnd />} />
+          <Route path="/sendwho" element={<SendWho />} />
+          <Route path="/writeletter" element={<WriteLetter />} />
+          <Route path="/sendletter" element={<SendLetter />} />
+          <Route path="/testapipage" element={<TestApiPage />} />
+        </Routes>
+      </Suspense>
     </>
   );
 }
