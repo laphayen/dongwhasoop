@@ -9,6 +9,7 @@ import YetAddChild from "../../assets/images/settingpage/yetaddchild.webp"; //�
 import YetVoiceRecIcon from "../../assets/images/settingpage/yetvoicerec.webp"; //목소리 녹음 미완료
 import Next from "../../assets/images/settingpage/next.webp";
 import btnSound from "../../assets/music/btn_sound.mp3";
+import axios from "axios";  // Add this import at the top
 
 // 주의: 모든 정보가 등록된 후에 '등록하기' 버튼이 떠야한다, 녹음이 완료되거나 자녀 정보를 등록하면 이미지가 바뀌어야 함.
 
@@ -76,13 +77,25 @@ function StartSettings() {
             const child = JSON.parse(localStorage.getItem("child") || "{}");
             const voice = JSON.parse(localStorage.getItem("voice") || "{}");
 
+            // 데이터 구조 검증
+            if (!child.name || !child.mascotId) {
+              console.error("Invalid child data:", child);
+              alert("자녀 정보가 올바르지 않습니다.");
+              return;
+            }
+
+            if (!voice.data || !voice.format || !voice.gender) {
+              console.error("Invalid voice data:", voice);
+              alert("음성 정보가 올바르지 않습니다.");
+              return;
+            }
+
             const payload = {
               children: child,
               voice: voice,
             };
 
-            console.log("📦 회원가입 payload:", payload); // 🔍 여기 추가
-            console.log("🟡 idToken:", idToken); // 🔍 여기 추가
+            console.log("Payload structure:", payload);  // 자세한 로깅
 
             registerUser(payload, {
               onSuccess: () => {
@@ -90,7 +103,11 @@ function StartSettings() {
                 navigate("/home");
               },
               onError: (error) => {
-                console.error("회원가입 실패:", error); // 🔍 이거 로그 꼭 찍어줘
+                if (axios.isAxiosError(error)) {  // Type guard for Axios error
+                  console.error("회원가입 실패:", error.response?.data);
+                } else {
+                  console.error("회원가입 실패:", error);
+                }
                 alert("회원가입 실패");
               },
             });
