@@ -44,16 +44,11 @@ public class CredentialController {
     }
 
     @GetMapping("/callback/kakao")
-    public RedirectView kakaoAuth(@RequestParam("code") String code) {
+    public CheckRegisteredResponse kakaoAuth(@RequestParam("code") String code) {
         log.info("카카오 OAuth 인증 코드 수신: {}", code);
-
-        CheckRegisteredResponse response = credentialService.getUserAvailableRegister(code, OauthProvider.KAKAO);
-
-        String redirectUrl = frontendRedirectUrl + "?idToken=" + response.getIdToken()
-                + "&isRegistered=" + response.getIsRegistered();
-
-        return new RedirectView(redirectUrl);
+        return credentialService.getUserAvailableRegister(code, OauthProvider.KAKAO);
     }
+
 
     @GetMapping("/oauth/valid/register")
     public CheckRegisteredResponse valid(

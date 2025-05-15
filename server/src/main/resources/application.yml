@@ -53,7 +53,7 @@ oauth:
   kakao:
     app-id: ${KAKAO_APP_ID}
     client-id: ${KAKAO_CLIENT_ID}
-    redirect-url: ${KAKAO_REDIRECT_URL_CALLBACK}
+    redirect-url: ${KAKAO_REDIRECT_LOCALHOST_FIVE}
     base-url: ${KAKAO_BASE_URL}
     admin-key: ${KAKAO_ADMIN_KEY}
 
