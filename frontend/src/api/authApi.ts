@@ -70,9 +70,13 @@ export const deleteUser = async (code: string) => {
 
   const response = await api.delete<DeleteUserApiResponse>("/credentials", {
     headers: {
-      Authorization: `Bearer ${accessToken}`
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
     },
-    params: { code }
+    params: { 
+      code,
+      provider: "KAKAO"  // provider 파라미터 추가
+    }
   });
   return response.data.success;
 };
