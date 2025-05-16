@@ -37,7 +37,7 @@ function IntroBook() {
     const accessToken = localStorage.getItem("accessToken");
     // console.log("Connecting WebSocket...");
 
-    const newWs = new WebSocket(`ws://k12b202.p.ssafy.io/api/v1/ws/tts-progress?token=${accessToken}`);
+    const newWs = new WebSocket(`wss://k12b202.p.ssafy.io/api/v1/ws/tts-progress?token=${accessToken}`);
 
     newWs.addEventListener("open", () => {});
 
