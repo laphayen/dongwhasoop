@@ -56,7 +56,8 @@ public class UserVoice extends BaseEntity {
 //    }
 
     @Builder
-    public UserVoice(User user, String voiceUrl, Boolean gender) {
+    public UserVoice(Long id, User user, String voiceUrl, Boolean gender) {
+        this.id = id;
         this.user = user;
         this.voiceUrl = voiceUrl;
         this.gender = gender;

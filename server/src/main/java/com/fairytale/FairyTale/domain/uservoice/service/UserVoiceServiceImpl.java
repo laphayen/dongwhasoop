@@ -36,8 +36,18 @@ public class UserVoiceServiceImpl implements UserVoiceService {
         Long userId = currentUser.getId();
         log.info("🧩 현재 요청한 사용자 ID: {}", userId);
 
+        // 사용자 음성 조회
         List<UserVoice> result = userVoiceRepository.findByUserWithDefaultVoices(userId);
-        log.info("🧩 조회된 목소리 개수: {}", result.size());
+        log.info("🧩 조회된 사용자 음성 개수: {}", result.size());
+
+        // 곰돌이 목소리 추가 (항상 포함)
+        UserVoice defaultBearVoice = UserVoice.builder()
+                .id(1000L) // voice_id
+                .gender(null)
+                .user(null)
+                .build();
+
+        result.add(defaultBearVoice);
 
         result.forEach(voice -> log.info("📦 Voice => ID: {}, Gender: {}, URL: {}, user_id: {}",
                 voice.getId(),
