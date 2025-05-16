@@ -26,6 +26,7 @@ function WriteLetter() {
   const { transcript, resetTranscript } = useSpeechRecognition();
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null); // 추가: 스트림 참조
 
   const { letterContent, setLetterContent, clearLetterContent } = useLetterStore();
   const { selectedChild } = useSelectedChild();
@@ -46,6 +47,9 @@ function WriteLetter() {
     return () => {
       SpeechRecognition.stopListening();
       resetTranscript();
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop()); // 스트림 정리
+      }
     };
   }, []);
 
@@ -62,6 +66,7 @@ function WriteLetter() {
       // 녹음 시작
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        streamRef.current = stream; // 스트림 저장
 
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorderRef.current = mediaRecorder;
@@ -72,7 +77,9 @@ function WriteLetter() {
         };
 
         mediaRecorder.onstop = () => {
-          stream.getTracks().forEach((track) => track.stop());
+          if (streamRef.current) {
+            streamRef.current.getTracks().forEach((track) => track.stop()); // 스트림 정리
+          }
         };
 
         mediaRecorder.start();
