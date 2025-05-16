@@ -15,7 +15,9 @@ const modalTexts = {
   loading: "잠시만 기다려주세요.\n동화책을 만들고 있습니다.",
   selectvoice: "녹음하는 사람이 누군지 선택해주세요!",
   setting: "이름과 캐릭터를 선택해주세요!",
-  childlimit: "자녀 프로필은 최대 3개까지 만들 수 있어요. \n기존 프로필을 수정하거나,\n 삭제 후 새로 만들어 주세요."
+  childlimit: "자녀 프로필은 최대 3개까지 만들 수 있어요. \n기존 프로필을 수정하거나,\n 삭제 후 새로 만들어 주세요.",
+  successjoin: "회원가입이 완료되었습니다. \n동화숲에 어서오세요!",
+  failjoin: "회원가입에 실패했습니다. \n재등록 해주세요.",
 };
 
 function Modal({ isOpen, onClose, onConfirm, type, showCancelButton = true }: ModalProps) {

@@ -29,6 +29,8 @@ export interface RegisterUserResponse {
     childId: number;
     name: string;
     mascotId: number;
+    accessToken: string;
+    refreshToken: string;
   };
   success: boolean;
   message: string;
@@ -42,6 +44,7 @@ export interface LoginApiResponse {
     accessToken: string;
     refreshToken: string;
     isNew: boolean;
+    
   };
   success: boolean;
   timeStamp: string;
