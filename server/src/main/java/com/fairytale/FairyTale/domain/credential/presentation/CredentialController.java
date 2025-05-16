@@ -90,8 +90,8 @@ public class CredentialController {
     @DeleteMapping
     public void deleteUser(@RequestParam("code") String code) {
 
-        log.info("======== delete api start ==========");
-        log.info("[controller] delete token = {}",code);
+        log.info("======== 🔥 [DELETE /credentials] 호출됨 ==========");
+        log.info("[🧾 쿼리 파라미터 code] = {}", code);
 
         credentialService.deleteUser(code);
     }

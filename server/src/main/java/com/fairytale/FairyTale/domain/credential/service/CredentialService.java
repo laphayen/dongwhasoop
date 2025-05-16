@@ -195,38 +195,31 @@ public class CredentialService {
     @Transactional
     public void deleteUser(String code) {
 
-        log.info("==========service============");
-        log.info("code={}",code);
-        User user = userUtils.getUserFromSecurityContext();
+        log.info("========== [회원 탈퇴 서비스 시작] ==========");
+        log.info("🌊 전달받은 인가 코드(code): {}", code);
 
-        log.info("==========accessToken에서 유저============");
+        User user = userUtils.getUserFromSecurityContext();
+        log.info("🌊 JWT accessToken에서 추출된 유저 정보: id={}, oauthId={}, provider={}",
+                user.getId(), user.getOauthId(), user.getOauthProvider());
 
         OauthProvider provider = OauthProvider.valueOf(user.getOauthProvider().toUpperCase());
+        log.info("🌊 사용 중인 소셜 로그인 플랫폼: {}", provider.getOauthProvider());
 
-        log.info("==========provider============{}",provider.getOauthProvider());
-
-        log.info("==========여기까지 와요============");
         OauthStrategy oauthStrategy = oauthFactory.getOauthstrategy(provider);
-
-        log.info("==========여기까지 와요============");
+        log.info("🌊 해당 플랫폼에 맞는 OAuth 전략 클래스 로드 완료");
 
         OauthTokenInfoDto token = oauthStrategy.getOauthToken(code);
-
-        log.info("============토큰이 오는지==============");
+        log.info("🌊 code로 accessToken 받아오기 성공: {}", token.getAccessToken());
 
         String oauthAccessToken = token.getAccessToken();
-
-        log.info("oauthAccessToken={}",oauthAccessToken);
-
         String userOauthId = user.getOauthId();
-
         UserInfoToOauthDto userInfo = oauthStrategy.getUserInfo(oauthAccessToken);
-
-        log.info("userInfodto={}", userInfo.getId());
+        log.info("🌊 accessToken으로 사용자 정보 조회 성공: 카카오 id = {}", userInfo.getId());
 
         verifyUserOauthIdWithAccessToken(oauthAccessToken,userOauthId,userInfo);
 
         deleteUserData(user);
+        log.info("🌊 카카오 사용자 연결 해제 완료");
 
         UnlinkRequest unlinkRequest = createUnlinkRequest(oauthAccessToken);
         oauthStrategy.unLink(unlinkRequest);
