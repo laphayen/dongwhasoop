@@ -32,7 +32,7 @@ public class UserUtilsImpl implements UserUtils {
     @Override
     public void setSecurityContextManual(User user) {
         UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
