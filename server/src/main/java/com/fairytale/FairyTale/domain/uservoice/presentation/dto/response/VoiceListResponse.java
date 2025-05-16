@@ -26,7 +26,6 @@ public class VoiceListResponse {
     @Builder
     public static class VoiceDto {
         private Long voiceId;
-        private String voiceUrl;
         private Boolean gender;
         private String displayName; // UI에 표시할 이름
         private String voiceType;   // 목소리 유형 (MOM, DAD, BEAR)
@@ -49,7 +48,6 @@ public class VoiceListResponse {
 
             return VoiceDto.builder()
                     .voiceId(userVoice.getId())
-                    .voiceUrl(userVoice.getVoiceUrl())
                     .gender(userVoice.getGender())
                     .displayName(displayName)
                     .voiceType(voiceType)
