@@ -9,15 +9,19 @@ function DeleteAccountButton() {
     const confirmed = window.confirm("정말 탈퇴하시겠습니까?");
     if (!confirmed) return;
 
-    console.log("회원탈퇴 요청 시작 - code: DUMMY");
-    deleteUserMutation.mutate("DUMMY", {
+    const code = localStorage.getItem("authCode");
+    if (!code) {
+      alert("탈퇴를 위한 인증 코드가 없습니다. 다시 로그인 후 시도해주세요.");
+      return;
+    }
+
+    deleteUserMutation.mutate(code, {
       onSuccess: () => {
         alert("회원탈퇴가 완료되었습니다.");
         navigate("/");
       },
-      onError: (err) => {
-        console.error("회원탈퇴 실패:", err);
-        alert("회원탈퇴 중 문제가 발생했습니다.");
+      onError: () => {
+        alert("회원탈퇴 실패. 관리자에게 문의하세요.");
       },
     });
   };

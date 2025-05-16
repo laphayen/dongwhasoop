@@ -16,6 +16,7 @@ function KakaoCallback() {
       return;
     }
 
+    localStorage.setItem("authCode", code);
     handleRegisterCheck(code);
   }, []);
 
