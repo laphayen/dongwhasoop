@@ -77,3 +77,7 @@ cloud:
       
 frontend:
   redirect-url: ${KAKAO_REDIRECT}
+
+server:
+  tomcat:
+    max-http-form-post-size: 50MB  # Base64 JSON 요청 크기 허용 설정
