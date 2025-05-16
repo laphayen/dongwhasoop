@@ -101,7 +101,11 @@ function StartSettings() {
 
             const payload = {
               children: children,
-              voice: voice,
+              voice: {
+                data: voice.data,
+                format: voice.format,
+                isMale: voice.gender === "MALE", // ✅ 반드시 이 변환 필요!
+              },
             };
 
             console.log("Payload structure:", payload); // 자세한 로깅
