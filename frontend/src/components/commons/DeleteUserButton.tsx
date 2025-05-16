@@ -8,24 +8,44 @@ function DeleteAccountButton() {
   const deleteUserMutation = useDeleteUser();
   const [showModal, setShowModal] = useState(false);
 
+  const openKakaoAuthPopup = () => {
+    const KAKAO_REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
+    const REDIRECT_URI = "https://k12b202.p.ssafy.io/oauth/popup"; // ✅ 실제 배포 주소로 설정
+    const authUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+
+    const popup = window.open(authUrl, "kakaoPopup", "width=500,height=600");
+    return popup;
+  };
+
   const handleConfirmDelete = () => {
-    const code = localStorage.getItem("authCode");
-    if (!code) {
-      alert("탈퇴를 위한 인증 코드가 없습니다.");
+    const popup = openKakaoAuthPopup();
+
+    if (!popup) {
+      alert("팝업을 허용해주세요.");
       return;
     }
 
-    deleteUserMutation.mutate(code, {
-      onSuccess: () => {
-        alert("회원탈퇴가 완료되었습니다.");
-        navigate("/");
-      },
-      onError: () => {
-        alert("회원탈퇴 실패, 관리자에게 문의하세요.");
-      },
-    });
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type === "KAKAO_AUTH_CODE") {
+        const code = event.data.code;
 
-    setShowModal(false);
+        deleteUserMutation.mutate(code, {
+          onSuccess: () => {
+            alert("회원탈퇴가 완료되었습니다.");
+            navigate("/");
+          },
+          onError: () => {
+            alert("회원탈퇴 실패, 관리자에게 문의하세요.");
+          },
+        });
+
+        window.removeEventListener("message", handleMessage);
+        setShowModal(false);
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
   };
 
   return (

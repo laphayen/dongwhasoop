@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense } from "react";
 import { useEffect, useRef } from "react";
 import { Routes, Route } from "react-router-dom";
 // import { useAuth } from "./hooks/useAuth";
@@ -31,15 +31,14 @@ import TestApiPage from "./pages/TestApiPage";
 import Auth from "./pages/Auth";
 import bgm from "./assets/music/fairytale_bgm.mp3";
 import { useMusicStore } from "./stores/musicStore";
+import OauthPopup from "./pages/OauthPopup";
 
 // Lazy Loading 적용 페이지
-const LetterList = lazy(() => import('./pages/letterpage/LetterList'));
-const BookDetail = lazy(() => import('./pages/bookpage/BookDetail'));
-const SongDetail = lazy(() => import('./pages/songpage/SongDetail'));
-const BookList = lazy(() => import('./pages/bookpage/BookList'));
-const LetterDetail = lazy(() => import('./pages/letterpage/LetterDetail'));
-
-
+const LetterList = lazy(() => import("./pages/letterpage/LetterList"));
+const BookDetail = lazy(() => import("./pages/bookpage/BookDetail"));
+const SongDetail = lazy(() => import("./pages/songpage/SongDetail"));
+const BookList = lazy(() => import("./pages/bookpage/BookList"));
+const LetterDetail = lazy(() => import("./pages/letterpage/LetterDetail"));
 
 function App() {
   // const navigate = useNavigate();
@@ -92,6 +91,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/auth" element={<KakaoCallback />} />
           <Route path="/loading" element={<Loading />} />
+          <Route path="/oauthpopup" element={<OauthPopup />}></Route>
 
           {/* lazy loading 적용 */}
           <Route path="/booklist" element={<BookList />} />
