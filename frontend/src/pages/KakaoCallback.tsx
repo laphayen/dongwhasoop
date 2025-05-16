@@ -3,10 +3,12 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckIsRegistered } from "../api/authApi";
 import { useLogin } from "../hooks/useLogin";
+import { useDeleteUser } from "../hooks/useDeleteUser"; 
 
 function KakaoCallback() {
   const navigate = useNavigate();
   const { mutate: loginUser } = useLogin();
+  const deleteUserMutation = useDeleteUser();
 
   useEffect(() => {
     const code = new URL(window.location.href).searchParams.get("code");
@@ -16,9 +18,30 @@ function KakaoCallback() {
       return;
     }
 
-    localStorage.setItem("authCode", code);
-    handleRegisterCheck(code);
+    const isWithdrawFlow = sessionStorage.getItem("withdraw_flow");
+    
+    if (isWithdrawFlow) {
+      handleWithdraw(code);
+    } else {
+      localStorage.setItem("authCode", code);
+      handleRegisterCheck(code);
+    }
   }, []);
+
+  const handleWithdraw = async (code: string) => {
+    deleteUserMutation.mutate(code, {
+      onSuccess: () => {
+        sessionStorage.removeItem("withdraw_flow");
+        alert("회원탈퇴가 완료되었습니다.");
+        navigate("/");
+      },
+      onError: () => {
+        sessionStorage.removeItem("withdraw_flow");
+        alert("회원탈퇴 실패, 관리자에게 문의하세요.");
+        navigate("/settings");
+      },
+    });
+  };
 
   const handleRegisterCheck = async (code: string) => {
     try {

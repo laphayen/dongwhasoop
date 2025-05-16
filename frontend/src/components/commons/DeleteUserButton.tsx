@@ -1,11 +1,7 @@
-import { useNavigate } from "react-router-dom";
-import { useDeleteUser } from "../../hooks/useDeleteUser";
 import { useState } from "react";
 import DeleteUserModal from "./DeleteUserModal";
 
 function DeleteAccountButton() {
-  const navigate = useNavigate();
-  const deleteUserMutation = useDeleteUser();
   const [showModal, setShowModal] = useState(false);
 
   const openKakaoAuthPopup = () => {
@@ -25,39 +21,25 @@ function DeleteAccountButton() {
       return;
     }
 
-    const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== window.location.origin) return;
-      if (event.data?.type === "KAKAO_AUTH_CODE") {
-        const code = event.data.code;
-
-        deleteUserMutation.mutate(code, {
-          onSuccess: () => {
-            alert("회원탈퇴가 완료되었습니다.");
-            navigate("/");
-          },
-          onError: () => {
-            alert("회원탈퇴 실패, 관리자에게 문의하세요.");
-          },
-        });
-
-        window.removeEventListener("message", handleMessage);
-        setShowModal(false);
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
+    setShowModal(false);
   };
 
   return (
     <>
       <button
         onClick={() => setShowModal(true)}
-        className="fixed right-6 top-6 text-red-600 underline text-base hover:text-red-700 bg-transparent border-none text-sm md:text-base lg:text-lg"
+        className="fixed right-[3vw] top-[3vh] px-[2vw] py-[1.5vh] text-red-600 border-4 border-red-600 rounded-lg
+        text-[2vh] md:text-[2.2vh] lg:text-[2.4vh] font-medium"
       >
         회원탈퇴
       </button>
 
-      {showModal && <DeleteUserModal onConfirm={handleConfirmDelete} onCancel={() => setShowModal(false)} />}
+      {showModal && (
+        <DeleteUserModal
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setShowModal(false)}
+        />
+      )}
     </>
   );
 }
