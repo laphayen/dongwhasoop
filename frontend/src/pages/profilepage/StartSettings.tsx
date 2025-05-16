@@ -20,6 +20,7 @@ function StartSettings() {
   const idTokenFromLocation = location.state?.idToken;
   const [idToken, setIdToken] = useState(localStorage.getItem("idToken") || idTokenFromLocation);
   const { mutate: registerUser } = useRegisterUser(idToken || "");
+  // const { setSelectedChild } = useSelectedChild();
 
   const [isVoiceRecorded, setIsVoiceRecorded] = useState(false);
   const [isChildAdded, setIsChildAdded] = useState(false);
@@ -116,15 +117,14 @@ function StartSettings() {
               registerUser(payload, {
                 onSuccess: () => {
                   // 등록한 자녀를 선택한 자녀로 설정
-                  const { setSelectedChild } = useSelectedChild();
-                  setSelectedChild({
-                    childId: 0, // 
-                    childName: children.name,
-                    mascotId: children.mascotId
-                  });
+                  // setSelectedChild({
+                  //   childId: 0, // 
+                  //   childName: children.name,
+                  //   mascotId: children.mascotId
+                  // });
 
                   alert("회원가입 완료!");
-                  navigate("/home");
+                  navigate("/profile");
                 },
                 onError: (error) => {
                   if (axios.isAxiosError(error)) {

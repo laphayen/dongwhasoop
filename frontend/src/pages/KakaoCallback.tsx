@@ -30,7 +30,7 @@ function KakaoCallback() {
       if (isRegistered) {
         loginUser(idToken, {
           onSuccess: () => {
-            navigate("/home");
+            navigate("/profile");
           },
           onError: () => {
             alert("로그인 실패");
