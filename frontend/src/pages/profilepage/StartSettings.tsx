@@ -10,7 +10,7 @@ import YetVoiceRecIcon from "../../assets/images/settingpage/yetvoicerec.webp"; 
 import Next from "../../assets/images/settingpage/next.webp";
 import btnSound from "../../assets/music/btn_sound.mp3";
 import axios from "axios"; // Add this import at the top
-import { useSelectedChild } from "../../stores/useSelectedChild";
+import Modal from "../../components/commons/Modal";
 
 // 주의: 모든 정보가 등록된 후에 '등록하기' 버튼이 떠야한다, 녹음이 완료되거나 자녀 정보를 등록하면 이미지가 바뀌어야 함.
 
@@ -18,8 +18,13 @@ function StartSettings() {
   const navigate = useNavigate();
   const location = useLocation();
   const idTokenFromLocation = location.state?.idToken;
-  const [idToken, setIdToken] = useState(localStorage.getItem("idToken") || idTokenFromLocation);
+  const [idToken, setIdToken] = useState(
+    localStorage.getItem("idToken") || idTokenFromLocation
+  );
   const { mutate: registerUser } = useRegisterUser(idToken || "");
+  const [modalType, setModalType] = useState<"successjoin" | "failjoin" | null>(
+    null
+  );
   // const { setSelectedChild } = useSelectedChild();
 
   const [isVoiceRecorded, setIsVoiceRecorded] = useState(false);
@@ -41,7 +46,28 @@ function StartSettings() {
   }, [idTokenFromLocation]);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${mainpage})` }}>
+    <div
+      className="fixed inset-0 w-screen h-screen bg-cover bg-center"
+      style={{ backgroundImage: `url(${mainpage})` }}
+    >
+      <Modal
+        isOpen={modalType !== null}
+        onClose={() => {
+          setModalType(null);
+          if (modalType === 'successjoin') {
+            navigate("/profile");
+          }
+        }}
+        onConfirm={() => {
+          setModalType(null);
+          if (modalType === 'successjoin') {
+            navigate("/profile");
+          }
+        }}
+        type={modalType || 'successjoin'}
+        showCancelButton={false}
+      />
+
       <h1 className="text-[8vh] font-bazzi text-black-600 text-center text-outline-sm mt-[6vw] tablet2560:mt-[11vw]">
         부모님의 목소리와 자녀 정보를 등록해주세요.
       </h1>
@@ -71,14 +97,20 @@ function StartSettings() {
           }}
           className="hover:scale-110 transition-transform"
         >
-          <img src={isChildAdded ? YetAddChild : AddChild} alt="자녀추가" className="w-[25vw] tablet2560:w-[30vw]" />
+          <img
+            src={isChildAdded ? YetAddChild : AddChild}
+            alt="자녀추가"
+            className="w-[25vw] tablet2560:w-[30vw]"
+          />
         </button>
 
         {/* 등록하기 버튼 (둘 다 완료되어야 활성화) */}
         {isVoiceRecorded && isChildAdded && (
           <button
             onClick={() => {
-              const children = JSON.parse(localStorage.getItem("child") || "{}");
+              const children = JSON.parse(
+                localStorage.getItem("child") || "{}"
+              );
               const voice = JSON.parse(localStorage.getItem("voice") || "{}");
               const currentIdToken = localStorage.getItem("idToken");
 
@@ -112,19 +144,20 @@ function StartSettings() {
 
               console.log("Payload structure:", payload); // 자세한 로깅
               console.log("ID Token:", idToken);
-              console.log("📦 JSON.stringify payload:", JSON.stringify(payload, null, 2));
+              console.log(
+                "📦 JSON.stringify payload:",
+                JSON.stringify(payload, null, 2)
+              );
 
               registerUser(payload, {
                 onSuccess: () => {
                   // 등록한 자녀를 선택한 자녀로 설정
                   // setSelectedChild({
-                  //   childId: 0, // 
+                  //   childId: 0, //
                   //   childName: children.name,
                   //   mascotId: children.mascotId
                   // });
-
-                  alert("회원가입 완료!");
-                  navigate("/profile");
+                  setModalType("successjoin"); // Show success modal
                 },
                 onError: (error) => {
                   if (axios.isAxiosError(error)) {
@@ -133,12 +166,16 @@ function StartSettings() {
                   } else {
                     console.error("회원가입 실패:", error);
                   }
-                  alert("회원가입 실패");
+                  setModalType("failjoin");
                 },
               });
             }}
           >
-            <img src={Next} alt="등록 하기" className="w-[23vh] tablet2560:w-[13vw]" />
+            <img
+              src={Next}
+              alt="등록 하기"
+              className="w-[23vh] tablet2560:w-[13vw]"
+            />
           </button>
         )}
       </div>

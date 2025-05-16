@@ -14,6 +14,7 @@ import bear from "../../assets/images/settingpage/bear.webp";
 import chik from "../../assets/images/settingpage/chik.webp";
 import panda from "../../assets/images/settingpage/panda.webp";
 import btnSound from "../../assets/music/btn_sound.mp3";
+import Modal from "../../components/commons/Modal";
 
 interface ChildProfile {
   childId: number;
@@ -47,6 +48,7 @@ function EditingProfile() {
   const [editingChild, setEditingChild] = useState<ChildProfile | undefined>(childFromState);
   const deleteChild = useDeleteChildProfile();
   const updateChild = useUpdateChildProfile();
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (!editingChild && children.length > 0) {
@@ -59,7 +61,7 @@ function EditingProfile() {
   const handleSave = async () => {
     new Audio(btnSound).play();
     if (!editingChild?.childName) {
-      alert("이름을 입력해주세요");
+      setShowModal(true);
       return;
     }
 
@@ -106,6 +108,14 @@ function EditingProfile() {
       style={{ backgroundImage: `url(${mainpage})` }}
     >
       <BackButton to="/editprofile" />
+
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={() => setShowModal(false)}
+        type="setting"
+        showCancelButton={false}
+      />
 
       <div className="flex items-center justify-center h-full">
         <div className="relative flex flex-col items-center">

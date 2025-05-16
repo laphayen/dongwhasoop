@@ -4,7 +4,7 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  type: 'back' | 'send' | 'loading' | 'selectvoice' | 'setting' | 'childlimit' | 'cannotsend';
+  type: 'back' | 'send' | 'loading' | 'selectvoice' | 'setting' | 'childlimit' | 'cannotsend' | 'successjoin' | 'failjoin';
   showCancelButton?: boolean;  // New prop to control button display
 }
 
