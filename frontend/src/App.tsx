@@ -91,7 +91,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/auth" element={<KakaoCallback />} />
           <Route path="/loading" element={<Loading />} />
-          <Route path="/oauthpopup" element={<OauthPopup />}></Route>
+          <Route path="/oauth/popup" element={<OauthPopup />}></Route>
 
           {/* lazy loading 적용 */}
           <Route path="/booklist" element={<BookList />} />
