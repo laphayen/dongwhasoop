@@ -6,4 +6,7 @@ public interface UserUtils {
 
     User getUserById(Long id);
     User getUserFromSecurityContext();
+
+    void setSecurityContextManual(User user);
+
 }

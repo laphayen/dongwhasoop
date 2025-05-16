@@ -5,7 +5,11 @@ import com.fairytale.FairyTale.domain.user.domain.repository.UserRepository;
 import com.fairytale.FairyTale.global.exception.UserNotFoundException;
 import com.fairytale.FairyTale.global.util.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @RequiredArgsConstructor
 @Service
@@ -24,4 +28,13 @@ public class UserUtilsImpl implements UserUtils {
         Long currentUserId = SecurityUtils.getCurrentUserId();
         return getUserById(currentUserId);
     }
+
+    @Override
+    public void setSecurityContextManual(User user) {
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+
 }
