@@ -59,6 +59,7 @@ function WriteLetter() {
       // 녹음 중지
       mediaRecorderRef.current?.stop(); // MediaRecorder 중지
       SpeechRecognition.stopListening(); // 음성 인식 중지
+      SpeechRecognition.abortListening(); // 음성 인식 강제 종료
       setIsRecording(false);
       setIsListening(false);
       setHasRecorded(true);
