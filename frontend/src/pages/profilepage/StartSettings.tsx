@@ -73,7 +73,7 @@ function StartSettings() {
       </h1>
 
       {/* 목소리 녹음 버튼 */}
-      <div className="flex justify-center items-center gap-[10vh] tablet2560:gap-8 mt-20 ms-[25vh] tablet2560:ms-[18vh] ">
+      <div className="flex justify-center items-center gap-[10vh] tablet2560:gap-8 mt-20 ms-[22vh] tablet2560:ms-[20vh]">
         <button
           onClick={() => {
             new Audio(btnSound).play();
@@ -104,8 +104,8 @@ function StartSettings() {
           />
         </button>
 
-        {/* 등록하기 버튼 (둘 다 완료되어야 활성화) */}
-        {isVoiceRecorded && isChildAdded && (
+        {/* Placeholder for registration button */}
+        <div className={`${isVoiceRecorded && isChildAdded ? 'visible' : 'invisible'} w-[23vh] tablet2560:w-[13vw]`}>
           <button
             onClick={() => {
               const children = JSON.parse(
@@ -177,7 +177,7 @@ function StartSettings() {
               className="w-[23vh] tablet2560:w-[13vw]"
             />
           </button>
-        )}
+        </div>
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ import { useLetterStore } from "../../stores/letterStore";
 import { useWriteLetter } from "../../hooks/useBook/useWriteLetter";
 import { useSelectedChild } from "../../stores/useSelectedChild";
 import btnSound from "../../assets/music/btn_sound.mp3";
+import { useRef } from "react";
 
 function WriteLetter() {
   const navigate = useNavigate();
@@ -19,17 +20,20 @@ function WriteLetter() {
   const { characterId, bookId } = location.state || {};
 
   // 음성 녹음 상태 관리
+  const [isRecording, setIsRecording] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [hasRecorded, setHasRecorded] = useState(false);
   const { transcript, resetTranscript } = useSpeechRecognition();
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
 
   const { letterContent, setLetterContent, clearLetterContent } = useLetterStore();
   const { selectedChild } = useSelectedChild();
   const writeLetter = useWriteLetter();
 
+  // 음성 텍스트 변환 결과가 변경될 때마다 편지 내용 업데이트 
   useEffect(() => {
     setLetterContent(transcript);
-    // Use setTimeout to ensure scroll happens after DOM update
     setTimeout(() => {
       const textContainer = document.querySelector('.letter-content-container');
       if (textContainer) {
@@ -40,20 +44,45 @@ function WriteLetter() {
 
   useEffect(() => {
     return () => {
-      SpeechRecognition.stopListening(); // 페이지 벗어나면 녹음 중지
+      SpeechRecognition.stopListening();
       resetTranscript();
     };
   }, []);
 
-  const handleRecord = () => {
+  const handleRecord = async () => {
     new Audio(btnSound).play();
-    if (!isListening) {
-      SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    } else {
+    if (isRecording) {
+      // 녹음 중지
+      mediaRecorderRef.current?.stop();
       SpeechRecognition.stopListening();
+      setIsRecording(false); 
+      setIsListening(false); 
       setHasRecorded(true);
+    } else {
+      // 녹음 시작
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorderRef.current = mediaRecorder;
+        chunksRef.current = [];
+
+        mediaRecorder.ondataavailable = (e) => {
+          chunksRef.current.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          stream.getTracks().forEach((track) => track.stop());
+        };
+
+        mediaRecorder.start();
+        setIsRecording(true);
+        SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
+        setIsListening(true);
+      } catch (error) {
+        console.error("Error accessing microphone:", error);
+      }
     }
-    setIsListening(!isListening);
   };
 
   const handleSendClick = () => {
@@ -109,7 +138,7 @@ function WriteLetter() {
       {/* 녹음 보이스 텍스트 변환 */}
       <div className="absolute bg-white/80 rounded-xl p-4 w-[45vw] text-[3.7vh] font-maplestory overflow-y-auto
       left-[18vw] top-[23vh] max-h-[55vh]  
-      tablet2560:left-[30vh] tablet2560:top-[30vh] tablet2560:w-[44vw] tablet2560:max-h-[48vh]    ">
+      tablet2560:left-[30vh] tablet2560:top-[30vh] tablet2560:w-[44vw] tablet2560:max-h-[48vh]">
         <p>{letterContent || "녹음하기 버튼을 눌러 편지 내용을 녹음해주세요."}</p>
       </div>
 
@@ -117,7 +146,7 @@ function WriteLetter() {
         {/* 녹음 버튼 */}
         <button onClick={handleRecord}>
           <img
-            src={isListening ? endvoicerec : recstory}
+            src={isRecording ? endvoicerec : recstory}
             alt="record"
             className="w-[20vw] max-w-[1200px] min-w-[100px]"
           />
