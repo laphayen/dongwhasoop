@@ -10,7 +10,7 @@ function DeleteAccountButton() {
 
   const openKakaoAuthPopup = () => {
     const KAKAO_REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
-    const REDIRECT_URI = "https://k12b202.p.ssafy.io/oauth/popup"; // ✅ 실제 배포 주소로 설정
+    const REDIRECT_URI = import.meta.env.VITE_KAKAO_POPUP_REDIRECT_URI;
     const authUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
     const popup = window.open(authUrl, "kakaoPopup", "width=500,height=600");
