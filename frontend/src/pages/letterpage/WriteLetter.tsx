@@ -57,31 +57,38 @@ function WriteLetter() {
     new Audio(btnSound).play();
     if (isRecording) {
       // 녹음 중지
-      mediaRecorderRef.current?.stop();
-      SpeechRecognition.stopListening();
-      setIsRecording(false); 
-      setIsListening(false); 
+      mediaRecorderRef.current?.stop(); // MediaRecorder 중지
+      SpeechRecognition.stopListening(); // 음성 인식 중지
+      setIsRecording(false);
+      setIsListening(false);
       setHasRecorded(true);
+  
+      // 스트림 정리
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop()); // 모든 트랙 정리
+        streamRef.current = null; // 스트림 참조 초기화
+      }
     } else {
       // 녹음 시작
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         streamRef.current = stream; // 스트림 저장
-
+  
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorderRef.current = mediaRecorder;
         chunksRef.current = [];
-
+  
         mediaRecorder.ondataavailable = (e) => {
           chunksRef.current.push(e.data);
         };
-
+  
         mediaRecorder.onstop = () => {
           if (streamRef.current) {
             streamRef.current.getTracks().forEach((track) => track.stop()); // 스트림 정리
+            streamRef.current = null; // 스트림 참조 초기화
           }
         };
-
+  
         mediaRecorder.start();
         setIsRecording(true);
         SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
