@@ -6,6 +6,13 @@ pipeline {
         FASTAPI_DOCKER_IMAGE = 'fastapi-app:latest'
         CONTAINER_NAME = 'backend'
         DOCKER_IMAGE = 'backend-image:latest'
+
+        RUNPOD_HOST = 'ssh.runpod.io'
+        RUNPOD_USER = '2j97ni5p02dqqk-64411020'
+        SSH_CRED_ID = 'runpod-ssh'
+        GIT_REPO = 'https://gitlab.com/yourname/rvc-fastapi.git' // 변경 필요
+        TARGET_DIR = '/workspace/RVC'
+
     }
 
     stages {
@@ -38,39 +45,6 @@ pipeline {
                 '''
             }
         }
-       stage('Build & Deploy FastAPI') {
-           steps {
-               sh '''
-                   # 현재 디렉토리에서 직접 ai/fastapi-app으로 이동
-                   cd ai/fastapi-app
-
-                   # 디렉토리 확인 (디버깅용)
-                   pwd
-                   ls -la
-
-                   # Docker 이미지 빌드
-                   docker build -t ${FASTAPI_DOCKER_IMAGE} .
-
-                   # 기존 컨테이너 중지 및 삭제
-                   docker stop ${FASTAPI_CONTAINER_NAME} || true
-                   docker rm ${FASTAPI_CONTAINER_NAME} || true
-
-                   # 새 컨테이너 실행
-                   docker run -d \\
-                   --name ${FASTAPI_CONTAINER_NAME} \\
-                   --env-file ../../.env \\
-                   --network fariytale_jenkins-network \\
-                   --network fariytale_elk \\
-                   -v "/home/ubuntu/fastapi/tmp:/app/tmp" \\
-                   -v "/home/ubuntu/.local/share/tts:/root/.local/share/tts" \\
-                   -p 8000:8000 \\
-                   ${FASTAPI_DOCKER_IMAGE}
-               '''
-           }
-       }
-
-
-
 
             stage('Docker Build & Deploy') {
                 steps {
