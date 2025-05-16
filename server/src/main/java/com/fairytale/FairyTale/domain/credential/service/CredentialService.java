@@ -16,16 +16,19 @@ import com.fairytale.FairyTale.domain.credential.presentation.dto.response.Oauth
 import com.fairytale.FairyTale.domain.user.domain.User;
 import com.fairytale.FairyTale.domain.user.domain.repository.UserRepository;
 import com.fairytale.FairyTale.domain.uservoice.domain.UserVoice;
+import com.fairytale.FairyTale.domain.uservoice.service.UserVoiceService;
 import com.fairytale.FairyTale.global.api.dto.response.UserInfoToOauthDto;
 import com.fairytale.FairyTale.global.exception.AlreadyRegisterException;
 import com.fairytale.FairyTale.global.exception.InvalidTokenException;
 import com.fairytale.FairyTale.global.exception.UserNotFoundException;
 import com.fairytale.FairyTale.global.security.JwtTokenProvider;
 import com.fairytale.FairyTale.global.util.user.UserUtils;
+import com.fairytale.FairyTale.global.util.voice.MultipartFileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
 import java.util.Optional;
@@ -42,6 +45,7 @@ public class CredentialService {
     private final UserRepository userRepository;
     private final ChildRepository childRepository;
     private final OauthFactory oauthFactory;
+    private final UserVoiceService userVoiceService;
     private final RefreshTokenRedisEntityRepository refreshTokenRedisEntityRepository;
 
     @Transactional
@@ -87,8 +91,8 @@ public class CredentialService {
     public AuthTokensResponse registerUser(
             String token, OauthProvider oauthProvider, RegisterRequest registerRequest) {
 
-        log.info("=== register [service]  ===");
-        log.info("token={}", token);
+        log.info("🍒 === register [service]  ===");
+        log.info("🍒 token = {}", token);
         OauthStrategy oauthStrategy = oauthFactory.getOauthstrategy(oauthProvider);
         OIDCDecodePayload oidcDecodePayload = oauthStrategy.getOIDCDecodePayload(token);
 
@@ -97,19 +101,13 @@ public class CredentialService {
         }
 
         // 사용자 생성 및 저장
-        User user =
-                User.builder()
-                        // 회원가입 시 유저의 이메일도 저장합니다.
-                        .email(oidcDecodePayload.getEmail())
-                        .oauthProvider(oauthProvider.getValue())
-                        .oauthId(oidcDecodePayload.getSub())
-                        .isNew(true)
-                        .build();
+        User user = User.builder()
+                .email(oidcDecodePayload.getEmail())
+                .oauthProvider(oauthProvider.getValue())
+                .oauthId(oidcDecodePayload.getSub())
+                .isNew(true)
+                .build();
         userRepository.save(user);
-
-        /**
-         * TODO 김의중: 음성데이터 S3에 저장하고 UserVoice 테이블에 저장하기.
-         */
 
         // 자녀 정보 저장
         Child child = Child.builder()
@@ -119,11 +117,36 @@ public class CredentialService {
                 .build();
         childRepository.save(child);
 
+        // 음성 데이터 처리 및 업로드
+        try {
+            if (registerRequest.getVoice() != null) {
+                String base64Data = registerRequest.getVoice().getData();
+                String format = registerRequest.getVoice().getFormat();
+                Boolean isMale = registerRequest.getVoice().getIsMale();
+
+                // 🍒 디버깅용 로그 추가
+                log.info("🍒 [Voice Info] base64 length = {}", base64Data != null ? base64Data.length() : "null");
+                log.info("🍒 [Voice Info] format = {}", format);
+                log.info("🍒 [Voice Info] isMale = {}", isMale);
+
+                MultipartFile voiceFile = MultipartFileUtils.convertBase64ToMultipart(base64Data, format, "voice");
+
+                // Spring Security Context 수동 설정
+                userUtils.setSecurityContextManual(user);
+                userVoiceService.createUserVoice(voiceFile, isMale);
+            } else {
+                log.warn("🎙️ Voice 정보가 전달되지 않았습니다.");
+            }
+        } catch (Exception e) {
+            log.error("❌ 음성 업로드 실패: {}", e.getMessage(), e);
+            throw new RuntimeException("🍒 음성 파일 저장 중 오류가 발생했습니다.", e);
+        }
+
         String accessToken = jwtTokenProvider.generateAccessToken(user.getId(), user.getAccountRole());
         String refreshToken = generateRefreshToken(user.getId());
 
-
-        log.info("========회원가입을 완료했습니다=================");
+        log.info("🍒 ======== 회원가입 완료: userId={}, childName={} ================",
+                user.getId(), registerRequest.getChildren().getName());
 
         return AuthTokensResponse.builder()
                 .accessToken(accessToken)
