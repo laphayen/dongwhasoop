@@ -76,7 +76,7 @@ function StartSettings() {
       {isVoiceRecorded && isChildAdded && (
         <button
           onClick={() => {
-            const child = JSON.parse(localStorage.getItem("children") || "{}");
+            const children = JSON.parse(localStorage.getItem("child") || "{}");
             const voice = JSON.parse(localStorage.getItem("voice") || "{}");
             const currentIdToken = localStorage.getItem("idToken");
 
@@ -87,8 +87,8 @@ function StartSettings() {
             }
 
             // 데이터 구조 검증
-            if (!child.name || !child.mascotId) {
-              console.error("Invalid child data:", child);
+            if (!children.name || !children.mascotId) {
+              console.error("Invalid child data:", children);
               alert("자녀 정보가 올바르지 않습니다.");
               return;
             }
@@ -100,7 +100,7 @@ function StartSettings() {
             }
 
             const payload = {
-              children: child,
+              children: children,
               voice: voice,
             };
 
