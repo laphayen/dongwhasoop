@@ -108,9 +108,9 @@ function StartSettings() {
               },
             };
 
-            console.log("Payload structure:", payload); // 자세한 로깅
-            console.log("ID Token:", idToken);
-            console.log("📦 JSON.stringify payload:", JSON.stringify(payload, null, 2));
+            // console.log("Payload structure:", payload); // 자세한 로깅
+            // console.log("ID Token:", idToken);
+            // console.log("📦 JSON.stringify payload:", JSON.stringify(payload, null, 2));
 
             registerUser(payload, {
               onSuccess: () => {

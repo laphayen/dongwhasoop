@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useMemo } from "react"; 
-
+import { useState, useEffect, useMemo } from "react";
 import HomeBackground from "../assets/images/mainpage/homebackground.webp";
 import Book from "../assets/images/mainpage/book.webp";
 import MailBox from "../assets/images/mainpage/mailbox.webp";
@@ -14,6 +13,7 @@ import panda from "../assets/images/settingpage/panda.webp";
 import { useSelectedChild } from "../stores/useSelectedChild";
 import { useMusicStore } from "../stores/musicStore";
 import btnSound from "../assets/music/btn_sound.mp3";
+import DeleteAccountButton from "../components/commons/DeleteUserButton";
 
 function Home() {
   const navigate = useNavigate();
@@ -24,21 +24,26 @@ function Home() {
   // 현재 필요한 마스코트 이미지만 선택
   const currentMascot = useMemo(() => {
     switch (selectedChild?.mascotId) {
-      case 2: return dog;
-      case 3: return bear;
-      case 4: return chik;
-      case 5: return panda;
-      default: return cat;
+      case 2:
+        return dog;
+      case 3:
+        return bear;
+      case 4:
+        return chik;
+      case 5:
+        return panda;
+      default:
+        return cat;
     }
   }, [selectedChild?.mascotId]);
 
   // 필수 이미지만 사전 로딩
   useEffect(() => {
     const criticalImages = [HomeBackground, Book, MailBox];
-    
-    criticalImages.forEach(src => {
+
+    criticalImages.forEach((src) => {
       const img = new Image();
-      img.loading = 'eager'; // 우선순위 높게 설정
+      img.loading = "eager"; // 우선순위 높게 설정
       img.src = src;
     });
   }, []);
@@ -57,15 +62,13 @@ function Home() {
       {selectedChild && (
         <div className="absolute top-[5vh] left-[5vh] flex flex-col items-center">
           <button onClick={() => handleButtonClick("/profile")}>
-            <img
-              src={currentMascot}
-              alt="프로필"
-              className="w-[12vw] max-w-[2000px] min-w-[60px]"
-            />
+            <img src={currentMascot} alt="프로필" className="w-[12vw] max-w-[2000px] min-w-[60px]" />
           </button>
           <p className="text-[7vh] font-bazzi text-outline-sm">{selectedChild.childName}</p>
         </div>
       )}
+
+      <DeleteAccountButton></DeleteAccountButton>
 
       {/* 중앙 이미지 버튼들 */}
       <div className="flex justify-center items-center h-full gap-[7vw] mt-[15vh]">
@@ -93,11 +96,7 @@ function Home() {
 
         {/* 음악 토글 버튼 */}
         <button onClick={togglePlay} className="fixed bottom-[5vh] right-[5vh]">
-          <img
-            src={isPlaying ? MusicOff : MusicOn}
-            alt="음악 설정"
-            className="w-[16vw] max-w-[1000px] min-w-[70px]"
-          />
+          <img src={isPlaying ? MusicOff : MusicOn} alt="음악 설정" className="w-[16vw] max-w-[1000px] min-w-[70px]" />
         </button>
       </div>
     </div>
