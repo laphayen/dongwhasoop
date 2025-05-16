@@ -3,7 +3,6 @@ import { persist } from 'zustand/middleware';
 
 interface Voice {
   voiceId: number;
-  voiceUrl: string;
   gender: boolean | null;
   displayName: string;
   voiceType: string;

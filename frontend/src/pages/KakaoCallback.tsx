@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckIsRegistered } from "../api/authApi";
 import { useLogin } from "../hooks/useLogin";
-import { useDeleteUser } from "../hooks/useDeleteUser"; 
+import { useDeleteUser } from "../hooks/useDeleteUser";
 
 function KakaoCallback() {
   const navigate = useNavigate();
@@ -19,16 +19,29 @@ function KakaoCallback() {
     }
 
     const isWithdrawFlow = sessionStorage.getItem("withdraw_flow");
-    
+
+    console.log("카카오 콜백 확인:", {
+      code: code,
+      withdraw_flow: isWithdrawFlow,
+      fullUrl: window.location.href,
+    });
+
     if (isWithdrawFlow) {
+      console.log("회원탈퇴 플로우 진행");
       handleWithdraw(code);
     } else {
+      console.log("일반 로그인 플로우 진행");
       localStorage.setItem("authCode", code);
       handleRegisterCheck(code);
     }
   }, []);
 
   const handleWithdraw = async (code: string) => {
+    console.log("회원탈퇴 요청 전:", {
+      code: code,
+      withdraw_flow: sessionStorage.getItem("withdraw_flow"),
+    });
+
     deleteUserMutation.mutate(code, {
       onSuccess: () => {
         sessionStorage.removeItem("withdraw_flow");
@@ -75,7 +88,11 @@ function KakaoCallback() {
     }
   };
 
-  return <div className="text-center mt-[30vh] text-2xl text-black">로그인 처리 중입니다...</div>;
+  return (
+    <div className="text-center mt-[30vh] text-2xl text-black">
+      로그인 처리 중입니다...
+    </div>
+  );
 }
 
 export default KakaoCallback;

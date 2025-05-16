@@ -3,7 +3,6 @@ export interface GetUserVoiceApiResponse {
   data: {
     voices: {
       voiceId: number;
-      voiceUrl: string;
       gender: boolean | null;
       displayName: string;
       voiceType: string;
