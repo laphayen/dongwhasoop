@@ -13,7 +13,6 @@ import panda from "../assets/images/settingpage/panda.webp";
 import { useSelectedChild } from "../stores/useSelectedChild";
 import { useMusicStore } from "../stores/musicStore";
 import btnSound from "../assets/music/btn_sound.mp3";
-import DeleteAccountButton from "../components/commons/DeleteUserButton";
 
 function Home() {
   const navigate = useNavigate();
@@ -67,8 +66,6 @@ function Home() {
           <p className="text-[7vh] font-bazzi text-outline-sm">{selectedChild.childName}</p>
         </div>
       )}
-
-      <DeleteAccountButton></DeleteAccountButton>
 
       {/* 중앙 이미지 버튼들 */}
       <div className="flex justify-center items-center h-full gap-[7vw] mt-[15vh]">

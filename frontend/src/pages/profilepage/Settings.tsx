@@ -8,10 +8,12 @@ import OnQuestion from "../../assets/images/settingpage/onquestion.webp";
 import OffQuestion from "../../assets/images/settingpage/offquestion.webp";
 import VoiceRec from "../../assets/images/settingpage/voicerec.webp";
 import btnSound from "../../assets/music/btn_sound.mp3";
+import DeleteAccountButton from "../../components/commons/DeleteUserButton";
 
 function Settings() {
   const navigate = useNavigate();
   const [isQuestionOn, setIsQuestionOn] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   const handleQuestionToggle = () => {
     setIsQuestionOn(!isQuestionOn);
@@ -20,6 +22,7 @@ function Settings() {
   return (
     <div className="fixed inset-0 w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${mainpage})` }}>
       <BackButton to="/profile"></BackButton>
+      <DeleteAccountButton></DeleteAccountButton>
 
       {/* 녹음, 자녀, 질문 버튼*/}
       <div className="relative z-[10] flex justify-center items-center gap-[0vw] mt-[28vh]">
