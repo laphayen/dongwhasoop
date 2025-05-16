@@ -92,7 +92,7 @@ function WriteLetter() {
   
         mediaRecorder.start();
         setIsRecording(true);
-        SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
+        SpeechRecognition.startListening({ continuous: false, language: "ko-KR" }); // continuous: false로 변경
         setIsListening(true);
       } catch (error) {
         console.error("Error accessing microphone:", error);
