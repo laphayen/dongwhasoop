@@ -24,7 +24,6 @@ export const writeLetter = async (characterId: number, body: LetterRequest): Pro
 export const getLetterBookList = async () => {
   const accessToken = localStorage.getItem("accessToken");
   const selectedChild = useSelectedChild.getState().selectedChild;
-  console.log("선택된 자녀 id:", selectedChild?.childId);
 
   if (!selectedChild) {
     throw new Error("선택된 자녀가 없습니다.");

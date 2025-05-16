@@ -238,7 +238,7 @@ function LetterList() {
         <div className="flex items-start gap-[4vw] tablet2560:gap-32">
           {/* Left Side - Letter List */}
           <div
-            className="fixed left-[5vw] top-[12vh] w-[35vw]
+            className="fixed left-[15%] top-[12vh] w-[35vw]
            xl:left-60 tablet2560:left-80 xl:w-[25vw]
            tablet2560:top-50 tablet2560:left-[15vw] tablet2560:w-[47vh]"
           >
@@ -248,13 +248,13 @@ function LetterList() {
             pt-[10vh] tablet2560:pt-48 px-[8vh]
             w-full flex flex-col justify-center"
             >
-              <ul className="space-y-3 mt-2 tablet2560:space-y-7 xl:space-y-4 font-maplestory text-lg tablet2560:text-4xl xl:text-xl">
+              <ul className="space-y-3 mt-[0.5vh] tablet2560:space-y-7 xl:space-y-4 font-maplestory text-lg tablet2560:text-4xl xl:text-xl">
                 {getCurrentPageBooks().map((book) => (
                   <li
                     key={book.book_id}
                     className={`flex items-center gap-2 tablet2560:gap-8 xl:gap-3 
                       ${selectedBookId === book.book_id ? "bg-[#ECD5AB] bg-opacity-90" : "bg-[#e9ddc3] bg-opacity-40"} 
-                      rounded-lg p-2 tablet2560:p-5 cursor-pointer hover:bg-opacity-100 transition-all`}
+                      rounded-lg p-[1.4vh] mt-[1.5vh] tablet2560:p-5 cursor-pointer hover:bg-opacity-100 transition-all`}
                     onClick={() => setSelectedBook(book.book_id)}
                   >
                     <img
