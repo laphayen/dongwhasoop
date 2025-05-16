@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -30,12 +32,20 @@ public class UserVoiceServiceImpl implements UserVoiceService {
 
     @Override
     public VoiceListResponse getAvailableVoices() {
-
         User currentUser = userUtils.getUserFromSecurityContext();
         Long userId = currentUser.getId();
-        userRepository.findById(userId).orElseThrow(() -> UserNotFoundException.EXCEPTION);
+        log.info("🧩 현재 요청한 사용자 ID: {}", userId);
 
-        return VoiceListResponse.from(userVoiceRepository.findByUserWithDefaultVoices(currentUser));
+        List<UserVoice> result = userVoiceRepository.findByUserWithDefaultVoices(userId);
+        log.info("🧩 조회된 목소리 개수: {}", result.size());
+
+        result.forEach(voice -> log.info("📦 Voice => ID: {}, Gender: {}, URL: {}, user_id: {}",
+                voice.getId(),
+                voice.getGender(),
+                voice.getVoiceUrl(),
+                voice.getUser() == null ? "기본(곰돌이)" : voice.getUser().getId()));
+
+        return VoiceListResponse.from(result);
     }
 
     @Override

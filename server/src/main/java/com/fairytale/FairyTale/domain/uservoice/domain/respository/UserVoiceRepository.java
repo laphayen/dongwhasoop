@@ -10,8 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserVoiceRepository extends JpaRepository<UserVoice, Long> {
 
-    @Query("SELECT v FROM UserVoice v WHERE v.user = :user OR v.user IS NULL")
-    List<UserVoice> findByUserWithDefaultVoices(@Param("user") User user);
+    @Query("SELECT v FROM UserVoice v WHERE v.user.id = :userId OR v.user IS NULL")
+    List<UserVoice> findByUserWithDefaultVoices(@Param("userId") Long userId);
 
     boolean existsByIdAndUserId(Long id, Long userId);
 
