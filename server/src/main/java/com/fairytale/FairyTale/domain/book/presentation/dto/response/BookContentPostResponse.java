@@ -10,5 +10,7 @@ public class BookContentPostResponse {
 
     private String message;
     private boolean completed;
+    private Long bookId;
+    private String bookTitle;
     private List<StoryPageWithAudioResponse> pages;
 }

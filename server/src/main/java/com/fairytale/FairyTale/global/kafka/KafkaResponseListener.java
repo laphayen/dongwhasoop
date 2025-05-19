@@ -1,5 +1,7 @@
 package com.fairytale.FairyTale.global.kafka;
 
+import com.fairytale.FairyTale.domain.book.domain.Book;
+import com.fairytale.FairyTale.domain.book.domain.repository.BookRepository;
 import com.fairytale.FairyTale.domain.book.presentation.dto.response.BookContentPostResponse;
 import com.fairytale.FairyTale.domain.book.presentation.dto.response.StoryPageWithAudioResponse;
 import com.fairytale.FairyTale.domain.storypage.domain.repository.StoryPageRepository;
@@ -20,6 +22,7 @@ public class KafkaResponseListener {
 
     private final TtsWebSocketHandler webSocketHandler;
     private final StoryPageRepository storyPageRepository;
+    private final BookRepository bookRepository;
 
     @KafkaListener(
         topics = "${spring.kafka.listener.tts-topic}",
@@ -42,8 +45,14 @@ public class KafkaResponseListener {
                         bookId,
                         voiceId);
 
+                    String bookTitle = bookRepository.findById(bookId)
+                        .map(Book::getTitle)
+                        .orElse("제목 없음");
+
                     BookContentPostResponse contentResponse = BookContentPostResponse.builder()
                         .message("✅ 음성 생성이 완료되었습니다.")
+                        .bookId(bookId)
+                        .bookTitle(bookTitle)
                         .completed(true)
                         .pages(pages)
                         .build();

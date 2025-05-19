@@ -52,7 +52,6 @@ public class TtsWebSocketHandler extends TextWebSocketHandler {
 
 
     //쿼리 파라미터로부터 값을 빼내는 역할
-    //TODO 예외 메시지 처리
     private Long extractUserId(WebSocketSession session) throws IOException {
         try {
             String token = extractQueryParam(session, "token");

@@ -1,5 +1,6 @@
 package com.fairytale.FairyTale.domain.book.service;
 
+import com.fairytale.FairyTale.domain.book.domain.Book;
 import com.fairytale.FairyTale.domain.book.domain.repository.BookRepository;
 import com.fairytale.FairyTale.domain.book.exception.NotFoundBookException;
 import com.fairytale.FairyTale.domain.book.presentation.dto.response.BookContentPostResponse;
@@ -15,6 +16,7 @@ import com.fairytale.FairyTale.global.error.exception.FairyTaleException;
 import com.fairytale.FairyTale.global.kafka.KafkaProducer;
 import com.fairytale.FairyTale.global.util.user.UserUtils;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -52,18 +54,22 @@ public class BookServiceImpl implements BookService {
         User user = userUtils.getUserFromSecurityContext();
         Long userId = user.getId();
 
-        log.info("📘 [getBookContentIfExists] bookId = {}, voiceId = {}, userId = {}", bookId, voiceId, userId);
+        log.info("📘 [getBookContentIfExists] bookId = {}, voiceId = {}, userId = {}", bookId,
+            voiceId, userId);
 
         if (!ttsWebSocketHandler.isUserConnected(userId)) {
             log.warn("❌ WebSocket 미연결 - userId: {}", userId);
             throw new FairyTaleException(ErrorCode.WEBSOCKET_NOT_CONNECTED);
         }
 
+        Optional<Book> book = bookRepository.findById(bookId);
         // 유효한 책인지 확인
-        if (!bookRepository.existsById(bookId)) {
+        if (book.isEmpty()) {
             log.warn("❌ 존재하지 않는 bookId: {}", bookId);
             throw new FairyTaleException(ErrorCode.BOOK_NOT_FOUND);
         }
+
+        String bookTitle = book.get().getTitle();
 
         // 곰돌이가 아닌 경우에만 voice 권한 확인
         if (voiceId != 1000L && !userVoiceRepository.existsByIdAndUserId(voiceId, userId)) {
@@ -93,12 +99,16 @@ public class BookServiceImpl implements BookService {
 
             return BookContentPostResponse.builder()
                 .message("TTS를 통해 음성을 생성 중 입니다.")
+                .bookId(bookId)
+                .bookTitle(bookTitle)
                 .completed(false)
                 .pages(null)
                 .build();
         } else {
             return BookContentPostResponse.builder()
                 .message("기존 TTS가 존재하여 바로 응답합니다.")
+                .bookId(bookId)
+                .bookTitle(bookTitle)
                 .completed(true)
                 .pages(pages)
                 .build();
