@@ -103,12 +103,12 @@ function LetterList() {
     if (!letterBooks?.data?.book || letterBooks.data.book.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center h-full">
-          <h2 className="font-bazzi text-outline-sm text-[7vh] mt-[25vh] xl:mt-[20vh] mb-4 text-center">
+          <h2 className="font-bazzi text-outline-sm text-[8vh] tablet2560:text-[7vh] mt-[25vh] xl:mt-[20vh] mb-4 text-center">
             편지를 작성한 동화책이 없어요~
           </h2>
           <div className="flex items-end xl:pt-10 gap-[10vh] mt-[6vh] mb-[7vh]">
-            <img src={cat} alt="Cat" className="w-[15vh] animate-shake1" />
-            <img src={monkey} alt="Monkey" className="w-[15vh] animate-shake2" />
+            <img src={cat} alt="Cat" className="w-[15vw] tablet2560:w-[26vh] animate-shake1" />
+            <img src={monkey} alt="Monkey" className="w-[15vw] tablet2560:w-[26vh] animate-shake2" />
           </div>
         </div>
       );

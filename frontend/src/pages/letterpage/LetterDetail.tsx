@@ -37,9 +37,9 @@ function LetterDetail() {
     <div className="fixed inset-0 w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${mainpage})` }}>
       <BackButton onClick={() => handleBackButton()} />
 
-      <div className="flex justify-between items-center h-full px-[15vh] tablet2560:px-24 pt-10 ">
+      <div className="flex items-center h-full ps-[30vh] tablet2560:ps-[24vh] pt-10 gap-[5vh] md:gap-[15vh] tablet2560:gap-[8vh]">
         {/* 편지 내용 */}
-        <div className="relative w-[55vw] xl:w-[50vw] left-[14%] tablet2560:w-[90vh]">
+        <div className="relative w-[55vw] xl:w-[50vw] tablet2560:w-[90vh]"> 
           <img src={letterpaper} alt="Letter Paper" className="w-full" />
 
           <div className="tablet2560:text-[4vh] xl:text-2xl font-maplestory absolute top-[10%] left-[5%] right-[5%] bottom-[10%] flex flex-col">
@@ -68,7 +68,7 @@ function LetterDetail() {
         </div>
 
         {/* 다시 듣기 버튼 */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4"> 
           {data.audio_url && <audio id="letterAudio" src={data.audio_url} />}
           {data.audio_url && (
             <div
@@ -81,6 +81,8 @@ function LetterDetail() {
               <img src={replay} alt="Replay" className="w-[30vh] h-[30vh]" />
             </div>
           )}
+
+          {/* 홈으로 가기 버튼 */}
           <div
             className="cursor-pointer transition-transform hover:scale-105"
             onClick={() => {
@@ -91,6 +93,7 @@ function LetterDetail() {
             <img src={home} alt="Home" className="w-[30vh] h-[30vh]" />
           </div>
         </div>
+        
       </div>
     </div>
   );

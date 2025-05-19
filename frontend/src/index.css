@@ -154,3 +154,26 @@ button:focus-visible {
   top: 50%;
   transform: translateY(-50%);
 }
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 1.5s ease-out forwards;
+}
+
+.animate-delay-100 {
+  animation-delay: 0.3s;
+}
+
+.animate-delay-300 {
+  animation-delay: 0.5s;
+}

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import bookintrobackground from "../../assets/images/bookintro/bookintrobackground.webp";
 import BackButton from "../../components/commons/BackButton";
 import NextPage from "../../assets/images/detailpage/nextpage.webp";
 import PrevPage from "../../assets/images/detailpage/prevpage.webp";
@@ -13,7 +14,26 @@ function BookDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const bookPages = useBookStore((state) => state.bookPages);
   const bookID = useBookStore((state) => state.selectedBook?.bookId);
+  const selectedBook = useBookStore((state) => state.selectedBook);
   const [audio] = useState(new Audio());
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 로딩 화면 표시 후 첫 페이지 재생
+  useEffect(() => {
+    if (selectedBook && bookPages) {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+        if (bookPages[0]?.audioUrl) {
+          audio.src = bookPages[0].audioUrl;
+          audio.play().catch((error) => {
+            console.log("Audio playback error:", error);
+          });
+        }
+      }, 3500); 
+
+      return () => clearTimeout(timer);
+    }
+  }, [selectedBook, bookPages, audio]);
 
   const handleBackClick = () => {
     setIsModalOpen(true);
@@ -33,10 +53,10 @@ function BookDetail() {
 
   // 페이지 변경시 자동 재생
   useEffect(() => {
-    let isCurrentPage = true; // 현재 페이지 체크를 위한 플래그
+    let isCurrentPage = true;
 
     const playAudio = async () => {
-      if (currentContent?.audioUrl && isCurrentPage) {
+      if (currentContent?.audioUrl && isCurrentPage && !isLoading) {
         try {
           audio.pause();
           audio.currentTime = 0;
@@ -51,11 +71,11 @@ function BookDetail() {
     playAudio();
 
     return () => {
-      isCurrentPage = false; // cleanup에서 플래그 false로 설정
+      isCurrentPage = false;
       audio.pause();
       audio.currentTime = 0;
     };
-  }, [currentPage, currentContent, audio]);
+  }, [currentPage, currentContent, audio, isLoading]);
 
   // 다시듣기 버튼도 수정
   const handleReplay = () => {
@@ -78,6 +98,24 @@ function BookDetail() {
       }
     });
   }, [currentPage, bookPages]);
+
+  if (isLoading) {
+    return (
+      <div 
+        className="fixed inset-0 w-screen h-screen flex flex-col items-center justify-center bg-cover bg-center"
+        style={{ backgroundImage: `url(${bookintrobackground})` }}
+      >
+        <img
+          src={selectedBook?.imageUrl || "/default-book-cover.png"}
+          alt="Book Cover"
+          className="w-[40vh] max-w-[800px] rounded-xl border-8 border-white shadow-md animate-fade-in-up animate-delay-100"
+        />
+        <h1 className="mt-[8vh] text-[12vh] font-bazzi text-black text-outline-sm animate-fade-in-up animate-delay-300">
+          {selectedBook?.title}
+        </h1>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden">
