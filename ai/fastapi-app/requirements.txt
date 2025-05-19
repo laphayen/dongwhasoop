@@ -11,7 +11,7 @@ openai==1.76.2
 boto3==1.38.5
 python-multipart==0.0.20
 # pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 -U
-TTS==0.22.0
+# TTS==0.22.0
 sounddevice==0.5.1
 scipy==1.15.2
 python-logstash==0.4.8

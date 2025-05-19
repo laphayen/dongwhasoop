@@ -12,6 +12,7 @@ story_pages = Table(
     Column("updated_at", DateTime),
     Column("image_url", String(255)),
     Column("text_content", String(255)),
+    Column("emotion_type", Integer),
     schema="fairytale"
 )
 

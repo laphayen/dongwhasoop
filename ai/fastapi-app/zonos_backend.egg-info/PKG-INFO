@@ -1,0 +1,39 @@
+Metadata-Version: 2.4
+Name: zonos-backend
+Version: 0.1.0
+Summary: FastAPI + Zonos hybrid TTS service
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi==0.115.12
+Requires-Dist: uvicorn==0.34.2
+Requires-Dist: python-dotenv==1.1.0
+Requires-Dist: python-multipart==0.0.20
+Requires-Dist: aiokafka==0.12.0
+Requires-Dist: asyncmy==0.2.10
+Requires-Dist: databases==0.9.0
+Requires-Dist: sqlalchemy==2.0.40
+Requires-Dist: greenlet==3.2.1
+Requires-Dist: boto3==1.38.5
+Requires-Dist: openai==1.76.2
+Requires-Dist: torch>=2.5.1
+Requires-Dist: torchaudio>=2.5.1
+Requires-Dist: scipy==1.15.2
+Requires-Dist: soundfile>=0.13.1
+Requires-Dist: safetensors
+Requires-Dist: transformers
+Requires-Dist: cryptography
+Requires-Dist: setuptools
+Requires-Dist: packaging
+Requires-Dist: inflect>=7.5.0
+Requires-Dist: kanjize>=1.5.0
+Requires-Dist: phonemizer>=3.3.0
+Requires-Dist: sudachidict-full>=20241021
+Requires-Dist: sudachipy>=0.6.10
+Requires-Dist: huggingface-hub>=0.28.1
+Requires-Dist: python-logstash==0.4.8
+Requires-Dist: python-json-logger==2.0.7
+Requires-Dist: python-logstash-async==2.5.0
+Provides-Extra: compile
+Requires-Dist: flash-attn>=2.7.3; extra == "compile"
+Requires-Dist: mamba-ssm>=2.2.4; extra == "compile"
+Requires-Dist: causal-conv1d>=1.5.0.post8; extra == "compile"

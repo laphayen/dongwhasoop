@@ -19,7 +19,7 @@ async def process_message(data):
                 voice_id = payload["voice_id"]
                 user_id = payload["user_id"]
 
-                # 동화 페이지 조회 → 음성 생성 → S3 저장
+                # # 동화 페이지 조회 → 음성 생성 → S3 저장
                 await with_session(
                     lambda session: generate_tts_batch_and_upload(
                         session, book_id, voice_id, user_id)

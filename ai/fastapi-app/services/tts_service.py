@@ -1,9 +1,10 @@
-# services/tts_service.py
+# # services/tts_service.py
 import torch
-from TTS.api import TTS
-from TTS.tts.configs.xtts_config import XttsConfig, XttsAudioConfig
-from TTS.config.shared_configs import BaseDatasetConfig
-from TTS.tts.models.xtts import XttsArgs
+import torchaudio
+from zonos.model import Zonos
+from zonos.conditioning import make_cond_dict
+from zonos.utils import DEFAULT_DEVICE as device
+import time
 import tempfile
 import uuid
 from services.s3_utils import upload_file_to_s3, load_file_from_s3
@@ -16,18 +17,25 @@ from db.models import story_pages, user_voices, page_audios
 from sqlalchemy import select, and_, outerjoin, null, insert
 from kafka.producer import send_result_message
 
-torch.serialization.add_safe_globals([
-    XttsConfig,
-    XttsAudioConfig,
-    BaseDatasetConfig,
-    XttsArgs
-])
-
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(device + "로 실행 중")
 
-# XTTS 모델은 모듈 로딩 시 한 번만 초기화
-tts_model = TTS(model_name="tts_models/multilingual/multi-dataset/xtts_v2").to(device)
+# 모델은 모듈 로딩 시 한 번만 초기화
+model = Zonos.from_pretrained("Zyphra/Zonos-v0.1-transformer", device=device)
+torch.manual_seed(421)
+
+# Index: [행복, 슬픔, 역겨움, 공포, 놀람, 분노, 기타1, 기타2]
+emotion = {
+    1: [0.6, 0.05, 0.05, 0.05, 0.1, 0.05, 0.05, 0.05],  # 행복
+    2: [0.05, 0.6, 0.1, 0.1, 0.05, 0.05, 0.025, 0.025],  # 슬픔
+    3: [0.05, 0.1, 0.6, 0.05, 0.05, 0.05, 0.05, 0.05],  # 역겨움
+    4: [0.05, 0.1, 0.05, 0.6, 0.1, 0.05, 0.025, 0.025],  # 공포
+    5: [0.1, 0.05, 0.05, 0.1, 0.6, 0.05, 0.025, 0.025],  # 놀람
+    6: [0.05, 0.05, 0.05, 0.05, 0.05, 0.7, 0.025, 0.025],  # 분노
+    7: [0.05, 0.05, 0.05, 0.05, 0.1, 0.05, 0.6, 0.05],    # 기타1 (몽환, 평온 등)
+    8: [0.1, 0.1, 0.05, 0.1, 0.1, 0.1, 0.15, 0.3],        # 기본(중립)
+}
+
 
 async def generate_tts_batch_and_upload(session: AsyncSession, book_id: int, voice_id: int, user_id: int):
     # tmp 디렉토리 1회만 생성
@@ -74,10 +82,10 @@ async def generate_tts_batch_and_upload(session: AsyncSession, book_id: int, voi
 
       result = await session.execute(pages_query)
       pages = result.mappings().all()  # 딕셔너리 형태로 반환 (text_content 접근 가능)
-
+    
       tasks = [
         _generate_and_save_audio(session, book_id, voice_id, speaker_path,
-                                 page["text_content"], page["page_number"])
+                                 page["text_content"], page["page_number"],page["emotion_type"] )
         for page in pages
       ]
       results = await asyncio.gather(*tasks)
@@ -113,20 +121,30 @@ async def _generate_and_save_audio(
     voice_id: int,
     speaker_path: str,
     text: str,
-    page_number: int
+    page_number: int,
+    emotion_type : int = 8
 ):
 
+  if not (1 <= emotion_type <= 8):
+    emotion_type = 8
+  
   # 반환 위치
   output_path = f"/tmp/{uuid.uuid4()}.wav"
 
   try:
     # TTS 기반 음성 생성
-    tts_model.tts_to_file(
-        text=text,
-        speaker_wav=speaker_path,
-        language="ko",
-        file_path=output_path
-    )
+    wav, sampling_rate = torchaudio.load(speaker_path)
+    speaker = model.make_speaker_embedding(wav, sampling_rate)
+
+    print(f"{emotion_type} = {emotion[emotion_type]}으로 생성 :\n({text})")
+
+    cond_dict = make_cond_dict(text=text, speaker=speaker, language="ko", emotion = emotion[emotion_type])
+    conditioning = model.prepare_conditioning(cond_dict)
+
+    codes = model.generate(conditioning)
+    wavs = model.autoencoder.decode(codes).cpu()
+    torchaudio.save(output_path, wavs[0], model.autoencoder.sampling_rate)
+
     # S3에 음성 저장
     with open(output_path, "rb") as f:
       s3_key = f"tts_outputs/{uuid.uuid4()}.wav"
@@ -167,12 +185,19 @@ async def generate_tts(text: str, speaker_url: str) -> str:
 
   try:
     # 3. 음성 생성
-    tts_model.tts_to_file(
-        text=text,
-        speaker_wav=speaker_path,
-        language="ko",
-        file_path=output_path
-    )
+     # TTS 기반 음성 생성
+    wav, sampling_rate = torchaudio.load(speaker_path)
+    speaker = model.make_speaker_embedding(wav, sampling_rate)
+
+    print(f"8 = {emotion[8]}으로 생성 :\n({text})")
+
+    cond_dict = make_cond_dict(text=text, speaker=speaker, language="ko", emotion = emotion[8])
+    conditioning = model.prepare_conditioning(cond_dict)
+
+    codes = model.generate(conditioning)
+    wavs = model.autoencoder.decode(codes).cpu()
+
+    torchaudio.save(output_path, wavs[0], model.autoencoder.sampling_rate)
 
     # 4. S3 업로드
     with open(output_path, "rb") as f:

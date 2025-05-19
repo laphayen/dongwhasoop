@@ -3,3 +3,6 @@
 __pycache__/*
 tmp
 models
+.venv3.11
+.venv
+**/__pycache__/
