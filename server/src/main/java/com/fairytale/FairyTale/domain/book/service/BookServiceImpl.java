@@ -52,25 +52,40 @@ public class BookServiceImpl implements BookService {
         User user = userUtils.getUserFromSecurityContext();
         Long userId = user.getId();
 
-        //웹소캣 연결 여부 확인
+        log.info("📘 [getBookContentIfExists] bookId = {}, voiceId = {}, userId = {}", bookId, voiceId, userId);
+
         if (!ttsWebSocketHandler.isUserConnected(userId)) {
+            log.warn("❌ WebSocket 미연결 - userId: {}", userId);
             throw new FairyTaleException(ErrorCode.WEBSOCKET_NOT_CONNECTED);
         }
 
-        //bookId, voiceId 검증
+        // 유효한 책인지 확인
         if (!bookRepository.existsById(bookId)) {
+            log.warn("❌ 존재하지 않는 bookId: {}", bookId);
             throw new FairyTaleException(ErrorCode.BOOK_NOT_FOUND);
         }
-        if (!userVoiceRepository.existsByIdAndUserId(voiceId, userId)) {
+
+        // 곰돌이가 아닌 경우에만 voice 권한 확인
+        if (voiceId != 1000L && !userVoiceRepository.existsByIdAndUserId(voiceId, userId)) {
+            log.warn("❌ 사용자의 voiceId가 존재하지 않음 - voiceId: {}, userId: {}", voiceId, userId);
             throw new FairyTaleException(ErrorCode.USER_VOICE_NOT_FOUND);
         }
 
-        //이미 생성된 데이터가 있는지 확인
-        List<StoryPageWithAudioResponse> pages = storyPageRepository.findPagesWithVoiceAudio(bookId,
-            voiceId);
+        // 페이지 오디오 조회
+        List<StoryPageWithAudioResponse> pages;
+        if (voiceId == 1000L) {
+            log.info("🐻 곰돌이 목소리 조회");
+            pages = storyPageRepository.findPagesWithVoiceAudio(bookId, voiceId);
+        } else {
+            log.info("👤 사용자 목소리 조회 - voiceId: {}, userId: {}", voiceId, userId);
+            pages = storyPageRepository.findPagesWithVoiceAudioAndUser(bookId, voiceId, userId);
+        }
 
-        //생성이 안된 페이지 확인
+        log.info("📄 조회된 페이지 수: {}", pages.size());
+
+        // 모든 페이지에 오디오가 있는지 확인
         boolean allPagesHaveAudio = pages.stream().allMatch(p -> p.getAudioUrl() != null);
+        log.info("✅ 모든 페이지 오디오 존재 여부: {}", allPagesHaveAudio);
 
         if (!allPagesHaveAudio) {
             //kafka로 명령 보내기
