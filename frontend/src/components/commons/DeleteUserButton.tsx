@@ -1,5 +1,6 @@
 import { useState } from "react";
 import DeleteUserModal from "./DeleteUserModal";
+import SweetBear from "../../assets/images/settingpage/sweets_bear.webp"
 
 function DeleteAccountButton() {
   const [showModal, setShowModal] = useState(false);
@@ -28,10 +29,17 @@ function DeleteAccountButton() {
     <>
       <button
         onClick={() => setShowModal(true)}
-        className="fixed right-[3vw] top-[3vh] px-[2vw] py-[1.5vh] text-red-600 border-4 border-red-600 rounded-lg
-        text-[2vh] md:text-[2.2vh] lg:text-[2.4vh] font-medium"
+        className="fixed right-[3vw] top-[4vh] flex flex-col items-center 
+        transition-transform hover:scale-110 active:scale-105"
       >
-        회원탈퇴
+        <img 
+          src={SweetBear} 
+          alt="Sweet Bear" 
+          className="w-[9vh] object-contain"
+        />
+        <span className="font-bazzi text-[2.5vh] mt-1">
+          회원탈퇴
+        </span>
       </button>
 
       {showModal && (

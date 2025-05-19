@@ -31,7 +31,7 @@ const DeleteUserModal = ({ onCancel }: DeleteUserModalProps) => {
             <img
               src={deleteNo}
               alt="아니오"
-              className="w-[25vw] tablet2560:w-[28vw]"
+              className="w-[23vw] tablet2560:w-[25vw]"
             />
           </button>
           <button
@@ -41,7 +41,7 @@ const DeleteUserModal = ({ onCancel }: DeleteUserModalProps) => {
             <img
               src={deleteYes}
               alt="예"
-              className="w-[25vw] tablet2560:w-[28vw]"
+              className="w-w-[23vw] tablet2560:w-[25vw]"
             />
           </button>
         </div>
