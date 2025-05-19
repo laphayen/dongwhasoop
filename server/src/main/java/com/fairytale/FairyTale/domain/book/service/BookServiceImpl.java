@@ -78,7 +78,7 @@ public class BookServiceImpl implements BookService {
             pages = storyPageRepository.findPagesWithVoiceAudio(bookId, voiceId);
         } else {
             log.info("👤 사용자 목소리 조회 - voiceId: {}, userId: {}", voiceId, userId);
-            pages = storyPageRepository.findPagesWithVoiceAudioAndUser(bookId, voiceId, userId);
+            pages = storyPageRepository.findPagesWithVoiceAudio(bookId, voiceId);
         }
 
         log.info("📄 조회된 페이지 수: {}", pages.size());
