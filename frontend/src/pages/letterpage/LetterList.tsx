@@ -103,10 +103,10 @@ function LetterList() {
     if (!letterBooks?.data?.book || letterBooks.data.book.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center h-full">
-          <h2 className="font-bazzi text-outline-sm text-[7vh] mt-40 mb-4 text-center">
+          <h2 className="font-bazzi text-outline-sm text-[7vh] mt-[25vh] xl:mt-[20vh] mb-4 text-center">
             편지를 작성한 동화책이 없어요~
           </h2>
-          <div className="flex items-end xl:pt-10 gap-40 mt-[6vh] mb-[7vh]">
+          <div className="flex items-end xl:pt-10 gap-[10vh] mt-[6vh] mb-[7vh]">
             <img src={cat} alt="Cat" className="w-[15vh] animate-shake1" />
             <img src={monkey} alt="Monkey" className="w-[15vh] animate-shake2" />
           </div>
@@ -117,8 +117,8 @@ function LetterList() {
     if (!selectedBookId) {
       return (
         <div className="flex flex-col items-center justify-center h-full">
-          <h2 className="font-bazzi text-outline-sm text-[9vh] mt-40 mb-4 text-center">동화책을 선택해주세요~</h2>
-          <div className="flex items-end xl:pt-10 gap-40 tablet2560:mt-[6vh] mb-[7vh]">
+          <h2 className="font-bazzi text-outline-sm text-[9vh] mt-[25vh] xl:mt-[20vh] mb-4 text-center">동화책을 선택해주세요~</h2>
+          <div className="flex items-end xl:pt-10 gap-[10vh] tablet2560:mt-[6vh] mb-[7vh]">
             <img src={cat} alt="Cat" className="w-[15vw] tablet2560:w-[26vh] animate-shake1" />
             <img src={monkey} alt="Monkey" className="w-[15vw] tablet2560:w-[26vh] animate-shake2" />
           </div>
@@ -237,23 +237,23 @@ function LetterList() {
         <div className="flex items-start gap-[4vw] tablet2560:gap-32">
           {/* Left Side - Letter List */}
           <div
-            className="fixed left-[15%] top-[12vh] w-[35vw]
-           xl:left-60 tablet2560:left-80 xl:w-[25vw]
+            className="fixed left-[15%] top-[5vh] w-[35vw]
+           xl:left-60  xl:w-[25vw] xl:top-[10vh]
            tablet2560:top-50 tablet2560:left-[15vw] tablet2560:w-[47vh]"
           >
-            <img src={letterlist} alt="Letter List" className="tablet2560:mt-16 tablet2560:w-800px" />
+            <img src={letterlist} alt="Letter List" className="w-[60vh] tablet2560:mt-16 tablet2560:w-800px" />
             <div
               className="absolute top-0 right-1 
             pt-[10vh] tablet2560:pt-48 px-[8vh]
             w-full flex flex-col justify-center"
             >
-              <ul className="space-y-3 mt-[0.5vh] tablet2560:space-y-7 xl:space-y-4 font-maplestory text-lg tablet2560:text-4xl xl:text-xl">
+              <ul className="space-y-3 mt-[0.5vh] tablet2560:space-y-7 xl:space-y-4 font-maplestory text-xs md:text-base xl:text-xl tablet2560:text-4xl">
                 {getCurrentPageBooks().map((book) => (
                   <li
                     key={book.book_id}
                     className={`flex items-center gap-2 tablet2560:gap-8 xl:gap-3 
                       ${selectedBookId === book.book_id ? "bg-[#ECD5AB] bg-opacity-90" : "bg-[#e9ddc3] bg-opacity-40"} 
-                      rounded-lg p-[1.4vh] mt-[1.5vh] tablet2560:p-5 cursor-pointer hover:bg-opacity-100 transition-all`}
+                      rounded-lg w-[90%] xl:w-full p-[1.4vh] mt-[1.5vh] tablet2560:p-5 cursor-pointer hover:bg-opacity-100 transition-all`}
                     onClick={() => setSelectedBook(book.book_id)}
                   >
                     <img

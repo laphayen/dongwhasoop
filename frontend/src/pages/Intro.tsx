@@ -52,7 +52,7 @@ function Intro() {
           </button>
 
           <button onClick={() => {
-            new Audio(btnSound).play();
+            // new Audio(btnSound).play();
             setCurrentSongId(Number(id));
             navigate(`/songdetail/${id}`);
           }}>

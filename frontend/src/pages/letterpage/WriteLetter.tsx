@@ -12,13 +12,17 @@ import { useWriteLetter } from "../../hooks/useBook/useWriteLetter";
 import { useSelectedChild } from "../../stores/useSelectedChild";
 import btnSound from "../../assets/music/btn_sound.mp3";
 import { useRef } from "react";
+import { useMusicStore } from "../../stores/musicStore";
+
+
 
 function WriteLetter() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { characterId, bookId } = location.state || {};
-
+  const { togglePlay } = useMusicStore(); // Add this line
+  
   // 음성 녹음 상태 관리
   const [isRecording, setIsRecording] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -27,9 +31,17 @@ function WriteLetter() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null); // 추가: 스트림 참조
-
+  
   const { letterContent, setLetterContent, clearLetterContent } = useLetterStore();
   const { selectedChild } = useSelectedChild();
+  
+  // 마운트시 배경음악 끄기
+  useEffect(() => {
+    togglePlay(); // 배경음악 끄기
+    return () => {
+      togglePlay(); // 언마운트시 배경음악 다시 켜기
+    };
+  }, [togglePlay]);
   const writeLetter = useWriteLetter();
 
   // 음성 텍스트 변환 결과가 변경될 때마다 편지 내용 업데이트 

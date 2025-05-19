@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import BackButton from "../../components/commons/BackButton";
 import { useGetSong } from "../../hooks/useBook/useGetSongDetail";
-import { useBookStore } from "../../stores/bookStore";
+import { useMusicStore } from "../../stores/musicStore";
 import mainpage from "../../assets/images/mainpage/mainpage.webp";
 import Bear from "../../assets/images/loading/bear.webp"
 import Rabbit from "../../assets/images/loading/rabbit.webp"
@@ -15,15 +15,22 @@ import Note3 from "../../assets/images/loading/note3.webp"
 function SongDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-
-  const { selectedBook } = useBookStore(); // Changed from setSelectedBook to selectedBook
-
+  const { togglePlay } = useMusicStore(); // Add this line
   const { data: songUrl, isLoading, isError } = useGetSong(Number(id));
+
+  // 마운트시 배경음악 끄기
+  useEffect(() => {
+    togglePlay(); // 배경음악 끄기
+    return () => {
+      togglePlay(); // 언마운트시 배경음악 다시 켜기
+    };
+  }, [togglePlay]);
 
   useEffect(() => {
     if (songUrl && videoRef.current) {
+      videoRef.current.autoplay = true; // autoplay 속성 추가
+      videoRef.current.load(); // 비디오 로드
       videoRef.current.play().catch((error) => {
         console.error("Failed to autoplay:", error);
       });

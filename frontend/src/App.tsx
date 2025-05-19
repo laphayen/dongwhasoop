@@ -60,7 +60,7 @@ function App() {
   useEffect(() => {
     audioRef.current = new Audio(bgm);
     audioRef.current.loop = true;
-    audioRef.current.volume = 0.3;
+    audioRef.current.volume = 0.1;
     audioRef.current.muted = true; // 초기에 음소거 상태로 설정
 
     return () => {
