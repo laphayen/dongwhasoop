@@ -16,7 +16,10 @@ export const usePostBookDetail = () => {
     onSuccess: (data) => {
       console.log("Mutation success:", data);
       if (data?.completed && data.pages) {
-        setBookPages(data.pages);
+        const uniquePages = Array.from(
+          new Map(data.pages.map(page => [page.pageNumber, page])).values()
+        );
+        setBookPages(uniquePages);
       }
     },
     onError: (error) => {
