@@ -1,6 +1,5 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-
 import { usePostBookDetail } from "../../hooks/useBook/usePostBookDetail";
 import bookintrobackground from "../../assets/images/bookintro/bookintrobackground.webp";
 import BackButton from "../../components/commons/BackButton";
@@ -21,6 +20,7 @@ function IntroBook() {
   const postBookDetail = usePostBookDetail();
   const [ws, setWs] = useState<WebSocket | null>(null);
   const setBookPages = useBookStore((state) => state.setBookPages);
+  const location = useLocation();
 
   const buttonContainerStyle = "flex justify-center items-center h-full gap-x-[5vw] mt-[-15vh]";
   const buttonStyle = "w-[25vw] h-[25vw] flex items-center justify-center";
@@ -45,7 +45,7 @@ function IntroBook() {
       try {
         const data = JSON.parse(event.data);
 
-        if (data.data?.completed) {
+        if (data.data?.completed && location.pathname === "/bookloading") {
           navigate(`/bookdetail/${id}`, {
             state: { voiceId: data.data.voiceId },
           });
