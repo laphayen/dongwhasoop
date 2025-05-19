@@ -1,57 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+
 import BackButton from "../../components/commons/BackButton";
 import NextPage from "../../assets/images/detailpage/nextpage.webp";
 import PrevPage from "../../assets/images/detailpage/prevpage.webp";
 import RestartBook from "../../assets/images/detailpage/restart.webp";
 import Modal from "../../components/commons/Modal";
 import { useBookStore } from "../../stores/bookStore";
-import { useMusicStore } from "../../stores/musicStore";
 
 function BookDetail() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const bookPages = useBookStore((state) => state.bookPages);
   const bookID = useBookStore((state) => state.selectedBook?.bookId);
-  const { volume, setVolume } = useMusicStore();
-  const [audio] = useState(new Audio());
-  const [isMounted, setIsMounted] = useState(false);
-
-  // 마운트시 볼륨 서서히 감소
-  // useEffect(() => {
-  //   setIsMounted(true);
-  //   let currentVolume = volume;
-
-  //   const fadeOut = () => {
-  //     if (currentVolume > 0) {
-  //       currentVolume -= 0.1;
-  //       setVolume(currentVolume);
-  //       setTimeout(fadeOut, 100);
-  //     }
-  //   };
-
-  //   fadeOut();
-  // }, [setVolume]);
-
-  // 언마운트시 볼륨 서서히 증가
-  // useEffect(() => {
-  //   let currentVolume = volume;
-
-  //   const fadeIn = () => {
-  //     if (currentVolume < 1) {
-  //       currentVolume += 0.1;
-  //       setVolume(currentVolume);
-  //       setTimeout(fadeIn, 100);
-  //     }
-  //   };
-
-  //   fadeIn();
-
-  //   return () => {
-  //     setVolume(1); // 언마운트 시 볼륨을 원래대로 복구
-  //   };
-  // }, [setVolume]);
-  
+  const [audio] = useState(new Audio()); // 오디오 객체 생성
 
   const handleBackClick = () => {
     setIsModalOpen(true);
@@ -118,7 +80,7 @@ function BookDetail() {
   }, [currentPage, bookPages]);
 
   return (
-    <div className={`fixed inset-0 w-screen h-screen overflow-hidden transition-opacity duration-1000 ease-in-out ${isMounted ? "opacity-100" : "opacity-0"}`}>
+    <div className="fixed inset-0 w-screen h-screen overflow-hidden">
       <BackButton onClick={handleBackClick} />
 
       <Modal
