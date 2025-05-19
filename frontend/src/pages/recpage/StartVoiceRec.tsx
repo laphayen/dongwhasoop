@@ -48,6 +48,12 @@ function VoiceRec() {
       setIsRecording(false);
     } else {
       try {
+        // 이전 레코더 정리
+        if (recorderRef.current) {
+          recorderRef.current.reset();
+          recorderRef.current = null;
+        }
+        
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true
         });
@@ -58,7 +64,9 @@ function VoiceRec() {
           mimeType: 'audio/wav',
           recorderType: RecordRTC.StereoAudioRecorder,
           desiredSampRate: 16000,
-          numberOfAudioChannels: 1
+          numberOfAudioChannels: 1,
+          timeSlice: 250,  // 안정성을 위해 추가
+          bufferSize: 4096 // 안정성을 위해 추가
         });
         
         recorderRef.current = recorder;
