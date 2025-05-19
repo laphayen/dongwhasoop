@@ -1,7 +1,8 @@
 import { lazy, Suspense } from "react";
 import { useEffect, useRef } from "react";
 import { Routes, Route } from "react-router-dom";
-// import { useAuth } from "./hooks/useAuth";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/Login";
 import BookEnd from "./pages/bookpage/BookEnd";
 import Intro from "./pages/Intro";
@@ -28,7 +29,6 @@ import KakaoCallback from "./pages/KakaoCallback";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AddingProfile from "./pages/profilepage/AddingProfile";
 import TestApiPage from "./pages/TestApiPage";
-import Auth from "./pages/Auth";
 import bgm from "./assets/music/fairytale_bgm.mp3";
 import { useMusicStore } from "./stores/musicStore";
 import OauthPopup from "./pages/OauthPopup";
@@ -41,19 +41,6 @@ const BookList = lazy(() => import("./pages/bookpage/BookList"));
 const LetterDetail = lazy(() => import("./pages/letterpage/LetterDetail"));
 
 function App() {
-  // const navigate = useNavigate();
-  // const { refreshAccessToken } = useAuth();
-
-  // useEffect(() => {
-  //   const accessToken = localStorage.getItem("accessToken");
-
-  //   if (accessToken) {
-  //     navigate("/profile");
-  //   } else {
-  //     navigate("/");
-  //   }
-  // }, [navigate]);
-
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { isPlaying } = useMusicStore();
 
@@ -85,6 +72,18 @@ function App() {
 
   return (
     <>
+      <ToastContainer
+        toastClassName="!w-[90vw] max-w-[1300px] mx-auto text-lg font-semibold text-center rounded-xl shadow-xl"
+        className="mt-4"
+        position="top-center"
+        autoClose={5000} // 자동 off 설정
+        hideProgressBar={false} // 진행시간바 숨김
+        rtl={false} // 좌우반전
+        newestOnTop // 새로운 메시지 위로 쌓기
+        closeOnClick // 클릭 시 닫기
+        pauseOnHover // 마우스 올리면 알림 정지
+        draggable // 드래그 가능
+      />
       <Suspense fallback={<Loading />}>
         <Routes>
           {/* 인증 관련 */}

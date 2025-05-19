@@ -10,6 +10,7 @@ import { useGetUserVoice } from "../../hooks/useVoice/useGetUserVoice";
 import useVoiceStore from "../../stores/useVoiceStore";
 import { useBookStore } from "../../stores/bookStore";
 import btnSound from "../../assets/music/btn_sound.mp3";
+import { toast } from "react-toastify";
 
 function IntroBook() {
   const navigate = useNavigate();
@@ -43,20 +44,27 @@ function IntroBook() {
 
     newWs.addEventListener("message", (event) => {
       try {
-        const data = JSON.parse(event.data);
+        const raw = JSON.parse(event.data);
 
-        if (data.data?.completed && location.pathname === "/bookloading") {
-          navigate(`/bookdetail/${id}`, {
-            state: { voiceId: data.data.voiceId },
+        if (!raw?.data) {
+          console.warn("잘못된 메시지 수신:", raw);
+          return;
+        }
+
+        const { bookId, bookTitle, voiceId, completed } = raw.data;
+
+        if (completed && location.pathname === "/bookloading") {
+          navigate(`/bookdetail/${bookId}`, {
+            state: { voiceId },
+          });
+        } else if (completed) {
+          toast.info(`💌 ${bookTitle} 동화가 생성되었어요!`, {
+            onClick: () => navigate(`/intro/${bookId}`),
           });
         }
-      } catch (error) {
-        console.error("Error parsing WebSocket message:", error);
+      } catch (err) {
+        console.error("WebSocket 메시지 파싱 오류:", err);
       }
-    });
-
-    newWs.addEventListener("error", (error) => {
-      console.error("WebSocket error:", error);
     });
 
     newWs.addEventListener("close", (event) => {
