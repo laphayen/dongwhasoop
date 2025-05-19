@@ -14,6 +14,7 @@
     "@react-three/drei": "^10.0.7",
     "@react-three/fiber": "^9.1.2",
     "@tanstack/react-query": "^5.74.11",
+    "@types/recordrtc": "^5.6.14",
     "axios": "^1.9.0",
     "million": "^3.1.11",
     "react": "^19.0.0",

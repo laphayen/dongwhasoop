@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
+import RecordRTC from "recordrtc";
 import { useGetUserVoice } from "../../hooks/useVoice/useGetUserVoice";
 import { usePostUserVoice } from "../../hooks/useVoice/usePostUserVoice";
 import { useDeleteUserVoice } from "../../hooks/useVoice/useDeleteUserVoice";
@@ -26,9 +27,9 @@ function VoiceRec() {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
+  const recorderRef = useRef<RecordRTC | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = storyData.story.length;
@@ -49,32 +50,37 @@ function VoiceRec() {
   const handleRecord = async () => {
     new Audio(btnSound).play();
     if (isRecording) {
-      // 녹음 중지
-      mediaRecorderRef.current?.stop();
+      // Stop recording
+      recorderRef.current?.stopRecording(() => {
+        const blob = recorderRef.current?.getBlob();
+        if (blob) {
+          setAudioBlob(blob);
+          const url = URL.createObjectURL(blob);
+          setAudioUrl(url);
+        }
+        // Stop and clean up the stream
+        if (streamRef.current) {
+          streamRef.current.getTracks().forEach((track) => track.stop());
+        }
+      });
       setIsRecording(false);
     } else {
-      // 녹음 시작
+      // Start recording
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
         });
-        const mediaRecorder = new MediaRecorder(stream);
-        mediaRecorderRef.current = mediaRecorder;
-        chunksRef.current = [];
+        streamRef.current = stream;
 
-        mediaRecorder.ondataavailable = (e) => {
-          chunksRef.current.push(e.data);
-        };
+        const recorder = new RecordRTC(stream, {
+          type: "audio",
+          mimeType: "audio/wav",
+          desiredSampRate: 16000,
+          numberOfAudioChannels: 1,
+        });
 
-        mediaRecorder.onstop = () => {
-          const blob = new Blob(chunksRef.current, { type: "audio/wav" });
-          setAudioBlob(blob);
-          const url = URL.createObjectURL(blob);
-          setAudioUrl(url);
-          stream.getTracks().forEach((track) => track.stop());
-        };
-
-        mediaRecorder.start();
+        recorderRef.current = recorder;
+        recorder.startRecording();
         setIsRecording(true);
       } catch (error) {
         console.error("Error accessing microphone:", error);
@@ -149,11 +155,14 @@ function VoiceRec() {
     }
   };
 
-  // Cleanup URL when component unmounts
+  // Cleanup function
   useEffect(() => {
     return () => {
       if (audioUrl) {
         URL.revokeObjectURL(audioUrl);
+      }
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
       }
     };
   }, [audioUrl]);
