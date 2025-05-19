@@ -7,63 +7,51 @@ import RestartBook from "../../assets/images/detailpage/restart.webp";
 import Modal from "../../components/commons/Modal";
 import { useBookStore } from "../../stores/bookStore";
 import { useMusicStore } from "../../stores/musicStore";
-import bgm from "../../assets/music/fairytale_bgm.mp3";
 
 function BookDetail() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const bookPages = useBookStore((state) => state.bookPages);
   const bookID = useBookStore((state) => state.selectedBook?.bookId);
-  const { togglePlay } = useMusicStore();
+  const { volume, setVolume } = useMusicStore();
   const [audio] = useState(new Audio());
   const [isMounted, setIsMounted] = useState(false);
 
-  // 배경음악을 자연스럽게 끄고 켜는 함수
-  const fadeOutMusic = (callback: () => void) => {
-    const audio = new Audio(bgm); // 배경음악 객체
-    let volume = 1;
+  // 마운트시 볼륨 서서히 감소
+  // useEffect(() => {
+  //   setIsMounted(true);
+  //   let currentVolume = volume;
 
-    const fadeOut = () => {
-      if (volume > 0) {
-        volume -= 0.1;
-        audio.volume = volume;
-        setTimeout(fadeOut, 100);
-      } else {
-        audio.pause();
-        callback();
-      }
-    };
+  //   const fadeOut = () => {
+  //     if (currentVolume > 0) {
+  //       currentVolume -= 0.1;
+  //       setVolume(currentVolume);
+  //       setTimeout(fadeOut, 100);
+  //     }
+  //   };
 
-    fadeOut();
-  };
+  //   fadeOut();
+  // }, [setVolume]);
 
-  const fadeInMusic = () => {
-    const audio = new Audio(bgm); // 배경음악 객체
-    let volume = 0;
+  // 언마운트시 볼륨 서서히 증가
+  // useEffect(() => {
+  //   let currentVolume = volume;
 
-    audio.volume = volume;
-    audio.play();
+  //   const fadeIn = () => {
+  //     if (currentVolume < 1) {
+  //       currentVolume += 0.1;
+  //       setVolume(currentVolume);
+  //       setTimeout(fadeIn, 100);
+  //     }
+  //   };
 
-    const fadeIn = () => {
-      if (volume < 1) {
-        volume += 0.1;
-        audio.volume = volume;
-        setTimeout(fadeIn, 100);
-      }
-    };
+  //   fadeIn();
 
-    fadeIn();
-  };
-
-  // 컴포넌트 마운트 시 애니메이션 및 배경음악 제어
-  useEffect(() => {
-    setIsMounted(true); // 애니메이션 시작
-    fadeOutMusic(() => togglePlay()); // 배경음악 자연스럽게 끄기
-    return () => {
-      setIsMounted(false); // 애니메이션 초기화
-      fadeInMusic(); // 배경음악 자연스럽게 켜기
-    };
-  }, [togglePlay]);
+  //   return () => {
+  //     setVolume(1); // 언마운트 시 볼륨을 원래대로 복구
+  //   };
+  // }, [setVolume]);
+  
 
   const handleBackClick = () => {
     setIsModalOpen(true);
