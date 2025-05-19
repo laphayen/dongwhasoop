@@ -32,10 +32,11 @@ import TestApiPage from "./pages/TestApiPage";
 import bgm from "./assets/music/fairytale_bgm.mp3";
 import { useMusicStore } from "./stores/musicStore";
 import OauthPopup from "./pages/OauthPopup";
+import BookDetail from "./pages/bookpage/BookDetail";
 
 // Lazy Loading 적용 페이지
 const LetterList = lazy(() => import("./pages/letterpage/LetterList"));
-const BookDetail = lazy(() => import("./pages/bookpage/BookDetail"));
+// const BookDetail = lazy(() => import("./pages/bookpage/BookDetail"));
 const SongDetail = lazy(() => import("./pages/songpage/SongDetail"));
 const BookList = lazy(() => import("./pages/bookpage/BookList"));
 const LetterDetail = lazy(() => import("./pages/letterpage/LetterDetail"));
@@ -94,7 +95,6 @@ function App() {
 
           {/* lazy loading 적용 */}
           <Route path="/booklist" element={<BookList />} />
-          <Route path="/bookdetail/:id" element={<BookDetail />} />
           <Route path="/songdetail/:id" element={<SongDetail />} />
           <Route path="/letterlist" element={<LetterList />} />
           <Route path="/letterdetail/:id" element={<LetterDetail />} />
@@ -120,6 +120,7 @@ function App() {
           <Route path="/introbook/:id" element={<IntroBook />} />
           <Route path="/voiceselect" element={<VoiceSelect />} />
           <Route path="/bookloading" element={<BookLoading />} />
+          <Route path="/bookdetail/:id" element={<BookDetail />} />
           <Route path="/bookend" element={<BookEnd />} />
           <Route path="/songend" element={<SongEnd />} />
           <Route path="/sendwho" element={<SendWho />} />

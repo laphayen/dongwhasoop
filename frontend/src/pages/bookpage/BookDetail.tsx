@@ -22,7 +22,7 @@ function BookDetail() {
   useEffect(() => {
     if (selectedBook && bookPages) {
       const timer = setTimeout(() => {
-        setIsLoading(false);
+        setIsLoading(false); // 로딩 상태를 false로 변경하여 로딩 화면 종료
         if (bookPages[0]?.audioUrl) {
           audio.src = bookPages[0].audioUrl;
           audio.play().catch((error) => {
