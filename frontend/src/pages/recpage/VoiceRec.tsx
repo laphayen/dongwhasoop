@@ -159,12 +159,17 @@ function VoiceRec() {
   }, [audioUrl]);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${mainpage})` }}>
+    <div
+      className="fixed inset-0 w-screen h-screen bg-cover bg-center"
+      style={{ backgroundImage: `url(${mainpage})` }}
+    >
       <BackButton />
 
       <div className="xl:pt-[1vw] tablet2560:pt-[4vw]">
         {/* Title */}
-        <h1 className="text-[6vh] font-bazzi text-center text-outline-ss mt-8">아래 대본을 모두 읽어주세요</h1>
+        <h1 className="text-[6vh] font-bazzi text-center text-outline-ss mt-8">
+          아래 대본을 모두 읽어주세요
+        </h1>
 
         <div className="relative flex items-center justify-center mt-8">
           <button
@@ -172,11 +177,17 @@ function VoiceRec() {
             onClick={handlePrevPage}
             disabled={currentPage === 0}
           >
-            <img src={LeftButton} alt="이전" className={`w-[8vw] ${currentPage === 0 ? "opacity-50" : ""}`} />
+            <img
+              src={LeftButton}
+              alt="이전"
+              className={`w-[8vw] ${currentPage === 0 ? "opacity-50" : ""}`}
+            />
           </button>
 
           <div className="w-[65vw] h-[40vh] bg-white/80 rounded-3xl mx-8 p-8 overflow-y-auto">
-            <p className="text-[5.3vh] font-bazzi whitespace-pre-line">{storyData.story[currentPage]}</p>
+            <p className="text-[8vh] font-bazzi whitespace-pre-line text-center">
+              {storyData.story[currentPage]}
+            </p>
           </div>
 
           <button
@@ -187,14 +198,19 @@ function VoiceRec() {
             <img
               src={RightButton}
               alt="다음"
-              className={`w-[8vw] ${currentPage === totalPages - 1 ? "opacity-50" : ""}`}
+              className={`w-[8vw] ${
+                currentPage === totalPages - 1 ? "opacity-50" : ""
+              }`}
             />
           </button>
         </div>
 
         {/* 녹음 버튼들*/}
         <div className="flex justify-center items-center gap-10 mt-[2vw] relative z-10">
-          <button className="hover:scale-105 transition-transform" onClick={handleRecord}>
+          <button
+            className="hover:scale-105 transition-transform"
+            onClick={handleRecord}
+          >
             <img
               src={isRecording ? Endvoicerec : RecStory}
               alt={isRecording ? "녹음종료" : "녹음하기"}
@@ -204,7 +220,10 @@ function VoiceRec() {
 
           {audioBlob && !isRecording && (
             <>
-              <button className="hover:scale-105 transition-transform" onClick={handlePlayback}>
+              <button
+                className="hover:scale-105 transition-transform"
+                onClick={handlePlayback}
+              >
                 <img src={Listen} alt="녹음 듣기" className="w-[18vw]" />
               </button>
               <audio ref={audioRef} src={audioUrl || ""} />
@@ -218,7 +237,9 @@ function VoiceRec() {
             <img
               src={SubmitRec}
               alt="등록하기"
-              className={`w-[18vw] ${isRecording || !audioBlob ? "opacity-50" : ""}`}
+              className={`w-[18vw] ${
+                isRecording || !audioBlob ? "opacity-50" : ""
+              }`}
             />
           </button>
         </div>
