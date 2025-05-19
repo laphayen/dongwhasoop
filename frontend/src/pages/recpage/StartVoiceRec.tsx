@@ -56,6 +56,7 @@ function VoiceRec() {
         const recorder = new RecordRTC(stream, {
           type: 'audio',
           mimeType: 'audio/wav',
+          recorderType: RecordRTC.StereoAudioRecorder,
           desiredSampRate: 16000,
           numberOfAudioChannels: 1
         });
