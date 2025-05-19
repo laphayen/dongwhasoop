@@ -7,7 +7,6 @@ import readletter from "../../assets/images/letterbox/readletter.webp";
 import unreadletter from "../../assets/images/letterbox/unreadletter.webp";
 import send from "../../assets/images/letterbox/sendletter.webp";
 import receive from "../../assets/images/letterbox/receiveletter.webp";
-import picture from "../assets/images/letterbox/picture.webp";
 import defaultchar from "../../assets/images/letterbox/defaultcharacter.webp";
 import arrow from "../../assets/images/letterbox/arrow.webp";
 import letterpicture from "../../assets/images/letterbox/letterpicture.webp";
@@ -107,9 +106,9 @@ function LetterList() {
           <h2 className="font-bazzi text-outline-sm text-[7vh] mt-40 mb-4 text-center">
             편지를 작성한 동화책이 없어요~
           </h2>
-          <div className="flex items-end xl:pt-10 gap-40 mt-[5vh] mb-[7vh]">
-            <img src={cat} alt="Cat" className="w-[15vw] animate-shake1" />
-            <img src={monkey} alt="Monkey" className="w-[15vw] animate-shake2" />
+          <div className="flex items-end xl:pt-10 gap-40 mt-[6vh] mb-[7vh]">
+            <img src={cat} alt="Cat" className="w-[15vh] animate-shake1" />
+            <img src={monkey} alt="Monkey" className="w-[15vh] animate-shake2" />
           </div>
         </div>
       );
@@ -119,9 +118,9 @@ function LetterList() {
       return (
         <div className="flex flex-col items-center justify-center h-full">
           <h2 className="font-bazzi text-outline-sm text-[9vh] mt-40 mb-4 text-center">동화책을 선택해주세요~</h2>
-          <div className="flex items-end xl:pt-10 gap-40 mt-[5vh] mb-[7vh]">
-            <img src={cat} alt="Cat" className="w-[15vw] animate-shake1" />
-            <img src={monkey} alt="Monkey" className="w-[15vw] animate-shake2" />
+          <div className="flex items-end xl:pt-10 gap-40 tablet2560:mt-[6vh] mb-[7vh]">
+            <img src={cat} alt="Cat" className="w-[15vw] tablet2560:w-[26vh] animate-shake1" />
+            <img src={monkey} alt="Monkey" className="w-[15vw] tablet2560:w-[26vh] animate-shake2" />
           </div>
         </div>
       );
