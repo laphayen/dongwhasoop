@@ -1,5 +1,3 @@
-import React from "react";
-
 interface Props {
   onCancel: () => void;
   onConfirm: () => void;
@@ -10,7 +8,6 @@ function ExitBookDetailModal({ onCancel, onConfirm }: Props) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl p-6 w-[80vw] max-w-[500px] text-center shadow-lg">
         <h2 className="text-2xl font-bold mb-4 text-black">정말 목소리 선택 화면으로 돌아갈까요?</h2>
-        {/* <p className="text-gray-/700 mb-6">동화 끝내!</p> */}
         <div className="flex justify-center gap-6">
           <button onClick={onCancel} className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded">
             계속 볼래요!
