@@ -47,7 +47,7 @@ function IntroBook() {
         const raw = JSON.parse(event.data);
 
         if (!raw?.data) {
-          console.warn("잘못된 메시지 수신:", raw);
+          // console.warn("잘못된 메시지 수신:", raw);
           return;
         }
 
@@ -63,7 +63,7 @@ function IntroBook() {
           });
         }
       } catch (err) {
-        console.error("WebSocket 메시지 파싱 오류:", err);
+        // console.error("WebSocket 메시지 파싱 오류:", err);
       }
     });
 
@@ -101,7 +101,7 @@ function IntroBook() {
 
         setWs(socket);
       } catch (error) {
-        console.error("Error in voice click handler:", error);
+        // console.error("Error in voice click handler:", error);
       }
     }
   };

@@ -26,7 +26,7 @@ function BookDetail() {
         if (bookPages[0]?.audioUrl) {
           audio.src = bookPages[0].audioUrl;
           audio.play().catch((error) => {
-            console.log("Audio playback error:", error);
+            // console.log("Audio playback error:", error);
           });
         }
       }, 3500); 
@@ -63,7 +63,7 @@ function BookDetail() {
           audio.src = currentContent.audioUrl;
           await audio.play();
         } catch (error) {
-          console.log("Audio playback error:", error);
+          // console.log("Audio playback error:", error);
         }
       }
     };

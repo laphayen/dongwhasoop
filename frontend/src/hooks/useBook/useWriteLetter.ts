@@ -13,12 +13,12 @@ export const useWriteLetter = () => {
   return useMutation<LetterResponse, Error, MutationParams>({
     mutationFn: ({ characterId, body }) => writeLetter(characterId, body),
     onSuccess: () => {
-      console.log("편지 전송 성공!");
+      // console.log("편지 전송 성공!");
       // 필요한 경우 쿼리 무효화도 가능
       // queryClient.invalidateQueries({ queryKey: ["letters"] });
     },
     onError: (error) => {
-      console.error("편지 전송 실패:", error);
+      // console.error("편지 전송 실패:", error);
     },
   });
 };

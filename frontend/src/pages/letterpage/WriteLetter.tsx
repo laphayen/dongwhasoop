@@ -107,7 +107,7 @@ function WriteLetter() {
         SpeechRecognition.startListening({ continuous: false, language: "ko-KR" }); // continuous: false로 변경
         setIsListening(true);
       } catch (error) {
-        console.error("Error accessing microphone:", error);
+        // console.error("Error accessing microphone:", error);
       }
     }
   };
@@ -118,9 +118,9 @@ function WriteLetter() {
       setIsModalOpen(true);
       return;
     }
-    console.log("편지 대상:", { characterId, bookId });
-    console.log("녹음한 텍스트:", transcript);
-    console.log("편지 내용", letterContent);
+    // console.log("편지 대상:", { characterId, bookId });
+    // console.log("녹음한 텍스트:", transcript);
+    // console.log("편지 내용", letterContent);
     setIsModalOpen(true);
   };
 

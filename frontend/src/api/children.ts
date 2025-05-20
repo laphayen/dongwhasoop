@@ -22,8 +22,8 @@ export const getChildProfiles = async () => {
 
 // 자녀 정보 수정
 export const updateChildProfile = async (childId: number, updateData: UpdateChildRequest) => {
-  console.log("Put 요청 URL:", `/children/${childId}`);
-  console.log("updateData:", updateData);
+  // console.log("Put 요청 URL:", `/children/${childId}`);
+  // console.log("updateData:", updateData);
 
   const response = await api.put<UpdateChildProfileApiResponse>(`/children/${childId}`, updateData);
   return response.data.data;

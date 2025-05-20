@@ -41,7 +41,7 @@ api.interceptors.response.use(
 
         return api(originalRequest);
       } catch (err) {
-        console.error("토큰 재발급 실패", err);
+        // console.error("토큰 재발급 실패", err);
         localStorage.clear();
         window.location.href = "/login";
         return Promise.reject(err);

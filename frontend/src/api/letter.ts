@@ -38,7 +38,7 @@ export const getLetterBookList = async () => {
       },
     }
   );
-  console.log("편지함 조회 결과:", response.data.data);
+  // console.log("편지함 조회 결과:", response.data.data);
   return response.data.data;
 };
 
@@ -46,7 +46,7 @@ export const getLetterBookList = async () => {
 export const getLetterList = async (bookId: number, messageType: boolean) => {
   const accessToken = localStorage.getItem("accessToken");
   const selectedChild = useSelectedChild.getState().selectedChild;
-  console.log("선택된 자녀 id:", selectedChild?.childId);
+  // console.log("선택된 자녀 id:", selectedChild?.childId);
 
   if (!selectedChild) {
     throw new Error("선택된 자녀가 없습니다.");
@@ -63,7 +63,7 @@ export const getLetterList = async (bookId: number, messageType: boolean) => {
       },
     }
   );
-  console.log("편지 목록 조회 결과:", response.data.data);
+  // console.log("편지 목록 조회 결과:", response.data.data);
   return response.data.data;
 };
 
@@ -71,7 +71,7 @@ export const getLetterList = async (bookId: number, messageType: boolean) => {
 export const getLetterDetail = async (letterId: number) => {
   const accessToken = localStorage.getItem("accessToken");
   const selectedChild = useSelectedChild.getState().selectedChild;
-  console.log("선택된 자녀 id:", selectedChild?.childId);
+  // console.log("선택된 자녀 id:", selectedChild?.childId);
 
   if (!selectedChild) {
     throw new Error("선택된 자녀가 없습니다.");
@@ -86,6 +86,6 @@ export const getLetterDetail = async (letterId: number) => {
       },
     }
   );
-  console.log("편지 상세 조회 결과:", response.data.data);
+  // console.log("편지 상세 조회 결과:", response.data.data);
   return response.data.data;
 };

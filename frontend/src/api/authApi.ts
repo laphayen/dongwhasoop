@@ -59,14 +59,6 @@ export const logout = async () => {
 // 회원탈퇴
 export const deleteUser = async (code: string) => {
   const accessToken = localStorage.getItem("accessToken");
-  console.log("Delete User API Call:", {
-    code,
-    accessToken,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json'
-    }
-  });
 
   const response = await api.delete<DeleteUserApiResponse>("/credentials", {
     headers: {

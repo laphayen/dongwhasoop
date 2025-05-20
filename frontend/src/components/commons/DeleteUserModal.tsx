@@ -20,7 +20,7 @@ const DeleteUserModal = ({ onCancel }: DeleteUserModalProps) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div
-        className="w-[90vw] h-[90vh] rounded-2xl p-6 bg-cover bg-center flex flex-col justify-end"
+        className="w-[60vw] h-[90vh] tablet2560:w-[90vw] tablet2560:h-[90vh] p-6 bg-cover bg-center flex flex-col justify-end"
         style={{ backgroundImage: `url(${deleteBg})` }}
       >
         <div className="flex justify-center gap-10 mb-[20vh] tablet2560:mb-[15vh]">

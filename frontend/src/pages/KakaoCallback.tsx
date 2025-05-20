@@ -5,6 +5,8 @@ import { CheckIsRegistered } from "../api/authApi";
 import { useLogin } from "../hooks/useLogin";
 import { useDeleteUser } from "../hooks/useDeleteUser";
 
+import MainBG from "../assets/images/mainpage/mainpage.webp";
+
 function KakaoCallback() {
   const navigate = useNavigate();
   const { mutate: loginUser } = useLogin();
@@ -20,27 +22,27 @@ function KakaoCallback() {
 
     const isWithdrawFlow = sessionStorage.getItem("withdraw_flow");
 
-    console.log("카카오 콜백 확인:", {
-      code: code,
-      withdraw_flow: isWithdrawFlow,
-      fullUrl: window.location.href,
-    });
+    // console.log("카카오 콜백 확인:", {
+    //   code: code,
+    //   withdraw_flow: isWithdrawFlow,
+    //   fullUrl: window.location.href,
+    // });
 
     if (isWithdrawFlow) {
-      console.log("회원탈퇴 플로우 진행");
+      // console.log("회원탈퇴 플로우 진행");
       handleWithdraw(code);
     } else {
-      console.log("일반 로그인 플로우 진행");
+      // console.log("일반 로그인 플로우 진행");
       localStorage.setItem("authCode", code);
       handleRegisterCheck(code);
     }
   }, []);
 
   const handleWithdraw = async (code: string) => {
-    console.log("회원탈퇴 요청 전:", {
-      code: code,
-      withdraw_flow: sessionStorage.getItem("withdraw_flow"),
-    });
+    // console.log("회원탈퇴 요청 전:", {
+    //   code: code,
+    //   withdraw_flow: sessionStorage.getItem("withdraw_flow"),
+    // });
 
     deleteUserMutation.mutate(code, {
       onSuccess: () => {
@@ -60,8 +62,8 @@ function KakaoCallback() {
     try {
       const { isRegistered, idToken } = await CheckIsRegistered(code);
 
-      console.log("isRegistered: ", isRegistered);
-      console.log("idToken: ", idToken);
+      // console.log("isRegistered: ", isRegistered);
+      // console.log("idToken: ", idToken);
 
       if (isRegistered) {
         loginUser(idToken, {
@@ -82,16 +84,17 @@ function KakaoCallback() {
         });
       }
     } catch (error) {
-      console.error("로그인 흐름 중 오류", error);
+      // console.error("로그인 흐름 중 오류", error);
       alert("로그인 실패");
       navigate("/");
     }
   };
 
   return (
-    <div className="text-center mt-[30vh] text-2xl text-black">
-      로그인 처리 중입니다...
-    </div>
+    <div
+      className="fixed inset-0 w-screen h-screen bg-cover bg-center"
+      style={{ backgroundImage: `url(${MainBG})` }}
+    ></div>
   );
 }
 

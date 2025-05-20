@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useLayoutEffect } from "react";
 import HomeBackground from "../assets/images/mainpage/homebackground.webp";
 import Book from "../assets/images/mainpage/book.webp";
 import MailBox from "../assets/images/mainpage/mailbox.webp";
@@ -37,7 +37,7 @@ function Home() {
   }, [selectedChild?.mascotId]);
 
   // 필수 이미지만 사전 로딩
-  useEffect(() => {
+  useLayoutEffect(() => {
     const criticalImages = [HomeBackground, Book, MailBox];
 
     criticalImages.forEach((src) => {

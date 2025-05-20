@@ -42,7 +42,7 @@ function Auth() {
         });
       })
       .catch((err) => {
-        console.error("code → idToken 요청 실패", err);
+        // console.error("code → idToken 요청 실패", err);
         alert("로그인에 실패했습니다.");
         navigate("/");
       });

@@ -84,7 +84,7 @@ function EditingProfile() {
   const handleDelete = () => {
     new Audio(btnSound).play();
     if (!editingChild?.childId) {
-      console.warn("childId 에러:", editingChild);
+      // console.warn("childId 에러:", editingChild);
       return;
     }
 
@@ -94,7 +94,7 @@ function EditingProfile() {
           navigate("/editprofile");
         },
         onError: (err) => {
-          console.error("삭제 실패", err);
+          // console.error("삭제 실패", err);
         },
       });
     }

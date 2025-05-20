@@ -115,20 +115,20 @@ function StartSettings() {
               const currentIdToken = localStorage.getItem("idToken");
 
               if (!currentIdToken) {
-                console.error("No idToken found");
+                // console.error("No idToken found");
                 alert("인증 정보가 없습니다. 다시 로그인해주세요.");
                 return;
               }
 
               // 데이터 구조 검증
               if (!children.name || !children.mascotId) {
-                console.error("Invalid child data:", children);
+                // console.error("Invalid child data:", children);
                 alert("자녀 정보가 올바르지 않습니다.");
                 return;
               }
 
               if (!voice.data || !voice.format || !voice.gender) {
-                console.error("Invalid voice data:", voice);
+                // console.error("Invalid voice data:", voice);
                 alert("음성 정보가 올바르지 않습니다.");
                 return;
               }
@@ -142,12 +142,12 @@ function StartSettings() {
                 },
               };
 
-              console.log("Payload structure:", payload); // 자세한 로깅
-              console.log("ID Token:", idToken);
-              console.log(
-                "📦 JSON.stringify payload:",
-                JSON.stringify(payload, null, 2)
-              );
+              // console.log("Payload structure:", payload); // 자세한 로깅
+              // console.log("ID Token:", idToken);
+              // console.log(
+              //   "📦 JSON.stringify payload:",
+              //   JSON.stringify(payload, null, 2)
+              // );
 
               registerUser(payload, {
                 onSuccess: () => {
@@ -162,9 +162,9 @@ function StartSettings() {
                 onError: (error) => {
                   if (axios.isAxiosError(error)) {
                     // Type guard for Axios error
-                    console.error("회원가입 실패:", error.response?.data);
+                    // console.error("회원가입 실패:", error.response?.data);
                   } else {
-                    console.error("회원가입 실패:", error);
+                    // console.error("회원가입 실패:", error);
                   }
                   setModalType("failjoin");
                 },

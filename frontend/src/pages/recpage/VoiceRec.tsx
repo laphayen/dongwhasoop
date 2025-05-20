@@ -83,15 +83,15 @@ function VoiceRec() {
           recorderType: RecordRTC.StereoAudioRecorder,
           desiredSampRate: 16000,
           numberOfAudioChannels: 1,
-          timeSlice: 250,  // 안정성을 위해 추가
-          bufferSize: 4096 // 안정성을 위해 추가
+          timeSlice: 250, // 안정성을 위해 추가
+          bufferSize: 4096, // 안정성을 위해 추가
         });
 
         recorderRef.current = recorder;
         recorder.startRecording();
         setIsRecording(true);
       } catch (error) {
-        console.error("Error accessing microphone:", error);
+        // console.error("Error accessing microphone:", error);
       }
     }
   };
@@ -147,7 +147,7 @@ function VoiceRec() {
         reader.readAsDataURL(file);
       }
     } catch (error) {
-      console.error("음성 등록 실패:", error);
+      // console.error("음성 등록 실패:", error);
     }
   };
 
@@ -184,8 +184,8 @@ function VoiceRec() {
 
       <div className="xl:pt-[1vw] tablet2560:pt-[4vw]">
         {/* Title */}
-        <h1 className="text-[6vh] font-bazzi text-center text-outline-ss mt-8">
-          아래 대본을 모두 읽어주세요
+        <h1 className="text-[7vh] font-bazzi text-center text-outline-ss mt-8">
+          모든 대사를 한 번에 녹음해주세요!
         </h1>
 
         <div className="relative flex items-center justify-center mt-8">

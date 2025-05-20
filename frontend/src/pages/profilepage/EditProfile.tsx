@@ -48,7 +48,7 @@ function EditProfile() {
         const data = await getChildProfiles();
         setChildren(data);
       } catch (error) {
-        console.log("자녀 목록 불러오기 실패", error);
+        // console.log("자녀 목록 불러오기 실패", error);
       }
     };
 

@@ -12,7 +12,7 @@ export const useCreateChildProfile = () => {
       queryClient.invalidateQueries({ queryKey: ["children"] });
     },
     onError: (error) => {
-      console.error("자녀 프로필 생성 실패 :", error);
+      // console.error("자녀 프로필 생성 실패 :", error);
     },
   });
 };

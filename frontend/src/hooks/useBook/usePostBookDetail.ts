@@ -14,7 +14,7 @@ export const usePostBookDetail = () => {
   return useMutation<GetBookContentResponse["data"], Error, BookContentParams>({
     mutationFn: ({ bookId, voiceId }) => getBookContent(bookId, voiceId),
     onSuccess: (data) => {
-      console.log("Mutation success:", data);
+      // console.log("Mutation success:", data);
       if (data?.completed && data.pages) {
         const uniquePages = Array.from(
           new Map(data.pages.map(page => [page.pageNumber, page])).values()
@@ -23,7 +23,7 @@ export const usePostBookDetail = () => {
       }
     },
     onError: (error) => {
-      console.error("Mutation error:", error);
+      // console.error("Mutation error:", error);
     },
   });
 };

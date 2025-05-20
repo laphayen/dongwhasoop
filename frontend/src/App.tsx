@@ -64,9 +64,9 @@ function App() {
       audioRef.current.muted = !isPlaying; // isPlaying 상태에 따라 음소거 토글
       if (isPlaying) {
         audioRef.current.play();
-        console.log("배경음악이 재생됩니다.");
+        // console.log("배경음악이 재생됩니다.");
       } else {
-        console.log("배경음악이 일시정지되었습니다.");
+        // console.log("배경음악이 일시정지되었습니다.");
       }
     }
   }, [isPlaying]);

@@ -17,7 +17,7 @@ export const useUpdateChildProfile = () => {
     },
 
     onError: (error) => {
-      console.error("자녀 수정 실패 :", error);
+      // console.error("자녀 수정 실패 :", error);
     },
   });
 };

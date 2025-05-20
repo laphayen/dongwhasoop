@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../api/authApi";
 import { RegisterUserRequest } from "../types/auth";
-import { useAppStore } from "../stores/useAppStore";
 
 // 자녀 프로필, 목소리 등록
 export const useRegisterUser = (idToken: string) => {
@@ -17,7 +16,7 @@ export const useRegisterUser = (idToken: string) => {
     },
 
     onError: (error) => {
-      console.error("회원가입 실패: ", error);
+      // console.error("회원가입 실패: ", error);
     },
   });
 };

@@ -16,7 +16,7 @@ function TestApiPage() {
 
       setResult(JSON.stringify(response.data, null, 2));
     } catch (error: any) {
-      console.error("API 요청 실패:", error);
+      // console.error("API 요청 실패:", error);
       setResult("요청 실패");
     }
   };
@@ -24,8 +24,8 @@ function TestApiPage() {
   const showTokens = () => {
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
-    console.log("accessToken:", accessToken);
-    console.log("refreshToken:", refreshToken);
+    // console.log("accessToken:", accessToken);
+    // console.log("refreshToken:", refreshToken);
   };
 
   return (

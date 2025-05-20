@@ -66,7 +66,7 @@ function AddingProfile() {
           navigate("/profile");
         },
         onError: (error) => {
-          console.error("자녀 등록 실패", error);
+          // console.error("자녀 등록 실패", error);
           setIsModalOpen(true);
         },
       }

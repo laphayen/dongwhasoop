@@ -15,7 +15,7 @@ export const useDeleteChildProfile = () => {
     },
 
     onError: (error) => {
-      console.error("자녀 프로필 삭제 실패: ", error);
+      // console.error("자녀 프로필 삭제 실패: ", error);
     },
   });
 };
