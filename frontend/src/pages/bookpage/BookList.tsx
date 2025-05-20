@@ -14,7 +14,7 @@ import { GetBookListApiResponse } from "../../types/book";
 
 function BookList() {
   const navigate = useNavigate();
-  const { currentPage, setCurrentPage, setSelectedBook, setTotalBooks } = useBookStore();
+  const { currentPage, setCurrentPage, setSelectedBook, setTotalBooks, bookStatus } = useBookStore();
   const { data, isLoading } = useGetBookList();
   const [loadedImages, setLoadedImages] = useState<{ [bookId: number]: boolean }>({});
 
@@ -22,6 +22,11 @@ function BookList() {
     setLoadedImages((prev) => ({ ...prev, [bookId]: true }));
   };
 
+   // 디버깅: bookStatus 상태 확인
+   useEffect(() => {
+    console.log("현재 동화 생성 상태:", bookStatus);
+  }, [bookStatus]); 
+  
   // 컴포넌트 마운트 시 currentPage 초기화
   useEffect(() => {
     setCurrentPage(0);
@@ -97,6 +102,13 @@ function BookList() {
               />
 
               <h3 className="mt-2 text-[4.5vh] font-bazzi text-[#384EA6] text-outline-xs text-center">{book.title}</h3>
+               {/* 동화 생성 상태 표시 */}
+               {bookStatus[book.bookId] === 'pending' && (
+                <span className="text-[3vh] font-bazzi text-yellow-500">생성 중...</span>
+              )}
+              {bookStatus[book.bookId] === 'completed' && (
+                <span className="text-[3vh] font-bazzi text-green-500">✅ 완료</span>
+              )}
             </div>
           ))}
         </div>

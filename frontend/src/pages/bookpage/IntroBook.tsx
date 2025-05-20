@@ -8,7 +8,7 @@ import Father from "../../assets/images/bookintro/father.webp";
 import BearVoice from "../../assets/images/bookintro/bearvoice.webp";
 import { useGetUserVoice } from "../../hooks/useVoice/useGetUserVoice";
 import useVoiceStore from "../../stores/useVoiceStore";
-import { useBookStore } from "../../stores/bookStore";
+import { useBookStore } from '../../stores/bookStore';
 import btnSound from "../../assets/music/btn_sound.mp3";
 import { toast } from "react-toastify";
 
@@ -45,6 +45,7 @@ function IntroBook() {
     newWs.addEventListener("message", (event) => {
       try {
         const raw = JSON.parse(event.data);
+        console.log("웹소켓 메시지 수신:", raw); // 디버깅 로그 추가
 
         if (!raw?.data) {
           // console.warn("잘못된 메시지 수신:", raw);
@@ -52,15 +53,21 @@ function IntroBook() {
         }
 
         const { bookId, bookTitle, voiceId, completed } = raw.data;
+        console.log("bookId:", bookId, "completed:", completed); // 디버깅 로그 추가
 
         if (completed && location.pathname === "/bookloading") {
           navigate(`/bookdetail/${bookId}`, {
             state: { voiceId },
           });
         } else if (completed) {
+          useBookStore.getState().setBookStatus(bookId, 'completed'); // 완료 상태 업데이트
+          console.log("동화 생성 완료:", bookId); // 디버깅 로그 추가
           toast.info(`💌 ${bookTitle} 동화가 생성되었어요!`, {
             onClick: () => navigate(`/intro/${bookId}`),
           });
+        } else {
+          useBookStore.getState().setBookStatus(bookId, 'pending'); // 생성 중 상태 업데이트
+          console.log("동화 생성 중:", bookId); // 디버깅 로그 추가
         }
       } catch (err) {
         // console.error("WebSocket 메시지 파싱 오류:", err);
@@ -89,7 +96,9 @@ function IntroBook() {
           bookId: parseInt(id),
           voiceId: selectedVoice.voiceId,
         });
-
+  
+        console.log("책 생성 요청 결과:", result); // 책 생성 요청 확인용 로그
+  
         if (result?.completed && result.pages) {
           setBookPages(result.pages);
           navigate(`/bookdetail/${id}`, {
