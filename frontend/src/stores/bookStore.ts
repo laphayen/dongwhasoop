@@ -24,6 +24,7 @@ interface BookStoreState {
   // 동화 생성 상태 관리
   bookStatus: { [bookId: number]: 'pending' | 'completed' };
   setBookStatus: (bookId: number, status: 'pending' | 'completed') => void;
+  removeBookStatus: (bookId: number) => void;
 }
 
 export const useBookStore = create<BookStoreState>()(
@@ -47,6 +48,12 @@ export const useBookStore = create<BookStoreState>()(
       setBookStatus: (bookId, status) => set((state) => ({
         bookStatus: { ...state.bookStatus, [bookId]: status },
       })),
+      
+      removeBookStatus: (bookId) => set((state) => {
+        const newBookStatus = { ...state.bookStatus };
+        delete newBookStatus[bookId];
+        return { bookStatus: newBookStatus };
+      }),
     }),
     {
       name: 'book-storage',

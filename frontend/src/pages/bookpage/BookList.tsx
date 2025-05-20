@@ -14,19 +14,28 @@ import { GetBookListApiResponse } from "../../types/book";
 
 function BookList() {
   const navigate = useNavigate();
-  const { currentPage, setCurrentPage, setSelectedBook, setTotalBooks, bookStatus } = useBookStore();
+  const {
+    currentPage,
+    setCurrentPage,
+    setSelectedBook,
+    setTotalBooks,
+    bookStatus,
+    removeBookStatus,  // 추가
+  } = useBookStore();
   const { data, isLoading } = useGetBookList();
-  const [loadedImages, setLoadedImages] = useState<{ [bookId: number]: boolean }>({});
+  const [loadedImages, setLoadedImages] = useState<{
+    [bookId: number]: boolean;
+  }>({});
 
   const handleImageLoad = (bookId: number) => {
     setLoadedImages((prev) => ({ ...prev, [bookId]: true }));
   };
 
-   // 디버깅: bookStatus 상태 확인
-   useEffect(() => {
-    console.log("현재 동화 생성 상태:", bookStatus);
-  }, [bookStatus]); 
-  
+  // 디버깅: bookStatus 상태 확인
+  useEffect(() => {
+    // console.log("현재 동화 생성 상태:", bookStatus);
+  }, [bookStatus]);
+
   // 컴포넌트 마운트 시 currentPage 초기화
   useEffect(() => {
     setCurrentPage(0);
@@ -52,7 +61,10 @@ function BookList() {
 
   useEffect(() => {
     if (data?.content) {
-      const nextPageBooks = data.content.slice(currentPage + 1, currentPage + 4);
+      const nextPageBooks = data.content.slice(
+        currentPage + 1,
+        currentPage + 4
+      );
       nextPageBooks.forEach((book) => {
         if (book.imageUrl) {
           const img = new Image();
@@ -88,27 +100,35 @@ function BookList() {
               key={book.bookId}
               className="flex flex-col items-center cursor-pointer"
               onClick={() => {
-                setSelectedBook(book); // 선택한 책 정보 저장
+                setSelectedBook(book);
+                removeBookStatus(book.bookId); // 책 선택 시 completed 상태 제거
                 navigate(`/intro/${book.bookId}`);
               }}
             >
-              <img
-                src={book.imageUrl || "/default-book-cover.png"}
-                alt={book.title}
-                onLoad={() => handleImageLoad(book.bookId)}
-                className={`transition-opacity duration-500 ease-in ${
-                  loadedImages[book.bookId] ? "opacity-100" : "opacity-0"
-                } w-[14vw] talblet2560:w[25vw] max-w-[343px] rounded-xl border-4 border-white shadow-md`}
-              />
+              <div className="relative">
+                <img
+                  src={book.imageUrl || "/default-book-cover.png"}
+                  alt={book.title}
+                  onLoad={() => handleImageLoad(book.bookId)}
+                  className={`transition-opacity duration-500 ease-in ${
+                    loadedImages[book.bookId] ? "opacity-100" : "opacity-0"
+                  } w-[14vw] talblet2560:w[25vw] max-w-[343px] rounded-xl border-4 border-white shadow-md`}
+                />
+                {bookStatus[book.bookId] === "completed" && (
+                  <div
+                    className="absolute bottom-0 left-0 right-0 bg-green-600
+                  rounded-full flex items-center justify-center m-6 border-4"
+                  >
+                    <span className="text-white font-bazzi text-[3.5vh]">
+                      생성 완료
+                    </span>
+                  </div>
+                )}
+              </div>
 
-              <h3 className="mt-2 text-[4.5vh] font-bazzi text-[#384EA6] text-outline-xs text-center">{book.title}</h3>
-               {/* 동화 생성 상태 표시 */}
-               {bookStatus[book.bookId] === 'pending' && (
-                <span className="text-[3vh] font-bazzi text-yellow-500">생성 중...</span>
-              )}
-              {bookStatus[book.bookId] === 'completed' && (
-                <span className="text-[3vh] font-bazzi text-green-500">✅ 완료</span>
-              )}
+              <h3 className="mt-2 text-[4.5vh] font-bazzi text-[#384EA6] text-outline-xs text-center">
+                {book.title}
+              </h3>
             </div>
           ))}
         </div>
@@ -116,14 +136,20 @@ function BookList() {
 
       {/* 이전 버튼 */}
       {currentPage > 0 && (
-        <button onClick={handlePrev} className="absolute top-1/2 left-[3vw] -translate-y-1/2 z-20">
+        <button
+          onClick={handlePrev}
+          className="absolute top-1/2 left-[3vw] -translate-y-1/2 z-20"
+        >
           <img src={GoBack} alt="이전" className="w-[10vw] max-w-[300px]" />
         </button>
       )}
 
       {/* 다음 버튼 */}
       {!data?.last && (
-        <button onClick={handleNext} className="absolute top-1/2 right-[3vw] -translate-y-1/2 z-20">
+        <button
+          onClick={handleNext}
+          className="absolute top-1/2 right-[3vw] -translate-y-1/2 z-20"
+        >
           <img src={GoFront} alt="다음" className="w-[10vw] max-w-[300px]" />
         </button>
       )}

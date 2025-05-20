@@ -36,7 +36,7 @@ function SongDetail() {
       videoRef.current.autoplay = true; // autoplay 속성 추가
       videoRef.current.load(); // 비디오 로드
       videoRef.current.play().catch((error) => {
-        console.error("Failed to autoplay:", error);
+        // console.error("Failed to autoplay:", error);
       });
     }
   }, [songUrl]);
