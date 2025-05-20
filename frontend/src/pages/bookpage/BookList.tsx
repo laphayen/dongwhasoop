@@ -77,7 +77,7 @@ function BookList() {
       <BackButton to="/home" />
 
       <div className="relative flex flex-col justify-center items-center min-h-[70vh] z-10">
-        <div className="grid grid-cols-3 gap-y-[2vh] gap-x-[5vw] talblet2560:gap-x-[5vw] mt-[4vh] tablet2560:mt-[11vh]">
+        <div className="grid grid-cols-3 gap-y-[2vh] gap-x-[5vw] tablet2560:gap-x-[5vw] xl:mt-[3vh] lg:mt-[14vh] md:mt-[15vh] sm:mt-[20vh] mt-[25vh] tablet2560:mt-[11vh]">
           {books.map((book: GetBookListApiResponse["data"]["content"][0]) => (
             <div
               key={book.bookId}
