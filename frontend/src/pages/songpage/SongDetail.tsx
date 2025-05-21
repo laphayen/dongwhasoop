@@ -18,18 +18,23 @@ function SongDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { togglePlay } = useMusicStore(); // Add this line
+  const { togglePlay, isPlaying } = useMusicStore(); // isPlaying 추가
   const { data: songUrl, isLoading, isError } = useGetSong(Number(id));
   const [isModalOpen, setIsModalOpen] = useState(false);
   const bookID = useBookStore((state) => state.selectedBook?.bookId);
 
   // 마운트시 배경음악 끄기
   useEffect(() => {
-    togglePlay(); // 배경음악 끄기
+    if (isPlaying) { // 배경음악이 켜져 있을 때만 끔
+      togglePlay();
+    }
     return () => {
-      togglePlay(); // 언마운트시 배경음악 다시 켜기
+      if (isPlaying) { // 배경음악이 켜져 있을 때만 다시 켬
+        togglePlay();
+      }
     };
-  }, [togglePlay]);
+  }, []); // isPlaying을 의존성 배열에 추가
+
 
   useEffect(() => {
     if (songUrl && videoRef.current) {

@@ -78,7 +78,10 @@ function WriteLetter() {
   
       // 스트림 정리
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop()); // 모든 트랙 정리
+        streamRef.current.getTracks().forEach((track) => {
+          track.stop(); // 트랙 중지
+          track.enabled = false; // 트랙 비활성화
+        });
         streamRef.current = null; // 스트림 참조 초기화
       }
     } else {
@@ -97,7 +100,10 @@ function WriteLetter() {
   
         mediaRecorder.onstop = () => {
           if (streamRef.current) {
-            streamRef.current.getTracks().forEach((track) => track.stop()); // 스트림 정리
+            streamRef.current.getTracks().forEach((track) => {
+              track.stop(); // 트랙 중지
+              track.enabled = false; // 트랙 비활성화
+            });
             streamRef.current = null; // 스트림 참조 초기화
           }
         };
