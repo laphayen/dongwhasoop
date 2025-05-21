@@ -33,7 +33,7 @@ function BookList() {
 
   // 디버깅: bookStatus 상태 확인
   useEffect(() => {
-    // console.log("현재 동화 생성 상태:", bookStatus);
+    console.log("현재 동화 생성 상태:", bookStatus);
   }, [bookStatus]);
 
   // 컴포넌트 마운트 시 currentPage 초기화
@@ -101,7 +101,10 @@ function BookList() {
               className="flex flex-col items-center cursor-pointer"
               onClick={() => {
                 setSelectedBook(book);
-                removeBookStatus(book.bookId); // 책 선택 시 completed 상태 제거
+                // completed 상태일 때만 상태 제거
+                if (bookStatus[book.bookId] === 'completed') {
+                  removeBookStatus(book.bookId);
+                }
                 navigate(`/intro/${book.bookId}`);
               }}
             >
@@ -114,13 +117,14 @@ function BookList() {
                     loadedImages[book.bookId] ? "opacity-100" : "opacity-0"
                   } w-[14vw] talblet2560:w[25vw] max-w-[343px] rounded-xl border-4 border-white shadow-md`}
                 />
-                {bookStatus[book.bookId] === "completed" && (
+                {bookStatus[book.bookId] && (
                   <div
-                    className="absolute bottom-0 left-0 right-0 bg-green-600
-                  rounded-full flex items-center justify-center m-6 border-4"
+                    className={`absolute bottom-0 left-0 right-0 ${
+                      bookStatus[book.bookId] === 'completed' ? 'bg-green-600' : 'bg-yellow-500'
+                    } rounded-full flex items-center justify-center m-6 border-4`}
                   >
                     <span className="text-white font-bazzi text-[3.5vh]">
-                      생성 완료
+                      {bookStatus[book.bookId] === 'completed' ? '생성 완료' : '생성 중'}
                     </span>
                   </div>
                 )}

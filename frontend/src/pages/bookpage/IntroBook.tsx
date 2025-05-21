@@ -12,6 +12,8 @@ import { useBookStore } from "../../stores/bookStore";
 import btnSound from "../../assets/music/btn_sound.mp3";
 
 function IntroBook() {
+  // setBookStatus 추가
+  const { setBookPages, setBookStatus } = useBookStore();
   const navigate = useNavigate();
   const { id } = useParams();
   const { data } = useGetUserVoice();
@@ -19,7 +21,7 @@ function IntroBook() {
   const voices = useVoiceStore((state) => state.voices);
   const postBookDetail = usePostBookDetail();
   const [ws, setWs] = useState<WebSocket | null>(null);
-  const setBookPages = useBookStore((state) => state.setBookPages);
+  // const setBookPages = useBookStore((state) => state.setBookPages);
   const location = useLocation();
 
   const buttonContainerStyle =
@@ -47,20 +49,20 @@ function IntroBook() {
     newWs.addEventListener("message", (event) => {
       try {
         const raw = JSON.parse(event.data);
-        // console.log("웹소켓 메시지 수신:", raw); // 디버깅 로그 추가
-
-        if (!raw?.data) {
-          // console.warn("잘못된 메시지 수신:", raw);
-          return;
-        }
+        if (!raw?.data) return;
 
         const { bookId, bookTitle, voiceId, completed } = raw.data;
-        // console.log("bookId:", bookId, "completed:", completed); // 디버깅 로그 추가
+        console.log("bookId:", bookId, "completed:", completed);
 
-        if (completed && location.pathname === "/bookloading") {
-          navigate(`/bookdetail/${bookId}`, {
-            state: { voiceId },
-          });
+        if (completed) {
+          // completed 상태를 store에 저장
+          setBookStatus(bookId, 'completed');
+          
+          if (location.pathname === "/bookloading") {
+            navigate(`/bookdetail/${bookId}`, {
+              state: { voiceId },
+            });
+          }
         }
       } catch (err) {
         // console.error("WebSocket 메시지 파싱 오류:", err);
@@ -68,7 +70,7 @@ function IntroBook() {
     });
 
     newWs.addEventListener("close", (event) => {
-      // console.log("WebSocket closed:", event.code, event.reason);
+      console.log("WebSocket closed:", event.code, event.reason);
     });
 
     return newWs;
@@ -79,8 +81,6 @@ function IntroBook() {
     if (selectedVoice && id) {
       try {
         const socket = connectWebSocket();
-
-        // 웹소켓 연결 완료 후 POST 요청
         await new Promise((resolve) => {
           socket.addEventListener("open", resolve);
         });
@@ -90,23 +90,25 @@ function IntroBook() {
           voiceId: selectedVoice.voiceId,
         });
 
-        // console.log("책 생성 요청 결과:", result); // 책 생성 요청 확인용 로그
+        console.log("책 생성 요청 결과:", result);
 
-        if (result?.completed && result.pages) {
+        // POST 응답의 completed 값에 따라 상태 설정
+        if (result?.completed) {
           setBookPages(result.pages);
           navigate(`/bookdetail/${id}`, {
             state: { voiceId: selectedVoice.voiceId },
           });
         } else {
+          setBookStatus(parseInt(id), 'pending');
           navigate("/bookloading");
         }
 
         setWs(socket);
       } catch (error) {
-        // console.error("Error in voice click handler:", error);
+        // error handling
       }
     }
-  };
+};
 
   useEffect(() => {
     return () => {
