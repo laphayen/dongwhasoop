@@ -52,7 +52,7 @@ function IntroBook() {
         if (!raw?.data) return;
 
         const { bookId, bookTitle, voiceId, completed } = raw.data;
-        console.log("bookId:", bookId, "completed:", completed);
+        // console.log("bookId:", bookId, "completed:", completed);
 
         if (completed) {
           // completed 상태를 store에 저장
@@ -70,7 +70,7 @@ function IntroBook() {
     });
 
     newWs.addEventListener("close", (event) => {
-      console.log("WebSocket closed:", event.code, event.reason);
+      // console.log("WebSocket closed:", event.code, event.reason);
     });
 
     return newWs;
@@ -90,7 +90,7 @@ function IntroBook() {
           voiceId: selectedVoice.voiceId,
         });
 
-        console.log("책 생성 요청 결과:", result);
+        // console.log("책 생성 요청 결과:", result);
 
         // POST 응답의 completed 값에 따라 상태 설정
         if (result?.completed) {

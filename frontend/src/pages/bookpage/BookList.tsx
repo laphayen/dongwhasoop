@@ -33,7 +33,7 @@ function BookList() {
 
   // 디버깅: bookStatus 상태 확인
   useEffect(() => {
-    console.log("현재 동화 생성 상태:", bookStatus);
+    // console.log("현재 동화 생성 상태:", bookStatus);
   }, [bookStatus]);
 
   // 컴포넌트 마운트 시 currentPage 초기화
