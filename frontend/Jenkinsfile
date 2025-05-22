@@ -1,0 +1,41 @@
+pipeline {
+  agent any
+
+  stages {
+    stage('Secrets Setup') {
+      steps {
+        withCredentials([
+          file(credentialsId: 'env-file-fe', variable: 'EnvFile'),
+        ]) {
+          sh '''
+            cp "$EnvFile" ./frontend/.env
+            chmod 644 ./frontend/.env
+          '''
+        }
+      }
+    }
+
+    stage('Build Frontend') {
+      steps {
+        sh '''
+          cd frontend
+          npm install
+          npm run build || true
+        '''
+      }
+    }
+
+    stage('Deploy to Nginx') {
+      steps {
+        sh '''
+          pwd
+          mkdir -p /home/ubuntu/nginx
+          rm -rf /home/ubuntu/nginx/*
+          cp -r ./frontend/dist/* /home/ubuntu/nginx/
+          cd /home/ubuntu/nginx/
+          ls
+        '''
+      }
+    }
+  }
+}
