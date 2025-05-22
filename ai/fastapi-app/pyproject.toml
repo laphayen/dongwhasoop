@@ -1,0 +1,71 @@
+[project]
+name = "zonos-backend"
+version = "0.1.0"
+description = "FastAPI + Zonos hybrid TTS service"
+readme = "README.md"
+requires-python = ">=3.11"
+
+dependencies = [
+    # FastAPI 기본
+    "fastapi==0.115.12",
+    "uvicorn==0.34.2",
+    "python-dotenv==1.1.0",
+    "python-multipart==0.0.20",
+
+    # Kafka
+    "aiokafka==0.12.0",
+
+    # DB
+    "asyncmy==0.2.10",
+    "databases==0.9.0",
+    "sqlalchemy==2.0.40",
+    "greenlet==3.2.1",
+
+    # AWS
+    "boto3==1.38.5",
+    "openai==1.76.2",
+
+    # TTS 관련
+    "torch>=2.5.1",
+    "torchaudio>=2.5.1",
+    "scipy==1.15.2",
+    "soundfile>=0.13.1",
+    "safetensors",
+    "transformers",
+    "cryptography",
+
+    # Zonos 모델 필수
+    "setuptools",
+    "packaging",
+    "inflect>=7.5.0",
+    "kanjize>=1.5.0",
+    "phonemizer>=3.3.0",
+    "sudachidict-full>=20241021",
+    "sudachipy>=0.6.10",
+    "huggingface-hub>=0.28.1",
+
+    # 로깅
+    "python-logstash==0.4.8",
+    "python-json-logger==2.0.7",
+    "python-logstash-async==2.5.0",
+]
+
+[project.optional-dependencies]
+compile = [
+    "flash-attn>=2.7.3",
+    "mamba-ssm>=2.2.4",
+    "causal-conv1d>=1.5.0.post8",
+]
+
+[tool.setuptools.packages.find]
+include = ["zonos"]
+
+[tool.uv]
+no-build-isolation-package = ["flash-attn", "mamba-ssm", "causal-conv1d"]
+
+[tool.ruff]
+line-length = 120
+
+[build-system]
+requires = ["setuptools", "wheel", "packaging"]
+build-backend = "setuptools.build_meta"

@@ -1,0 +1,96 @@
+pipeline {
+    agent any
+
+    environment {
+        FASTAPI_CONTAINER_NAME = 'fastapi-container'
+        FASTAPI_DOCKER_IMAGE = 'fastapi-app:latest'
+        CONTAINER_NAME = 'backend'
+        DOCKER_IMAGE = 'backend-image:latest'
+
+        RUNPOD_HOST = 'ssh.runpod.io'
+        RUNPOD_USER = '2j97ni5p02dqqk-64411020'
+        SSH_CRED_ID = 'runpod-ssh'
+        GIT_REPO = 'https://gitlab.com/yourname/rvc-fastapi.git' // 변경 필요
+        TARGET_DIR = '/workspace/RVC'
+
+    }
+
+    stages {
+
+
+        stage('Secrets Setup') {
+            steps {
+                withCredentials([
+                     file(credentialsId: 'env-file', variable: 'EnvFile'),
+                ]) {
+                    sh '''
+                        cp "$EnvFile" .env
+                        chmod 644 .env
+                    '''
+                }
+            }
+        }
+
+        stage('Build Backend') {
+            steps {
+                //백엔드 빌드
+                sh '''
+                    cd ./server
+
+                    chmod +x ./gradlew
+
+                    # gradle 빌드 시 테스트 스킵 (-x test)
+                    # 데몬 비활성화 (--no-daemon)
+                    ./gradlew clean build -x test --no-daemon
+                '''
+            }
+        }
+
+            stage('Docker Build & Deploy') {
+                steps {
+                sh '''
+                    # Docker 이미지 빌드
+                    docker build -t backend-image:latest ./server
+
+                    # 기존 컨테이너 중지 및 삭제
+                    docker stop backend || true
+                    docker rm backend || true
+
+                    # 새 컨테이너 실행
+                    docker run -d \
+                    --name backend \
+                    --env-file .env \
+                    --network fariytale_jenkins-network \
+                    --network-alias backend \
+                    -p 8080:8080 \
+                    backend-image:latest
+                '''
+            }
+        }
+
+       stage('Docker Cleanup') {
+           steps {
+               sh '''
+                   echo "사용하지 않는 Docker 리소스 정리 중..."
+
+                   # dangling 이미지 삭제 (태그가 없는 이미지)
+                   docker image prune -f
+
+                   # fastapi 관련 오래된 이미지 정리 (최신 2개 제외)
+                   docker images --format "{{.ID}} {{.Repository}}" | grep fastapi | sort -k2 | awk 'NR>2 {print $1}' | xargs -r docker rmi -f
+
+                   # backend 관련 오래된 이미지 정리 (최신 2개 제외)
+                   docker images --format "{{.ID}} {{.Repository}}" | grep backend | sort -k2 | awk 'NR>2 {print $1}' | xargs -r docker rmi -f
+
+                   # 미사용 볼륨 정리
+                   docker volume prune -f
+
+                   # 미사용 네트워크 정리
+                   docker network prune -f
+
+                   echo "Docker 리소스 정리 완료"
+               '''
+           }
+       }
+    }
+}
